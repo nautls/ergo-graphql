@@ -12,7 +12,7 @@ npm install
 
 The `.env` file must be placed in the root directory following the pattern described below.
 
-```
+```env
 DB_HOST =         # database host address
 DB_PORT =         # database host port
 DB_NAME =         # database name
