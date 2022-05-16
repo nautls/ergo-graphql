@@ -1,0 +1,43 @@
+{
+  "name": "ergo-graphql",
+  "version": "0.0.1",
+  "description": "Ergo GraphQL server",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "ts-node-dev --transpile-only --no-notify --exit-child src/index.ts",
+    "gen": "ts-node --transpile-only src/schema.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "build": "npm run gen && tsc",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ergo-graphql"
+  },
+  "keywords": [
+    "ergo",
+    "graphql",
+    "blockchain",
+    "explorer"
+  ],
+  "author": "capt_nemo",
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "@typescript-eslint/parser": "^5.23.0",
+    "eslint": "^8.15.0",
+    "eslint-config-prettier": "^8.5.0",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "apollo-server": "^3.7.0",
+    "dotenv": "^16.0.1",
+    "graphql": "^16.5.0",
+    "nexus": "^1.3.0",
+    "pg": "^8.7.3",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "0.3.6"
+  }
+}

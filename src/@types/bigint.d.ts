@@ -1,0 +1,3 @@
+interface BigInt {
+  toJSON(): string;
+}
