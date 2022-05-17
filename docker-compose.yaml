@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  ergo_graphql:
+    build: .
+    image: ergo_graphql
+    container_name: ergo_graphql
+    ports:
+      - 3000:3000
+    command: npm start
