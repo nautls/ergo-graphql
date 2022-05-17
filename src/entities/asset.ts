@@ -6,8 +6,8 @@ import {
   JoinColumn,
   ManyToOne
 } from "typeorm";
-import { Box } from "./box";
-import { Token } from "./token";
+import { BoxEntity } from "./box";
+import { TokenEntity } from "./token";
 
 /* 
   Schema
@@ -21,7 +21,7 @@ import { Token } from "./token";
 */
 
 @Entity({ name: "node_assets" })
-export class Asset {
+export class AssetEntity {
   @PrimaryColumn({ name: "token_id" })
   tokenId!: string;
 
@@ -37,11 +37,11 @@ export class Asset {
   @Column({ name: "value", type: "bigint" })
   value!: bigint;
 
-  @OneToOne(() => Token)
+  @OneToOne(() => TokenEntity)
   @JoinColumn({ name: "token_id" })
-  token!: Token;
+  token!: TokenEntity;
 
-  @ManyToOne(() => Box, (box) => box.assets)
+  @ManyToOne(() => BoxEntity, (box) => box.assets)
   @JoinColumn({ name: "box_id" })
-  box!: Box;
+  box!: BoxEntity;
 }

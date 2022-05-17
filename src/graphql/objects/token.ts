@@ -1,5 +1,5 @@
 import { appDataSource } from "../../data-source";
-import { Token } from "../../entities";
+import { TokenEntity } from "../../entities";
 import { extendType, intArg, nonNull, objectType, stringArg } from "nexus";
 import { DEFAULT_SKIP, DEFAULT_TAKE } from "../../consts";
 import { takeAmountArg } from "../scalars";
@@ -30,7 +30,7 @@ export const tokenQuery = extendType({
         take: nonNull(takeAmountArg({ default: DEFAULT_TAKE }))
       },
       async resolve(parent, args, context, info) {
-        return await appDataSource.getRepository(Token).find({
+        return await appDataSource.getRepository(TokenEntity).find({
           where: args.tokenId ? { tokenId: args.tokenId } : undefined,
           take: args.take,
           skip: args.skip,

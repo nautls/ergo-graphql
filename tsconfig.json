@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
+    "target": "ESNext",
     "module": "commonjs",
-    "lib": ["esnext"],
+    "lib": ["ES2018", "ESNext.AsyncIterable", "ESNext.BigInt"],
     "strict": true,
     "outDir": "dist",
     "sourceMap": true,

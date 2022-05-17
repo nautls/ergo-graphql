@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryColumn, OneToOne, JoinColumn } from "typeorm";
-import { Box } from "./box";
+import { BoxEntity } from "./box";
 
 /* 
   Schema
@@ -14,16 +14,16 @@ import { Box } from "./box";
 */
 
 @Entity({ name: "tokens" })
-export class Token {
+export class TokenEntity {
   @PrimaryColumn({ name: "token_id" })
   tokenId!: string;
 
   @Column({ name: "box_id" })
   boxId!: string;
 
-  @OneToOne(() => Box)
+  @OneToOne(() => BoxEntity)
   @JoinColumn({ name: "box_id" })
-  box!: Box;
+  box!: BoxEntity;
 
   @Column({ name: "emission_amount", type: "bigint" })
   emissionAmount!: bigint;
