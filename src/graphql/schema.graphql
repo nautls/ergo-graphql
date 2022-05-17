@@ -5,6 +5,7 @@
 
 type Asset {
   blockId: String!
+  token: Token!
   tokenId: String!
   value: BigInt!
 }
@@ -30,5 +31,20 @@ type Box {
 scalar JSON
 
 type Query {
-  boxes: [Box!]!
+  boxes(skip: Int = 0, take: TakeAmount = 100): [Box!]!
+  tokens(skip: Int = 0, take: TakeAmount = 100): [Token!]!
+}
+
+"""Pagination take amount type"""
+scalar TakeAmount
+
+type Token {
+  box: Box!
+  boxId: String!
+  decimals: Int
+  description: String
+  emissionAmount: BigInt!
+  name: String
+  tokenId: String!
+  type: String
 }

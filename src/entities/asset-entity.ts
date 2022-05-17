@@ -6,8 +6,8 @@ import {
   JoinColumn,
   ManyToOne
 } from "typeorm";
-import { BoxEntity } from "./box";
-import { TokenEntity } from "./token";
+import { BoxEntity } from "./box-entity";
+import { TokenEntity } from "./token-entity";
 
 /* 
   Schema

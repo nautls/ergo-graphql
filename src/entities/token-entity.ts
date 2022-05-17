@@ -1,5 +1,12 @@
-import { Entity, Column, PrimaryColumn, OneToOne, JoinColumn } from "typeorm";
-import { BoxEntity } from "./box";
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  OneToOne,
+  JoinColumn,
+  BaseEntity
+} from "typeorm";
+import { BoxEntity } from "./box-entity";
 
 /* 
   Schema
@@ -14,7 +21,7 @@ import { BoxEntity } from "./box";
 */
 
 @Entity({ name: "tokens" })
-export class TokenEntity {
+export class TokenEntity extends BaseEntity {
   @PrimaryColumn({ name: "token_id" })
   tokenId!: string;
 

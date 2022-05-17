@@ -1,24 +1,9 @@
-import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
-import { GraphQLResolveInfo } from "graphql";
-import { Ctx, Field, Info, ObjectType, Query, Resolver } from "type-graphql";
-import { DEFAULT_SKIP, DEFAULT_TAKE } from "../../consts";
-import { BoxEntity } from "../../entities";
+import { Field, ObjectType } from "type-graphql";
+import { Registers } from "../../entities";
 import { JSONScalar } from "../scalars";
+import { Token } from "./token";
 
-@ObjectType()
-export class Asset {
-  @Field()
-  tokenId!: string;
-
-  @Field()
-  blockId!: string;
-
-  @Field()
-  value!: bigint;
-  // token: ;
-}
-
-@ObjectType()
+@ObjectType({ simpleResolvers: true })
 export class Box {
   @Field()
   boxId!: string;
@@ -53,24 +38,24 @@ export class Box {
   @Field(() => [Asset])
   assets!: Asset[];
 
-  @Field(() => JSONScalar, { simple: true })
-  additionalRegisters!: object;
+  @Field(() => JSONScalar)
+  additionalRegisters!: Registers;
 
   @Field()
   mainChain!: boolean;
 }
 
-@Resolver(Box)
-export class BoxObjectResolver {
-  @Query(() => [Box])
-  async boxes(
-    @Ctx() context: { loader: GraphQLDatabaseLoader },
-    @Info() info: GraphQLResolveInfo
-  ) {
-    return await context.loader
-      .loadEntity(BoxEntity, "box")
-      .info(info)
-      .ejectQueryBuilder((query) => query.take(100))
-      .loadMany();
-  }
+@ObjectType({ simpleResolvers: true })
+export class Asset {
+  @Field()
+  tokenId!: string;
+
+  @Field()
+  blockId!: string;
+
+  @Field()
+  value!: bigint;
+
+  @Field(() => Token)
+  token!: Token;
 }

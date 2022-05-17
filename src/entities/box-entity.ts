@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryColumn, OneToMany, BaseEntity } from "typeorm";
-import { AssetEntity } from "./asset";
+import { AssetEntity } from "./asset-entity";
 
 /* 
   Schema 
@@ -36,7 +36,7 @@ type Register = {
   renderedValue?: string;
 };
 
-type Registers = {
+export type Registers = {
   [key in NonMandatoryRegisterKey]: Register;
 };
 
