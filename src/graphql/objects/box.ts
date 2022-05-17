@@ -1,6 +1,7 @@
 import { Field, ObjectType } from "type-graphql";
 import { Registers } from "../../entities";
 import { JSONScalar } from "../scalars";
+import { Asset } from "./asset";
 import { Token } from "./token";
 
 @ObjectType({ simpleResolvers: true })
@@ -43,19 +44,4 @@ export class Box {
 
   @Field()
   mainChain!: boolean;
-}
-
-@ObjectType({ simpleResolvers: true })
-export class Asset {
-  @Field()
-  tokenId!: string;
-
-  @Field()
-  blockId!: string;
-
-  @Field()
-  value!: bigint;
-
-  @Field(() => Token)
-  token!: Token;
 }
