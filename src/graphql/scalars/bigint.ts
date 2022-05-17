@@ -1,30 +1,27 @@
 import { UserInputError } from "apollo-server";
-import { Kind } from "graphql";
-import { scalarType } from "nexus";
+import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
 
-function validateBigInt(value: unknown): bigint {
-  if (
-    typeof value !== "number" &&
-    typeof value !== "bigint" &&
-    typeof value !== "string"
-  ) {
-    throw new Error("Invalid type.");
-  }
-
-  return BigInt(value);
-}
-
-export const bigInt = scalarType({
+export const BigIntScalar = new GraphQLScalarType({
   name: "BigInt",
-  asNexusMethod: "bigInt",
-  sourceType: "bigint",
-  serialize: validateBigInt,
-  parseValue: validateBigInt,
+  serialize: coerceBigInt,
+  parseValue: coerceBigInt,
   parseLiteral(node) {
     if (node.kind !== Kind.INT) {
       throw new UserInputError("Invalid type.");
     }
 
-    return validateBigInt(BigInt(node.value));
+    return coerceBigInt(node.value);
   }
 });
+
+function coerceBigInt(value: unknown): bigint {
+  switch (typeof value) {
+    case "number":
+    case "string":
+      return BigInt(value);
+    case "bigint":
+      return value;
+    default:
+      throw new GraphQLError("Invalid BigInt value.");
+  }
+}

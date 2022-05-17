@@ -2,8 +2,7 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import * as entities from "./entities";
 
-const { DB_HOST, DB_PORT, DB_NAME, DB_USER_NAME, DB_USER_PWD, TS_NODE_DEV } =
-  process.env;
+const { DB_HOST, DB_PORT, DB_NAME, DB_USER_NAME, DB_USER_PWD, TS_NODE_DEV } = process.env;
 
 export const appDataSource = new DataSource({
   type: "postgres",
@@ -17,3 +16,9 @@ export const appDataSource = new DataSource({
   entities,
   subscribers: []
 });
+
+export async function initializeDataSource() {
+  const connection = await appDataSource.initialize();
+  console.log("✅ Data source connected");
+  return connection;
+}

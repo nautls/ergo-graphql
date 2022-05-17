@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryColumn, OneToMany } from "typeorm";
-import { Asset } from "./asset";
+import { Entity, Column, PrimaryColumn, OneToMany, BaseEntity } from "typeorm";
+import { AssetEntity } from "./asset-entity";
 
 /* 
   Schema 
@@ -36,12 +36,12 @@ type Register = {
   renderedValue?: string;
 };
 
-type Registers = {
+export type Registers = {
   [key in NonMandatoryRegisterKey]: Register;
 };
 
 @Entity({ name: "node_outputs" })
-export class Box {
+export class BoxEntity extends BaseEntity {
   @PrimaryColumn({ name: "box_id" })
   boxId!: string;
 
@@ -72,8 +72,8 @@ export class Box {
   @Column({ name: "address" })
   address!: string;
 
-  @OneToMany(() => Asset, (asset) => asset.box)
-  assets!: Asset[];
+  @OneToMany(() => AssetEntity, (asset) => asset.box)
+  assets!: AssetEntity[];
 
   @Column({ name: "additional_registers", type: "json" })
   additionalRegisters!: Registers;

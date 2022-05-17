@@ -1,11 +1,8 @@
 import { UserInputError } from "apollo-server";
-import { Kind } from "graphql";
-import { scalarType } from "nexus";
+import { GraphQLScalarType, Kind } from "graphql";
 
-export const json = scalarType({
+export const JSONScalar = new GraphQLScalarType({
   name: "JSON",
-  asNexusMethod: "json",
-  sourceType: "object",
   serialize(value) {
     if (typeof value === "object") {
       return value;

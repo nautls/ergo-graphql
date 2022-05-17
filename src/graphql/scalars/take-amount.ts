@@ -1,27 +1,21 @@
 import { UserInputError } from "apollo-server";
-import { Kind } from "graphql";
-import { scalarType } from "nexus";
-import { arg, ScalarArgConfig } from "nexus/dist/core";
-import { DEFAULT_TAKE } from "../../consts";
+import { GraphQLScalarType, Kind } from "graphql";
+import { MAX_TAKE } from "../../consts";
 
 function validateTakeAmount(value: unknown): number {
   if (typeof value !== "number" || !Number.isInteger(value)) {
     throw new UserInputError("Provided value is invalid.");
   }
 
-  if (value > DEFAULT_TAKE) {
-    throw new UserInputError(
-      `Provided value needs to be lower or equal to ${DEFAULT_TAKE}.`
-    );
+  if (value > MAX_TAKE) {
+    throw new UserInputError(`Provided value needs to be lower or equal to ${MAX_TAKE}.`);
   }
 
   return value;
 }
 
-export const takeAmountScalar = scalarType({
+export const TakeAmountScalar = new GraphQLScalarType({
   name: "TakeAmount",
-  asNexusMethod: "takeAmount",
-  sourceType: "number",
   description: "Pagination take amount type",
   serialize: validateTakeAmount,
   parseValue: validateTakeAmount,
@@ -33,7 +27,3 @@ export const takeAmountScalar = scalarType({
     return validateTakeAmount(Number.parseInt(node.value, 10));
   }
 });
-
-export function takeAmountArg(config?: ScalarArgConfig<number>) {
-  return arg({ type: takeAmountScalar, ...config });
-}

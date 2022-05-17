@@ -1,18 +1,25 @@
 import "dotenv/config";
+import "reflect-metadata";
 import "./prototypes";
 
+import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
 import { ApolloServer } from "apollo-server";
-import { appDataSource } from "./data-source";
-import { schema } from "./schema";
+import { initializeDataSource } from "./data-source";
+import { GraphQLSchema } from "graphql";
+import { DataSource } from "typeorm";
+import { generateSchema } from "./graphql/schema";
 
-export const server = new ApolloServer({ schema, csrfPrevention: true });
+(async () => {
+  const [dataSource, schema] = await Promise.all([initializeDataSource(), generateSchema()]);
+  await startServer(schema, dataSource);
+})();
 
-server.listen({ port: 3000 }).then(({ url }) => {
+async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
+  const server = new ApolloServer({
+    schema,
+    csrfPrevention: true,
+    context: { loader: new GraphQLDatabaseLoader(dataSource) }
+  });
+  const { url } = await server.listen({ port: 3000 });
   console.log(`🚀 Server ready at ${url}`);
-  appDataSource
-    .initialize()
-    .then(() => {
-      console.log("✅ Data source is connected");
-    })
-    .catch((error) => console.log(error));
-});
+}
