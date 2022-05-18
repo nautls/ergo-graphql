@@ -31,7 +31,7 @@ type Box {
 scalar JSON
 
 type Query {
-  boxes(skip: Int = 0, take: TakeAmount = 100): [Box!]!
+  boxes(address: String, boxId: String, skip: Int = 0, take: TakeAmount = 100): [Box!]!
   tokens(skip: Int = 0, take: TakeAmount = 100): [Token!]!
 }
 

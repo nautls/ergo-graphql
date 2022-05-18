@@ -12,13 +12,25 @@ export class BoxResolver {
   async boxes(
     @Arg("skip", { defaultValue: DEFAULT_SKIP }) skip: number,
     @Arg("take", () => TakeAmountScalar, { defaultValue: MAX_TAKE }) take: number,
+    @Arg("address", () => String, { nullable: true }) address: string | undefined,
+    @Arg("boxId", () => String, { nullable: true }) boxId: string | undefined,
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
+    let where = {};
+    if (address) {
+      where = { address };
+    }
+    if (boxId) {
+      where = { boxId, ...where };
+    }
+
     return await context.loader
       .loadEntity(BoxEntity, "box")
       .info(info)
-      .ejectQueryBuilder((query) => query.skip(skip).take(take))
+      .ejectQueryBuilder((query) => {
+        return query.where(where).skip(skip).take(take);
+      })
       .loadMany();
   }
 }
