@@ -18,7 +18,7 @@ export class BoxResolver {
     return await context.loader
       .loadEntity(BoxEntity, "box")
       .info(info)
-      .ejectQueryBuilder((query) => query.take(100))
+      .ejectQueryBuilder((query) => query.skip(skip).take(take))
       .loadMany();
   }
 }
