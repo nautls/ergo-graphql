@@ -28,10 +28,22 @@ type Box {
   value: BigInt!
 }
 
+type Input {
+  blockId: String!
+  box: Box!
+  boxId: String!
+  extension: JSON!
+  index: Int!
+  mainChain: Boolean!
+  proofBytes: String
+  transactionId: String!
+}
+
 scalar JSON
 
 type Query {
   boxes(address: String, boxId: String, skip: Int = 0, take: TakeAmount = 100): [Box!]!
+  inputs(skip: Int = 0, take: TakeAmount = 100): [Input!]!
   tokens(skip: Int = 0, take: TakeAmount = 100): [Token!]!
 }
 

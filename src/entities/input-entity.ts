@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { BoxEntity } from "./box-entity";
 
 /*
   Schema
@@ -14,7 +15,7 @@ import { BaseEntity, Column, Entity, PrimaryColumn } from "typeorm";
 */
 
 @Entity({ name: "node_inputs" })
-export class TransactionEntity extends BaseEntity {
+export class InputEntity extends BaseEntity {
   @PrimaryColumn({ name: "box_id" })
   boxId!: string;
 
@@ -35,4 +36,8 @@ export class TransactionEntity extends BaseEntity {
 
   @Column({ name: "main_chain" })
   mainChain!: boolean;
+
+  @OneToOne(() => BoxEntity)
+  @JoinColumn({ name: "box_id" })
+  box!: BoxEntity;
 }

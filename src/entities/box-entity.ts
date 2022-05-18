@@ -1,5 +1,14 @@
-import { Entity, Column, PrimaryColumn, OneToMany, BaseEntity } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  OneToMany,
+  BaseEntity,
+  OneToOne,
+  JoinColumn
+} from "typeorm";
 import { AssetEntity } from "./asset-entity";
+import { InputEntity } from "./input-entity";
 
 /* 
   Schema 
@@ -72,12 +81,16 @@ export class BoxEntity extends BaseEntity {
   @Column({ name: "address" })
   address!: string;
 
-  @OneToMany(() => AssetEntity, (asset) => asset.box)
-  assets!: AssetEntity[];
-
   @Column({ name: "additional_registers", type: "json" })
   additionalRegisters!: Registers;
 
   @Column({ name: "main_chain", type: "boolean" })
   mainChain!: boolean;
+
+  @OneToOne(() => InputEntity)
+  @JoinColumn({ name: "box_id" })
+  box!: InputEntity;
+
+  @OneToMany(() => AssetEntity, (asset) => asset.box)
+  assets!: AssetEntity[];
 }
