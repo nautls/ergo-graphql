@@ -3,6 +3,7 @@ import { Registers } from "../../entities";
 import { JSONScalar } from "../scalars";
 import { Asset } from "./asset";
 import { Input } from "./input";
+import { Transaction } from "./transaction";
 
 @ObjectType({ simpleResolvers: true })
 export class Box {
@@ -11,6 +12,9 @@ export class Box {
 
   @Field()
   transactionId!: string;
+
+  @Field(() => Transaction)
+  transaction!: Transaction;
 
   @Field()
   blockId!: string;
