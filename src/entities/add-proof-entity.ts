@@ -6,6 +6,7 @@ import { HeaderEntity } from "./header-entity";
     header_id   VARCHAR(64) PRIMARY KEY REFERENCES node_headers (id),
     proof_bytes VARCHAR NOT NULL,
     digest      VARCHAR NOT NULL
+    PRIMARY KEY (header_id)
 */
 
 @Entity({ name: "node_add_proofs" })
