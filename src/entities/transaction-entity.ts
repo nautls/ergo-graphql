@@ -24,7 +24,7 @@ export class TransactionEntity extends BaseEntity {
   transactionId!: string;
 
   @Column({ name: "header_id" })
-  blockId!: string;
+  headerId!: string;
 
   @Column({ name: "inclusion_height" })
   inclusionHeight!: number;
