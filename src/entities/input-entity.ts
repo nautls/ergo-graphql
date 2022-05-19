@@ -32,7 +32,7 @@ export class InputEntity extends BaseEntity {
   transactionId!: string;
 
   @Column({ name: "header_id" })
-  blockId!: string;
+  headerId!: string;
 
   @Column({ name: "proof_bytes", nullable: true })
   proofBytes?: string;

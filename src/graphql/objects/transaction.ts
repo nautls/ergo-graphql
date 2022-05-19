@@ -9,7 +9,7 @@ export class Transaction {
   transactionId!: string;
 
   @Field()
-  blockId!: string;
+  headerId!: string;
 
   @Field()
   inclusionHeight!: number;

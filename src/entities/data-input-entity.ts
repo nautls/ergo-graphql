@@ -29,7 +29,7 @@ export class DataInputEntity extends BaseEntity {
   transactionId!: string;
 
   @Column({ name: "header_id" })
-  blockId!: string;
+  headerId!: string;
 
   @Column({ name: "index" })
   index!: number;

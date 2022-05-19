@@ -7,7 +7,7 @@ export class Asset {
   tokenId!: string;
 
   @Field()
-  blockId!: string;
+  headerId!: string;
 
   @Field()
   value!: bigint;

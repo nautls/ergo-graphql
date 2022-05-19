@@ -4,7 +4,7 @@
 # -----------------------------------------------
 
 type Asset {
-  blockId: String!
+  headerId: String!
   token: Token!
   tokenId: String!
   value: BigInt!
@@ -16,11 +16,11 @@ type Box {
   additionalRegisters: JSON!
   address: String!
   assets: [Asset!]!
-  blockId: String!
   boxId: String!
   creationHeight: Int!
   ergoTree: String!
   globalIndex: Int!
+  headerId: String!
   index: Int!
   mainChain: Boolean!
   settlementHeight: Int!
@@ -31,9 +31,9 @@ type Box {
 }
 
 type DataInput {
-  blockId: String!
   box: Box!
   boxId: String!
+  headerId: String!
   index: Int!
   mainChain: Boolean!
   transaction: Transaction!
@@ -41,10 +41,10 @@ type DataInput {
 }
 
 type Input {
-  blockId: String!
   box: Box!
   boxId: String!
   extension: JSON!
+  headerId: String!
   index: Int!
   mainChain: Boolean!
   proofBytes: String
@@ -77,10 +77,10 @@ type Token {
 }
 
 type Transaction {
-  blockId: String!
   coinbase: Boolean!
   dataInputs: [DataInput!]!
   globalIndex: Int!
+  headerId: String!
   inclusionHeight: Int!
   index: Int!
   inputs: [Input!]!

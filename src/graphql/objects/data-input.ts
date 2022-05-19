@@ -17,7 +17,7 @@ export class DataInput {
   transaction!: Transaction;
 
   @Field()
-  blockId!: string;
+  headerId!: string;
 
   @Field()
   index!: number;

@@ -1,11 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryColumn,
-  OneToOne,
-  JoinColumn,
-  ManyToOne
-} from "typeorm";
+import { Entity, Column, PrimaryColumn, OneToOne, JoinColumn, ManyToOne } from "typeorm";
 import { BoxEntity } from "./box-entity";
 import { TokenEntity } from "./token-entity";
 
@@ -29,7 +22,7 @@ export class AssetEntity {
   boxId!: string;
 
   @Column({ name: "header_id" })
-  blockId!: string;
+  headerId!: string;
 
   @Column({ name: "index" })
   index!: number;

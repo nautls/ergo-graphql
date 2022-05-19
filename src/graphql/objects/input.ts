@@ -18,7 +18,7 @@ export class Input {
   transaction!: Transaction;
 
   @Field()
-  blockId!: string;
+  headerId!: string;
 
   @Field({ nullable: true })
   proofBytes?: string;

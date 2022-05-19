@@ -17,7 +17,7 @@ export class Box {
   transaction!: Transaction;
 
   @Field()
-  blockId!: string;
+  headerId!: string;
 
   @Field()
   value!: bigint;

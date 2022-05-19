@@ -60,7 +60,7 @@ export class BoxEntity extends BaseEntity {
   transactionId!: string;
 
   @Column({ name: "header_id" })
-  blockId!: string;
+  headerId!: string;
 
   @Column({ name: "value", type: "bigint" })
   value!: bigint;
