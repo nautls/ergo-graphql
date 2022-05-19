@@ -2,7 +2,8 @@ import { Field, ObjectType } from "type-graphql";
 import { Registers } from "../../entities";
 import { JSONScalar } from "../scalars";
 import { Asset } from "./asset";
-import { Token } from "./token";
+import { Input } from "./input";
+import { Transaction } from "./transaction";
 
 @ObjectType({ simpleResolvers: true })
 export class Box {
@@ -12,8 +13,11 @@ export class Box {
   @Field()
   transactionId!: string;
 
+  @Field(() => Transaction)
+  transaction!: Transaction;
+
   @Field()
-  blockId!: string;
+  headerId!: string;
 
   @Field()
   value!: bigint;
@@ -44,4 +48,7 @@ export class Box {
 
   @Field()
   mainChain!: boolean;
+
+  @Field(() => Input, { nullable: true })
+  spentBy?: Input;
 }

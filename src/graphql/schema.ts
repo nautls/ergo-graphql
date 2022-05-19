@@ -1,14 +1,19 @@
 import { join } from "path";
 import { buildSchema, Int } from "type-graphql";
 import { BigIntScalar } from "./scalars";
-import { BoxResolver, TokenResolver } from "./resolvers";
+import {
+  BoxResolver,
+  TokenResolver,
+  InputResolver,
+  TransactionResolver,
+  DataInputResolver
+} from "./resolvers";
 
 export async function generateSchema() {
   const schema = await buildSchema({
-    resolvers: [BoxResolver, TokenResolver],
     emitSchemaFile: join(process.cwd(), "src/graphql/schema.graphql"),
-    dateScalarMode: "timestamp",
     validate: false,
+    resolvers: [BoxResolver, TokenResolver, InputResolver, TransactionResolver, DataInputResolver],
     scalarsMap: [
       { type: Number, scalar: Int },
       { type: BigInt, scalar: BigIntScalar }

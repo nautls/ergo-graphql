@@ -1,5 +1,16 @@
-import { Entity, Column, PrimaryColumn, OneToMany, BaseEntity } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  OneToMany,
+  BaseEntity,
+  OneToOne,
+  JoinColumn,
+  ManyToOne
+} from "typeorm";
 import { AssetEntity } from "./asset-entity";
+import { InputEntity } from "./input-entity";
+import { TransactionEntity } from "./transaction-entity";
 
 /* 
   Schema 
@@ -49,7 +60,7 @@ export class BoxEntity extends BaseEntity {
   transactionId!: string;
 
   @Column({ name: "header_id" })
-  blockId!: string;
+  headerId!: string;
 
   @Column({ name: "value", type: "bigint" })
   value!: bigint;
@@ -72,12 +83,20 @@ export class BoxEntity extends BaseEntity {
   @Column({ name: "address" })
   address!: string;
 
-  @OneToMany(() => AssetEntity, (asset) => asset.box)
-  assets!: AssetEntity[];
-
   @Column({ name: "additional_registers", type: "json" })
   additionalRegisters!: Registers;
 
   @Column({ name: "main_chain", type: "boolean" })
   mainChain!: boolean;
+
+  @OneToOne(() => InputEntity)
+  @JoinColumn({ name: "box_id" })
+  spentBy!: InputEntity;
+
+  @OneToMany(() => AssetEntity, (asset) => asset.box)
+  assets!: AssetEntity[];
+
+  @ManyToOne(() => TransactionEntity, (tx) => tx.inputs)
+  @JoinColumn({ name: "tx_id" })
+  transaction!: TransactionEntity;
 }

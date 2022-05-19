@@ -4,7 +4,7 @@
 # -----------------------------------------------
 
 type Asset {
-  blockId: String!
+  headerId: String!
   token: Token!
   tokenId: String!
   value: BigInt!
@@ -16,23 +16,50 @@ type Box {
   additionalRegisters: JSON!
   address: String!
   assets: [Asset!]!
-  blockId: String!
   boxId: String!
   creationHeight: Int!
   ergoTree: String!
   globalIndex: Int!
+  headerId: String!
   index: Int!
   mainChain: Boolean!
   settlementHeight: Int!
+  spentBy: Input
+  transaction: Transaction!
   transactionId: String!
   value: BigInt!
+}
+
+type DataInput {
+  box: Box!
+  boxId: String!
+  headerId: String!
+  index: Int!
+  mainChain: Boolean!
+  transaction: Transaction!
+  transactionId: String!
+}
+
+type Input {
+  box: Box!
+  boxId: String!
+  extension: JSON!
+  headerId: String!
+  index: Int!
+  mainChain: Boolean!
+  proofBytes: String
+  transaction: Transaction!
+  transactionId: String!
 }
 
 scalar JSON
 
 type Query {
-  boxes(skip: Int = 0, take: TakeAmount = 100): [Box!]!
+  boxes(address: String, boxId: String, skip: Int = 0, take: TakeAmount = 100): [Box!]!
+  dataInputs(skip: Int = 0, take: TakeAmount = 100): [DataInput!]!
+  inputs(skip: Int = 0, take: TakeAmount = 100): [Input!]!
   tokens(skip: Int = 0, take: TakeAmount = 100): [Token!]!
+  transactions(skip: Int = 0, take: TakeAmount = 100): [Transaction!]!
 }
 
 """Pagination take amount type"""
@@ -47,4 +74,19 @@ type Token {
   name: String
   tokenId: String!
   type: String
+}
+
+type Transaction {
+  coinbase: Boolean!
+  dataInputs: [DataInput!]!
+  globalIndex: Int!
+  headerId: String!
+  inclusionHeight: Int!
+  index: Int!
+  inputs: [Input!]!
+  mainChain: Boolean!
+  outputs: [Box!]!
+  size: Int!
+  timestamp: BigInt!
+  transactionId: String!
 }
