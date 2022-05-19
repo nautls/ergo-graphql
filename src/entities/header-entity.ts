@@ -7,23 +7,23 @@ import {
 /*
   Schema
     TABLE node_headers
-    id  VARCHAR(64) NOT NULL,
-    parent_id  VARCHAR(64) NOT NULL,
-    version  SMALLINT NOT NULL,
-    height  INTEGER NOT NULL,
-    n_bits  BIGINT NOT NULL,
-    difficulty  NUMERIC NOT NULL,
-    timestamp  BIGINT NOT NULL,
-    state_root  VARCHAR(66) NOT NULL,
-    ad_proofs_root  VARCHAR(64) NOT NULL,
-    transactions_root  VARCHAR(64) NOT NULL,
-    extension_hash  VARCHAR(64) NOT NULL,
-    miner_pk  VARCHAR NOT NULL,
-    w  VARCHAR NOT NULL,
-    n  VARCHAR NOT NULL,
-    d  VARCHAR NOT NULL,
-    votes  VARCHAR NOT NULL,
-    main_chain  BOOLEAN NOT NULL,
+    id                VARCHAR(64) PRIMARY KEY,
+    parent_id         VARCHAR(64) NOT NULL,
+    version           SMALLINT    NOT NULL,
+    height            INTEGER     NOT NULL,
+    n_bits            BIGINT      NOT NULL,
+    difficulty        NUMERIC     NOT NULL,
+    timestamp         BIGINT      NOT NULL,
+    state_root        VARCHAR(66) NOT NULL,
+    ad_proofs_root    VARCHAR(64) NOT NULL,
+    transactions_root VARCHAR(64) NOT NULL,
+    extension_hash    VARCHAR(64) NOT NULL,
+    miner_pk          VARCHAR     NOT NULL,
+    w                 VARCHAR     NOT NULL,
+    n                 VARCHAR     NOT NULL,
+    d                 VARCHAR     NOT NULL,
+    votes             VARCHAR     NOT NULL,
+    main_chain        BOOLEAN     NOT NULL
     PRIMARY KEY (id)
 */
 
@@ -41,13 +41,13 @@ export class HeaderEntity {
   @Column({ name: "height" })
   height!: number
 
-  @Column({ name: "n_bits" })
+  @Column({ name: "n_bits", type: "bigint" })
   nBits!: bigint
 
   @Column({ name: "difficulty" })
   difficulty!: number
 
-  @Column({ name: "timestamp" })
+  @Column({ name: "timestamp", type: "bigint" })
   timestamp!: bigint
 
   @Column({ name: "state_root" })
