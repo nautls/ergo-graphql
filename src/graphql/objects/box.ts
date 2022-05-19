@@ -2,6 +2,7 @@ import { Field, ObjectType } from "type-graphql";
 import { Registers } from "../../entities";
 import { JSONScalar } from "../scalars";
 import { Asset } from "./asset";
+import { Input } from "./input";
 
 @ObjectType({ simpleResolvers: true })
 export class Box {
@@ -43,4 +44,7 @@ export class Box {
 
   @Field()
   mainChain!: boolean;
+
+  @Field(() => Input, { nullable: true })
+  spendingInfo?: Input;
 }

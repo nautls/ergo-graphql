@@ -24,6 +24,7 @@ type Box {
   index: Int!
   mainChain: Boolean!
   settlementHeight: Int!
+  spendingInfo: Input
   transactionId: String!
   value: BigInt!
 }
