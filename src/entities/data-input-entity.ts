@@ -20,7 +20,7 @@ import { TransactionEntity } from "./transaction-entity";
     main_chain  BOOLEAN     NOT NULL,
 */
 
-@Entity({ name: "node_inputs" })
+@Entity({ name: "node_data_inputs" })
 export class DataInputEntity extends BaseEntity {
   @PrimaryColumn({ name: "box_id" })
   boxId!: string;
