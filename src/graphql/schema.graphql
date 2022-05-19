@@ -25,6 +25,7 @@ type Box {
   mainChain: Boolean!
   settlementHeight: Int!
   spentBy: Input
+  transaction: Transaction!
   transactionId: String!
   value: BigInt!
 }
@@ -37,6 +38,7 @@ type Input {
   index: Int!
   mainChain: Boolean!
   proofBytes: String
+  transaction: Transaction!
   transactionId: String!
 }
 

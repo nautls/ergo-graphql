@@ -1,5 +1,6 @@
 import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { BoxEntity } from "./box-entity";
+import { DataInputEntity } from "./data-input-entity";
 import { InputEntity } from "./input-entity";
 
 /*
@@ -48,6 +49,9 @@ export class TransactionEntity extends BaseEntity {
 
   @OneToMany(() => InputEntity, (input) => input.transaction)
   inputs!: InputEntity[];
+
+  @OneToMany(() => DataInputEntity, (input) => input.transaction)
+  dataInputs!: DataInputEntity[];
 
   @OneToMany(() => BoxEntity, (output) => output.transaction)
   outputs!: BoxEntity[];
