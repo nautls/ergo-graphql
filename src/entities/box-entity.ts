@@ -91,7 +91,7 @@ export class BoxEntity extends BaseEntity {
 
   @OneToOne(() => InputEntity)
   @JoinColumn({ name: "box_id" })
-  spendingInfo!: InputEntity;
+  spentBy!: InputEntity;
 
   @OneToMany(() => AssetEntity, (asset) => asset.box)
   assets!: AssetEntity[];

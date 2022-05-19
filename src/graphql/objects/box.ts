@@ -46,5 +46,5 @@ export class Box {
   mainChain!: boolean;
 
   @Field(() => Input, { nullable: true })
-  spendingInfo?: Input;
+  spentBy?: Input;
 }
