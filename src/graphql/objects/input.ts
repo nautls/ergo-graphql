@@ -1,6 +1,7 @@
 import { Field, ObjectType } from "type-graphql";
 import { JSONScalar } from "../scalars";
 import { Box } from "./box";
+import { Transaction } from "./transaction";
 
 @ObjectType({ simpleResolvers: true })
 export class Input {
@@ -12,6 +13,9 @@ export class Input {
 
   @Field()
   transactionId!: string;
+
+  @Field(() => Transaction)
+  transaction!: Transaction;
 
   @Field()
   blockId!: string;
