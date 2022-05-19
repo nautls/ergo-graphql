@@ -1,8 +1,10 @@
 import {
   Entity,
   Column,
-  PrimaryColumn
+  PrimaryColumn,
+  OneToMany
 } from "typeorm";
+import { ExtensionEntity } from "./extention-entity";
 
 /*
   Schema
@@ -79,4 +81,7 @@ export class HeaderEntity {
 
   @Column({ name: "main_chain" })
   mainChain!: boolean
+
+  @OneToMany(() => ExtensionEntity, (extension) => extension.header)
+  extensions!: ExtensionEntity[]
 }
