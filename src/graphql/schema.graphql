@@ -45,6 +45,7 @@ type Query {
   boxes(address: String, boxId: String, skip: Int = 0, take: TakeAmount = 100): [Box!]!
   inputs(skip: Int = 0, take: TakeAmount = 100): [Input!]!
   tokens(skip: Int = 0, take: TakeAmount = 100): [Token!]!
+  transactions(skip: Int = 0, take: TakeAmount = 100): [Transaction!]!
 }
 
 """Pagination take amount type"""
@@ -59,4 +60,18 @@ type Token {
   name: String
   tokenId: String!
   type: String
+}
+
+type Transaction {
+  blockId: String!
+  coinbase: Boolean!
+  globalIndex: Int!
+  inclusionHeight: Int!
+  index: Int!
+  inputs: [Input!]!
+  mainChain: Boolean!
+  outputs: [Box!]!
+  size: Int!
+  timestamp: BigInt!
+  transactionId: String!
 }

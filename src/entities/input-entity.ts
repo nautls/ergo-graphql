@@ -1,5 +1,14 @@
-import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryColumn
+} from "typeorm";
 import { BoxEntity } from "./box-entity";
+import { TransactionEntity } from "./transaction-entity";
 
 /*
   Schema
@@ -40,4 +49,8 @@ export class InputEntity extends BaseEntity {
   @OneToOne(() => BoxEntity)
   @JoinColumn({ name: "box_id" })
   box!: BoxEntity;
+
+  @ManyToOne(() => TransactionEntity, (tx) => tx.inputs)
+  @JoinColumn({ name: "tx_id" })
+  transaction!: TransactionEntity;
 }

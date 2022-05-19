@@ -7,7 +7,7 @@ export class Input {
   @Field()
   boxId!: string;
 
-  @Field(() => Box, { name: "box" })
+  @Field(() => Box)
   box!: Box;
 
   @Field()

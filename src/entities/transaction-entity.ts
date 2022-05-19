@@ -1,4 +1,6 @@
-import { BaseEntity, Column, Entity, PrimaryColumn } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
+import { BoxEntity } from "./box-entity";
+import { InputEntity } from "./input-entity";
 
 /*
   Schema
@@ -30,7 +32,7 @@ export class TransactionEntity extends BaseEntity {
   coinbase!: boolean;
 
   @Column({ name: "timestamp", type: "bigint" })
-  timestamp!: Date;
+  timestamp!: bigint;
 
   @Column({ name: "size" })
   size!: number;
@@ -43,4 +45,10 @@ export class TransactionEntity extends BaseEntity {
 
   @Column({ name: "main_chain" })
   mainChain!: boolean;
+
+  @OneToMany(() => InputEntity, (input) => input.transaction)
+  inputs!: InputEntity[];
+
+  @OneToMany(() => BoxEntity, (output) => output.transaction)
+  outputs!: BoxEntity[];
 }

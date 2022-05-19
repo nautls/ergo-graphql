@@ -5,10 +5,12 @@ import {
   OneToMany,
   BaseEntity,
   OneToOne,
-  JoinColumn
+  JoinColumn,
+  ManyToOne
 } from "typeorm";
 import { AssetEntity } from "./asset-entity";
 import { InputEntity } from "./input-entity";
+import { TransactionEntity } from "./transaction-entity";
 
 /* 
   Schema 
@@ -89,8 +91,12 @@ export class BoxEntity extends BaseEntity {
 
   @OneToOne(() => InputEntity)
   @JoinColumn({ name: "box_id" })
-  box!: InputEntity;
+  spendingInfo!: InputEntity;
 
   @OneToMany(() => AssetEntity, (asset) => asset.box)
   assets!: AssetEntity[];
+
+  @ManyToOne(() => TransactionEntity, (tx) => tx.inputs)
+  @JoinColumn({ name: "tx_id" })
+  transaction!: TransactionEntity;
 }
