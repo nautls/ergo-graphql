@@ -6,6 +6,7 @@ import {
 } from "typeorm";
 import { ExtensionEntity } from "./extention-entity";
 import { AddProofEntity } from "./add-proof-entity";
+import { BlockInfoEntity } from "./block-info-entity";
 
 /*
   Schema
@@ -88,4 +89,7 @@ export class HeaderEntity {
 
   @OneToMany(() => AddProofEntity, (addProof) => addProof.header)
   addProofs!: AddProofEntity[]
+
+  @OneToMany(() => BlockInfoEntity, (blockInfo) => blockInfo.header)
+  blockInfo!: BlockInfoEntity[]
 }
