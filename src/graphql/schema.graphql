@@ -79,6 +79,7 @@ type Token {
 type Transaction {
   blockId: String!
   coinbase: Boolean!
+  dataInputs: [DataInput!]!
   globalIndex: Int!
   inclusionHeight: Int!
   index: Int!
