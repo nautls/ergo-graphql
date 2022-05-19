@@ -5,6 +5,7 @@ import {
   OneToMany
 } from "typeorm";
 import { ExtensionEntity } from "./extention-entity";
+import { AddProofEntity } from "./add-proof-entity";
 
 /*
   Schema
@@ -84,4 +85,7 @@ export class HeaderEntity {
 
   @OneToMany(() => ExtensionEntity, (extension) => extension.header)
   extensions!: ExtensionEntity[]
+
+  @OneToMany(() => AddProofEntity, (addProof) => addProof.header)
+  addProofs!: AddProofEntity[]
 }
