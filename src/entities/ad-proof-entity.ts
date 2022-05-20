@@ -9,8 +9,8 @@ import { HeaderEntity } from "./header-entity";
     PRIMARY KEY (header_id)
 */
 
-@Entity({ name: "node_add_proofs" })
-export class AddProofEntity {
+@Entity({ name: "node_ad_proofs" })
+export class AdProofEntity {
   @PrimaryColumn({ name: "header_id" })
   headerId!: string;
 
@@ -20,7 +20,7 @@ export class AddProofEntity {
   @Column({ name: "digest" })
   digest!: string;
 
-  @ManyToOne(() => HeaderEntity, (header) => header.addProofs)
+  @ManyToOne(() => HeaderEntity, (header) => header.adProofs)
   @JoinColumn({ name: "header_id" })
   header!: HeaderEntity;
 }

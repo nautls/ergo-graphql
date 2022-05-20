@@ -5,7 +5,7 @@ import {
   OneToMany
 } from "typeorm";
 import { ExtensionEntity } from "./extention-entity";
-import { AddProofEntity } from "./add-proof-entity";
+import { AdProofEntity } from "./ad-proof-entity";
 import { BlockInfoEntity } from "./block-info-entity";
 
 /*
@@ -87,8 +87,8 @@ export class HeaderEntity {
   @OneToMany(() => ExtensionEntity, (extension) => extension.header)
   extensions!: ExtensionEntity[]
 
-  @OneToMany(() => AddProofEntity, (addProof) => addProof.header)
-  addProofs!: AddProofEntity[]
+  @OneToMany(() => AdProofEntity, (adProof) => adProof.header)
+  adProofs!: AdProofEntity[]
 
   @OneToMany(() => BlockInfoEntity, (blockInfo) => blockInfo.header)
   blockInfo!: BlockInfoEntity[]
