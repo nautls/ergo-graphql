@@ -1,10 +1,5 @@
-import {
-  Entity,
-  Column,
-  PrimaryColumn,
-  OneToMany
-} from "typeorm";
-import { ExtensionEntity } from "./extention-entity";
+import { Entity, Column, PrimaryColumn, OneToMany } from "typeorm";
+import { ExtensionEntity } from "./extension-entity";
 import { AdProofEntity } from "./ad-proof-entity";
 import { BlockInfoEntity } from "./block-info-entity";
 
@@ -34,62 +29,62 @@ import { BlockInfoEntity } from "./block-info-entity";
 @Entity({ name: "node_headers" })
 export class HeaderEntity {
   @PrimaryColumn({ name: "id" })
-  id!: string
+  id!: string;
 
   @Column({ name: "parent_id" })
-  parentId!: string
+  parentId!: string;
 
   @Column({ name: "version" })
-  version!: number
+  version!: number;
 
   @Column({ name: "height" })
-  height!: number
+  height!: number;
 
   @Column({ name: "n_bits", type: "bigint" })
-  nBits!: bigint
+  nBits!: bigint;
 
   @Column({ name: "difficulty" })
-  difficulty!: number
+  difficulty!: number;
 
   @Column({ name: "timestamp", type: "bigint" })
-  timestamp!: bigint
+  timestamp!: bigint;
 
   @Column({ name: "state_root" })
-  stateRoot!: string
+  stateRoot!: string;
 
   @Column({ name: "ad_proofs_root" })
-  adProofsRoot!: string
+  adProofsRoot!: string;
 
   @Column({ name: "transactions_root" })
-  transactionsRoot!: string
+  transactionsRoot!: string;
 
   @Column({ name: "extension_hash" })
-  extensionHash!: string
+  extensionHash!: string;
 
   @Column({ name: "miner_pk" })
-  minerPk!: string
+  minerPk!: string;
 
   @Column({ name: "w" })
-  w!: string
+  w!: string;
 
   @Column({ name: "n" })
-  n!: string
+  n!: string;
 
   @Column({ name: "d" })
-  d!: string
+  d!: string;
 
   @Column({ name: "votes" })
-  votes!: string
+  votes!: string;
 
   @Column({ name: "main_chain" })
-  mainChain!: boolean
+  mainChain!: boolean;
 
   @OneToMany(() => ExtensionEntity, (extension) => extension.header)
-  extensions!: ExtensionEntity[]
+  extensions!: ExtensionEntity[];
 
   @OneToMany(() => AdProofEntity, (adProof) => adProof.header)
-  adProofs!: AdProofEntity[]
+  adProofs!: AdProofEntity[];
 
   @OneToMany(() => BlockInfoEntity, (blockInfo) => blockInfo.header)
-  blockInfo!: BlockInfoEntity[]
+  blockInfo!: BlockInfoEntity[];
 }

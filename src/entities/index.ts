@@ -7,6 +7,6 @@ export * from "./data-input-entity";
 export * from "./ad-proof-entity";
 export * from "./block-info-entity";
 export * from "./epochs-parameter-entity";
-export * from "./extention-entity";
+export * from "./extension-entity";
 export * from "./header-entity";
 export * from "./script-constant-entity";
