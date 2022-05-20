@@ -17,8 +17,8 @@ export class ExtensionEntity {
     @Column({ name: "digest" })
     digest!: string;
     
-    @Column({ name: "fields" })
-    fields!: any;
+    @Column({ name: "fields", type: "json" })
+    fields!: object;
     
     @ManyToOne(() => HeaderEntity, (header) => header.extensions)
     @JoinColumn({ name: "header_id" })
