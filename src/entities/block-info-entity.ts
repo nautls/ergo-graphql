@@ -49,8 +49,8 @@ export class BlockInfoEntity {
   @Column({ name: "block_coins", type: "bigint" })
   blockCoins!: bigint;
 
-  @Column({ name: "block_mining_time", type: "bigint" })
-  blockMiningTime!: bigint;
+  @Column({ name: "block_mining_time", type: "bigint", nullable: true })
+  blockMiningTime?: bigint;
 
   @Column({ name: "txs_count" })
   txsCount!: number;
