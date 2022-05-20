@@ -5,6 +5,7 @@ import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
 import { BoxEntity } from "../../entities";
 import { Box } from "../objects";
 import { TakeAmountScalar } from "../scalars";
+import { removeUndefined } from "./utils";
 
 @Resolver(Box)
 export class BoxResolver {
@@ -17,13 +18,7 @@ export class BoxResolver {
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
-    let where = {};
-    if (address) {
-      where = { address };
-    }
-    if (boxId) {
-      where = { boxId, ...where };
-    }
+    const where = removeUndefined({ address, boxId });
 
     return await context.loader
       .loadEntity(BoxEntity, "box")
