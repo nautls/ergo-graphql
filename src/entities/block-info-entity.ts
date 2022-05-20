@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, PrimaryColumn, JoinColumn, OneToOne } from "typeorm";
 import { HeaderEntity } from "./header-entity";
 
 /*
@@ -100,7 +100,7 @@ export class BlockInfoEntity {
   @Column({ name: "main_chain" })
   mainChain!: boolean;
 
-  @ManyToOne(() => HeaderEntity, header => header.blockInfo)
+  @OneToOne(() => HeaderEntity)
   @JoinColumn({ name: "header_id" })
   header!: HeaderEntity;
 }
