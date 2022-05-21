@@ -9,10 +9,8 @@ import { initializeDataSource } from "./data-source";
 import { GraphQLSchema } from "graphql";
 import { DataSource } from "typeorm";
 import { generateSchema } from "./graphql/schema";
-import { BaseContext } from "apollo-server-types";
-import { GraphQLRequestListener } from "apollo-server-plugin-base";
 
-const MAX_COMPLEXITY_NUMBER = Number.parseInt(process.env.MAX_COMPLEXITY || "", 10) || 20;
+const MAX_QUERY_COMPLEXITY_NUMBER = Number.parseInt(process.env.MAX_QUERY_COMPLEXITY || "", 10) || 20;
 
 (async () => {
   const [dataSource, schema] = await Promise.all([initializeDataSource(), generateSchema()]);
@@ -36,7 +34,7 @@ async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
                 simpleEstimator({ defaultComplexity: 1 }),
               ],
             });
-            if(complexity > MAX_COMPLEXITY_NUMBER) {
+            if(complexity > MAX_QUERY_COMPLEXITY_NUMBER) {
               throw new ForbiddenError('Query is too complex!');
             }
           },
