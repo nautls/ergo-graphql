@@ -6,14 +6,22 @@ import {
   TokenResolver,
   InputResolver,
   TransactionResolver,
-  DataInputResolver
+  DataInputResolver,
+  HeaderResolver
 } from "./resolvers";
 
 export async function generateSchema() {
   const schema = await buildSchema({
     emitSchemaFile: join(process.cwd(), "src/graphql/schema.graphql"),
     validate: false,
-    resolvers: [BoxResolver, TokenResolver, InputResolver, TransactionResolver, DataInputResolver],
+    resolvers: [
+      BoxResolver,
+      TokenResolver,
+      InputResolver,
+      TransactionResolver,
+      DataInputResolver,
+      HeaderResolver
+    ],
     scalarsMap: [
       { type: Number, scalar: Int },
       { type: BigInt, scalar: BigIntScalar }

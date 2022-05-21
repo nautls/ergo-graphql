@@ -3,6 +3,12 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type AdProof {
+  digest: String!
+  headerId: String!
+  proofBytes: String!
+}
+
 type Asset {
   headerId: String!
   token: Token!
@@ -40,6 +46,31 @@ type DataInput {
   transactionId: String!
 }
 
+type Extension {
+  digest: String!
+  fields: JSON!
+  headerId: String!
+}
+
+type Header {
+  adProof: AdProof!
+  adProofsRoot: String!
+  difficulty: Int!
+  extension: Extension!
+  extensionHash: String!
+  headerId: String!
+  height: Int!
+  mainChain: Boolean!
+  nBits: BigInt!
+  parentId: String!
+  powSolutions: JSON!
+  stateRoot: String!
+  timestamp: BigInt!
+  transactionsRoot: String!
+  version: Int!
+  votes: [Int!]!
+}
+
 type Input {
   box: Box!
   boxId: String!
@@ -55,6 +86,7 @@ type Input {
 scalar JSON
 
 type Query {
+  blockHeaders(skip: Int = 0, take: TakeAmount = 10): [Header!]!
   boxes(address: String, boxId: String, skip: Int = 0, take: TakeAmount = 100): [Box!]!
   dataInputs(skip: Int = 0, take: TakeAmount = 100): [DataInput!]!
   inputs(skip: Int = 0, take: TakeAmount = 100): [Input!]!

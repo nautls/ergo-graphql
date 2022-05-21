@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn, OneToOne } from "typeorm";
 import { HeaderEntity } from "./header-entity";
 
 /*
@@ -20,7 +20,7 @@ export class AdProofEntity {
   @Column({ name: "digest" })
   digest!: string;
 
-  @ManyToOne(() => HeaderEntity, (header) => header.adProofs)
+  @OneToOne(() => HeaderEntity)
   @JoinColumn({ name: "header_id" })
   header!: HeaderEntity;
 }

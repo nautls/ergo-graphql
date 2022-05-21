@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryColumn, OneToMany } from "typeorm";
+import { Entity, Column, PrimaryColumn, OneToOne, JoinColumn, BaseEntity } from "typeorm";
 import { ExtensionEntity } from "./extension-entity";
 import { AdProofEntity } from "./ad-proof-entity";
 import { BlockInfoEntity } from "./block-info-entity";
+import { ConfigureLoader } from "@mando75/typeorm-graphql-loader";
 
 /*
   Schema
@@ -27,9 +28,9 @@ import { BlockInfoEntity } from "./block-info-entity";
 */
 
 @Entity({ name: "node_headers" })
-export class HeaderEntity {
+export class HeaderEntity extends BaseEntity {
   @PrimaryColumn({ name: "id" })
-  id!: string;
+  headerId!: string;
 
   @Column({ name: "parent_id" })
   parentId!: string;
@@ -62,15 +63,19 @@ export class HeaderEntity {
   extensionHash!: string;
 
   @Column({ name: "miner_pk" })
+  @ConfigureLoader({ graphQLName: "powSolutions" })
   minerPk!: string;
 
   @Column({ name: "w" })
+  @ConfigureLoader({ graphQLName: "powSolutions" })
   w!: string;
 
   @Column({ name: "n" })
+  @ConfigureLoader({ graphQLName: "powSolutions" })
   n!: string;
 
   @Column({ name: "d" })
+  @ConfigureLoader({ graphQLName: "powSolutions" })
   d!: string;
 
   @Column({ name: "votes" })
@@ -79,12 +84,15 @@ export class HeaderEntity {
   @Column({ name: "main_chain" })
   mainChain!: boolean;
 
-  @OneToMany(() => ExtensionEntity, (extension) => extension.header)
-  extensions!: ExtensionEntity[];
+  @OneToOne(() => ExtensionEntity)
+  @JoinColumn({ name: "id" })
+  extension!: ExtensionEntity;
 
-  @OneToMany(() => AdProofEntity, (adProof) => adProof.header)
-  adProofs!: AdProofEntity[];
+  @OneToOne(() => AdProofEntity)
+  @JoinColumn({ name: "id" })
+  adProof!: AdProofEntity[];
 
-  @OneToMany(() => BlockInfoEntity, (blockInfo) => blockInfo.header)
+  @OneToOne(() => BlockInfoEntity)
+  @JoinColumn({ name: "id" })
   blockInfo!: BlockInfoEntity[];
 }
