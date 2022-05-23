@@ -15,10 +15,21 @@ export class BoxResolver {
     @Arg("take", () => TakeAmountScalar, { defaultValue: MAX_TAKE }) take: number,
     @Arg("address", () => String, { nullable: true }) address: string | undefined,
     @Arg("boxId", () => String, { nullable: true }) boxId: string | undefined,
+    @Arg("transactionId", () => String, { nullable: true }) transactionId: string | undefined,
+    @Arg("headerId", () => String, { nullable: true }) headerId: string | undefined,
+    @Arg("ergoTree", () => String, { nullable: true }) ergoTree: string | undefined,
+    @Arg("ergoTreeTemplateHash", () => String, { nullable: true }) ergoTreeTemplateHash: string | undefined,
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
-    const where = removeUndefined({ address, boxId });
+    const where = removeUndefined({
+      address,
+      boxId,
+      transactionId,
+      headerId,
+      ergoTree,
+      ergoTreeTemplateHash
+    });
 
     return await context.loader
       .loadEntity(BoxEntity, "box")

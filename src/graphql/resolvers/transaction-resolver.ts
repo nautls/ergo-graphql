@@ -5,6 +5,7 @@ import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
 import { TransactionEntity } from "../../entities";
 import { Transaction } from "../objects/transaction";
 import { TakeAmountScalar } from "../scalars";
+import { removeUndefined } from "./utils";
 
 @Resolver(Transaction)
 export class TransactionResolver {
@@ -12,13 +13,17 @@ export class TransactionResolver {
   async transactions(
     @Arg("skip", { defaultValue: DEFAULT_SKIP }) skip: number,
     @Arg("take", () => TakeAmountScalar, { defaultValue: MAX_TAKE }) take: number,
+    @Arg("headerId", () => String, { nullable: true }) headerId: string | undefined,
+    @Arg("inclusionHeight", () => Number, { nullable: true }) inclusionHeight: number | undefined,
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
+    const where = removeUndefined({ headerId, inclusionHeight });
+
     return await context.loader
       .loadEntity(TransactionEntity, "transaction")
       .info(info)
-      .ejectQueryBuilder((query) => query.skip(skip).take(take))
+      .ejectQueryBuilder((query) => query.where(where).skip(skip).take(take))
       .loadMany();
   }
 }

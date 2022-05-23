@@ -80,6 +80,9 @@ export class BoxEntity extends BaseEntity {
   @Column({ name: "ergo_tree" })
   ergoTree!: string;
 
+  @Column({ name: "ergo_tree_template_hash" })
+  ergoTreeTemplateHash!: string;
+
   @Column({ name: "address" })
   address!: string;
 
