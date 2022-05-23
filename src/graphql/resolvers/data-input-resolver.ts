@@ -5,7 +5,7 @@ import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
 import { InputEntity } from "../../entities";
 import { DataInput } from "../objects/data-input";
 import { TakeAmountScalar } from "../scalars";
-import { removeUndefined } from "./utils";
+import { removeUndefined, setDefaultCacheHint } from "./utils";
 
 @Resolver(DataInput)
 export class DataInputResolver {
@@ -19,6 +19,7 @@ export class DataInputResolver {
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
+    setDefaultCacheHint(info);
     const where = removeUndefined({
       transactionId,
       boxId,

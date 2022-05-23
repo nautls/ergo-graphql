@@ -18,12 +18,12 @@ export class BoxResolver {
     @Arg("transactionId", () => String, { nullable: true }) transactionId: string | undefined,
     @Arg("headerId", () => String, { nullable: true }) headerId: string | undefined,
     @Arg("ergoTree", () => String, { nullable: true }) ergoTree: string | undefined,
-    @Arg("ergoTreeTemplateHash", () => String, { nullable: true }) ergoTreeTemplateHash: string | undefined,
+    @Arg("ergoTreeTemplateHash", () => String, { nullable: true })
+    ergoTreeTemplateHash: string | undefined,
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
     setDefaultCacheHint(info);
-
     const where = removeUndefined({
       address,
       boxId,
@@ -32,6 +32,7 @@ export class BoxResolver {
       ergoTree,
       ergoTreeTemplateHash
     });
+
     return await context.loader
       .loadEntity(BoxEntity, "box")
       .info(info)

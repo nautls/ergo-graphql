@@ -5,7 +5,7 @@ import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
 import { TokenEntity } from "../../entities";
 import { Token } from "../objects";
 import { TakeAmountScalar } from "../scalars";
-import { removeUndefined } from "./utils";
+import { removeUndefined, setDefaultCacheHint } from "./utils";
 
 @Resolver(Token)
 export class TokenResolver {
@@ -17,6 +17,7 @@ export class TokenResolver {
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
+    setDefaultCacheHint(info);
     const where = removeUndefined({ boxId });
 
     return await context.loader

@@ -5,7 +5,7 @@ import { DEFAULT_SKIP } from "../../consts";
 import { HeaderEntity } from "../../entities";
 import { Header } from "../objects";
 import { TakeAmountScalar } from "../scalars";
-import { removeUndefined } from "./utils";
+import { removeUndefined, setDefaultCacheHint } from "./utils";
 
 @Resolver(Header)
 export class HeaderResolver {
@@ -18,6 +18,7 @@ export class HeaderResolver {
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
+    setDefaultCacheHint(info);
     const where = removeUndefined({
       parentId,
       height
