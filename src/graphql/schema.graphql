@@ -86,12 +86,12 @@ type Input {
 scalar JSON
 
 type Query {
-  blockHeaders(skip: Int = 0, take: TakeAmount = 10): [Header!]!
-  boxes(address: String, boxId: String, skip: Int = 0, take: TakeAmount = 100): [Box!]!
-  dataInputs(skip: Int = 0, take: TakeAmount = 100): [DataInput!]!
-  inputs(skip: Int = 0, take: TakeAmount = 100): [Input!]!
-  tokens(skip: Int = 0, take: TakeAmount = 100): [Token!]!
-  transactions(skip: Int = 0, take: TakeAmount = 100): [Transaction!]!
+  blockHeaders(d: String, height: Int, parentId: String, skip: Int = 0, take: TakeAmount = 10): [Header!]!
+  boxes(address: String, boxId: String, ergoTree: String, ergoTreeTemplateHash: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [Box!]!
+  dataInputs(boxId: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [DataInput!]!
+  inputs(boxId: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [Input!]!
+  tokens(boxId: String, skip: Int = 0, take: TakeAmount = 100): [Token!]!
+  transactions(headerId: String, inclusionHeight: Int, skip: Int = 0, take: TakeAmount = 100): [Transaction!]!
 }
 
 """Pagination take amount type"""
