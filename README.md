@@ -13,11 +13,13 @@ npm install
 The `.env` file must be placed in the root directory following the pattern described below.
 
 ```env
-DB_HOST =         # database host address
-DB_PORT =         # database host port
-DB_NAME =         # database name
-DB_USER_NAME =    # database user name
-DB_USER_PWD =     # database user password
+DB_HOST =                 # database host address
+DB_PORT =                 # database host port
+DB_NAME =                 # database name
+DB_USER_NAME =            # database user name
+DB_USER_PWD =             # database user password
+
+MAX_QUERY_COMPLEXITY =    # Optional: maximum query complexity, default: 20
 ```
 
 ### Compile and run for development
