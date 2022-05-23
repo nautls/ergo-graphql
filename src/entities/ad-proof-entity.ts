@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn, OneToOne } from "typeorm";
+import { Entity, Column, PrimaryColumn, JoinColumn, OneToOne } from "typeorm";
 import { HeaderEntity } from "./header-entity";
 
 /*
