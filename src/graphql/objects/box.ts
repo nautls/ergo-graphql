@@ -38,6 +38,9 @@ export class Box {
   ergoTree!: string;
 
   @Field()
+  ergoTreeTemplateHash!: string;
+
+  @Field()
   address!: string;
 
   @Field(() => [Asset])

@@ -5,6 +5,7 @@ import { DEFAULT_SKIP } from "../../consts";
 import { HeaderEntity } from "../../entities";
 import { Header } from "../objects";
 import { TakeAmountScalar } from "../scalars";
+import { removeUndefined } from "./utils";
 
 @Resolver(Header)
 export class HeaderResolver {
@@ -12,14 +13,21 @@ export class HeaderResolver {
   async blockHeaders(
     @Arg("skip", { defaultValue: DEFAULT_SKIP }) skip: number,
     @Arg("take", () => TakeAmountScalar, { defaultValue: 10 }) take: number,
+    @Arg("parentId", () => String, { nullable: true }) parentId: string | undefined,
+    @Arg("height", () => Number, { nullable: true }) height: number | undefined,
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
+    const where = removeUndefined({
+      parentId,
+      height
+    });
+
     return await context.loader
       .loadEntity(HeaderEntity, "header")
       .info(info)
       .ejectQueryBuilder((query) => {
-        return query.skip(skip).take(take);
+        return query.where(where).skip(skip).take(take);
       })
       .loadMany();
   }

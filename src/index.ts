@@ -2,6 +2,8 @@ import "dotenv/config";
 import "reflect-metadata";
 import "./prototypes";
 
+import { simpleEstimator, fieldExtensionsEstimator } from "graphql-query-complexity";
+import { createComplexityPlugin } from "graphql-query-complexity-apollo-plugin";
 import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
 import { ApolloServer } from "apollo-server";
 import { initializeDataSource } from "./data-source";
@@ -13,6 +15,9 @@ import { BaseRedisCache } from "apollo-server-cache-redis";
 import { redisClient } from "./caching";
 import { blockWatcher } from "./block-watcher";
 
+const MAX_QUERY_COMPLEXITY_NUMBER =
+  Number.parseInt(process.env.MAX_QUERY_COMPLEXITY || "", 10) || 20;
+
 (async () => {
   const [dataSource, schema] = await Promise.all([initializeDataSource(), generateSchema()]);
   startBlockWatcher();
@@ -22,6 +27,18 @@ import { blockWatcher } from "./block-watcher";
 async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
   const server = new ApolloServer({
     schema,
+    plugins: [
+      createComplexityPlugin({
+        schema,
+        estimators: [fieldExtensionsEstimator(), simpleEstimator({ defaultComplexity: 1 })],
+        maximumComplexity: MAX_QUERY_COMPLEXITY_NUMBER,
+        onComplete: (complexity: number) => {
+          if (complexity > 0) {
+            console.log("Query complexity:", complexity);
+          }
+        }
+      })
+    ],
     csrfPrevention: true,
     plugins: [
       responseCachePlugin({

@@ -5,6 +5,7 @@ import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
 import { InputEntity } from "../../entities";
 import { DataInput } from "../objects/data-input";
 import { TakeAmountScalar } from "../scalars";
+import { removeUndefined } from "./utils";
 
 @Resolver(DataInput)
 export class DataInputResolver {
@@ -12,13 +13,22 @@ export class DataInputResolver {
   async dataInputs(
     @Arg("skip", { defaultValue: DEFAULT_SKIP }) skip: number,
     @Arg("take", () => TakeAmountScalar, { defaultValue: MAX_TAKE }) take: number,
+    @Arg("transactionId", () => String, { nullable: true }) transactionId: string | undefined,
+    @Arg("boxId", () => String, { nullable: true }) boxId: string | undefined,
+    @Arg("headerId", () => String, { nullable: true }) headerId: string | undefined,
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
+    const where = removeUndefined({
+      transactionId,
+      boxId,
+      headerId
+    });
+
     return await context.loader
       .loadEntity(InputEntity, "dataInput")
       .info(info)
-      .ejectQueryBuilder((query) => query.skip(skip).take(take))
+      .ejectQueryBuilder((query) => query.where(where).skip(skip).take(take))
       .loadMany();
   }
 }
