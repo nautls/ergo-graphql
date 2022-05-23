@@ -19,6 +19,11 @@ DB_NAME =                 # database name
 DB_USER_NAME =            # database user name
 DB_USER_PWD =             # database user password
 
+REDIS_HOST =              # optional: redis host address, default: localhost
+REDIS_PORT =              # optional: redis host port, default: 6379
+REDIS_USER_NAME =         # optional: redis username, no default
+REDIS_USER_PWD =          # optional: redis user password, no default
+
 MAX_QUERY_COMPLEXITY =    # Optional: maximum query complexity, default: 20
 ```
 

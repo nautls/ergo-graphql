@@ -5,7 +5,7 @@ import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
 import { InputEntity } from "../../entities";
 import { DataInput } from "../objects/data-input";
 import { TakeAmountScalar } from "../scalars";
-import { removeUndefined } from "./utils";
+import { removeUndefined } from "../../utils";
 
 @Resolver(DataInput)
 export class DataInputResolver {

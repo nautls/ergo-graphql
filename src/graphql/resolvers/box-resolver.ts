@@ -5,7 +5,7 @@ import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
 import { BoxEntity } from "../../entities";
 import { Box } from "../objects";
 import { TakeAmountScalar } from "../scalars";
-import { removeUndefined } from "./utils";
+import { removeUndefined } from "../../utils";
 
 @Resolver(Box)
 export class BoxResolver {
@@ -18,7 +18,8 @@ export class BoxResolver {
     @Arg("transactionId", () => String, { nullable: true }) transactionId: string | undefined,
     @Arg("headerId", () => String, { nullable: true }) headerId: string | undefined,
     @Arg("ergoTree", () => String, { nullable: true }) ergoTree: string | undefined,
-    @Arg("ergoTreeTemplateHash", () => String, { nullable: true }) ergoTreeTemplateHash: string | undefined,
+    @Arg("ergoTreeTemplateHash", () => String, { nullable: true })
+    ergoTreeTemplateHash: string | undefined,
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {

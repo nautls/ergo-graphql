@@ -5,7 +5,7 @@ import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
 import { TransactionEntity } from "../../entities";
 import { Transaction } from "../objects/transaction";
 import { TakeAmountScalar } from "../scalars";
-import { removeUndefined } from "./utils";
+import { removeUndefined } from "../../utils";
 
 @Resolver(Transaction)
 export class TransactionResolver {
