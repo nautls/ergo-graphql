@@ -15,14 +15,12 @@ export class HeaderResolver {
     @Arg("take", () => TakeAmountScalar, { defaultValue: 10 }) take: number,
     @Arg("parentId", () => String, { nullable: true }) parentId: string | undefined,
     @Arg("height", () => Number, { nullable: true }) height: number | undefined,
-    @Arg("d", () => String, { nullable: true }) d: string | undefined,
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
     const where = removeUndefined({
       parentId,
-      height,
-      d
+      height
     });
 
     return await context.loader
