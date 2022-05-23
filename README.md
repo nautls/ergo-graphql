@@ -24,7 +24,7 @@ REDIS_PORT =              # optional: redis host port, default: 6379
 REDIS_USER_NAME =         # optional: redis username, no default
 REDIS_USER_PWD =          # optional: redis user password, no default
 
-MAX_QUERY_COMPLEXITY =    # Optional: maximum query complexity, default: 20
+MAX_QUERY_COMPLEXITY =    # optional: maximum query complexity, default: 20
 ```
 
 ### Compile and run for development
