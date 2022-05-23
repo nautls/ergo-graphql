@@ -9,8 +9,9 @@ import { GraphQLSchema } from "graphql";
 import { DataSource } from "typeorm";
 import { generateSchema } from "./graphql/schema";
 import responseCachePlugin from "apollo-server-plugin-response-cache";
-import { BaseRedisCache, RedisClient } from "apollo-server-cache-redis";
-import Redis from "ioredis";
+import { BaseRedisCache } from "apollo-server-cache-redis";
+import { redisClient } from "./caching";
+import { blockWatcher } from "./block-watcher";
 
 (async () => {
   const [dataSource, schema] = await Promise.all([initializeDataSource(), generateSchema()]);
@@ -24,12 +25,13 @@ async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
     plugins: [
       responseCachePlugin({
         cache: new BaseRedisCache({
-          client: new Redis({ host: "localhost" }) as RedisClient
+          client: redisClient
         })
       })
     ],
     context: { loader: new GraphQLDatabaseLoader(dataSource) }
   });
+
   const { url } = await server.listen({ port: 3000 });
   console.log(`🚀 Server ready at ${url}`);
 }
