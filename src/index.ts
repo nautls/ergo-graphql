@@ -37,16 +37,14 @@ async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
             console.log("Query complexity:", complexity);
           }
         }
-      })
-    ],
-    csrfPrevention: true,
-    plugins: [
+      }),
       responseCachePlugin({
         cache: new BaseRedisCache({
           client: redisClient
         })
       })
     ],
+    csrfPrevention: true,
     context: { loader: new GraphQLDatabaseLoader(dataSource) }
   });
 

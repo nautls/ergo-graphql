@@ -25,6 +25,7 @@ type Box {
   boxId: String!
   creationHeight: Int!
   ergoTree: String!
+  ergoTreeTemplateHash: String!
   globalIndex: Int!
   headerId: String!
   index: Int!
@@ -86,7 +87,7 @@ type Input {
 scalar JSON
 
 type Query {
-  blockHeaders(d: String, height: Int, parentId: String, skip: Int = 0, take: TakeAmount = 10): [Header!]!
+  blockHeaders(height: Int, parentId: String, skip: Int = 0, take: TakeAmount = 10): [Header!]!
   boxes(address: String, boxId: String, ergoTree: String, ergoTreeTemplateHash: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [Box!]!
   dataInputs(boxId: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [DataInput!]!
   inputs(boxId: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [Input!]!
