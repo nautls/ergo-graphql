@@ -13,10 +13,10 @@ export class TransactionResolver {
   async transactions(
     @Arg("skip", { defaultValue: DEFAULT_SKIP }) skip: number,
     @Arg("take", () => TakeAmountScalar, { defaultValue: MAX_TAKE }) take: number,
-    @Arg("headerId", () => String, { nullable: true }) headerId: string | undefined,
-    @Arg("inclusionHeight", () => Number, { nullable: true }) inclusionHeight: number | undefined,
     @Arg("fromHeight", () => Number, { nullable: true }) fromHeight: number | undefined,
     @Arg("toHeight", () => Number, { nullable: true }) toHeight: number | undefined,
+    @Arg("headerId", () => String, { nullable: true }) headerId: string | undefined,
+    @Arg("inclusionHeight", () => Number, { nullable: true }) inclusionHeight: number | undefined,
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
