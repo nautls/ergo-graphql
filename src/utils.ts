@@ -1,6 +1,3 @@
-import { GraphQLResolveInfo } from "graphql";
-import { CacheScope } from "apollo-server-types";
-
 export function removeUndefined(value: Record<string, unknown>) {
   const result: Record<string, unknown> = {};
   for (const key in value) {
@@ -11,8 +8,4 @@ export function removeUndefined(value: Record<string, unknown>) {
   }
 
   return result;
-}
-
-export function setDefaultCacheHint(info: GraphQLResolveInfo) {
-  info.cacheControl.setCacheHint({ maxAge: 120, scope: CacheScope.Public });
 }

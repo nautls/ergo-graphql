@@ -5,7 +5,7 @@ import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
 import { TransactionEntity } from "../../entities";
 import { Transaction } from "../objects/transaction";
 import { TakeAmountScalar } from "../scalars";
-import { removeUndefined, setDefaultCacheHint } from "./utils";
+import { removeUndefined } from "../../utils";
 
 @Resolver(Transaction)
 export class TransactionResolver {
@@ -18,7 +18,6 @@ export class TransactionResolver {
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
-    setDefaultCacheHint(info);
     const where = removeUndefined({ headerId, inclusionHeight });
 
     return await context.loader
