@@ -92,7 +92,7 @@ type Query {
   dataInputs(boxId: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [DataInput!]!
   inputs(boxId: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [Input!]!
   tokens(boxId: String, skip: Int = 0, take: TakeAmount = 100): [Token!]!
-  transactions(headerId: String, inclusionHeight: Int, skip: Int = 0, take: TakeAmount = 100): [Transaction!]!
+  transactions(fromHeight: Int, headerId: String, inclusionHeight: Int, skip: Int = 0, take: TakeAmount = 100, toHeight: Int): [Transaction!]!
 }
 
 """Pagination take amount type"""

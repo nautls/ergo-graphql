@@ -15,6 +15,8 @@ export class TransactionResolver {
     @Arg("take", () => TakeAmountScalar, { defaultValue: MAX_TAKE }) take: number,
     @Arg("headerId", () => String, { nullable: true }) headerId: string | undefined,
     @Arg("inclusionHeight", () => Number, { nullable: true }) inclusionHeight: number | undefined,
+    @Arg("fromHeight", () => Number, { nullable: true }) fromHeight: number | undefined,
+    @Arg("toHeight", () => Number, { nullable: true }) toHeight: number | undefined,
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
@@ -23,7 +25,16 @@ export class TransactionResolver {
     return await context.loader
       .loadEntity(TransactionEntity, "transaction")
       .info(info)
-      .ejectQueryBuilder((query) => query.where(where).skip(skip).take(take))
+      .ejectQueryBuilder((query) => {
+        query = query.where(where);
+
+        if (fromHeight)
+          query = query.andWhere("transaction.inclusionHeight > :fromHeight", { fromHeight });
+        if (toHeight)
+          query = query.andWhere("transaction.inclusionHeight < :toHeight", { toHeight });
+
+        return query.skip(skip).take(take);
+      })
       .loadMany();
   }
 }
