@@ -14,5 +14,5 @@ export function removeUndefined(value: Record<string, unknown>) {
 }
 
 export function setDefaultCacheHint(info: GraphQLResolveInfo) {
-  info.cacheControl.setCacheHint({ maxAge: 120, scope: CacheScope.Public });
+  info.cacheControl.setCacheHint({ maxAge: 1120, scope: CacheScope.Public });
 }

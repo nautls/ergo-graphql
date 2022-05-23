@@ -15,11 +15,10 @@ class BlockWatcher {
   }
 
   private notify(height: number) {
-    console.log(this._callbacks);
     this._callbacks.forEach((callback) => callback(height));
   }
 
-  public addOnNewBlockListener(callback: (height: number) => void) {
+  public onNewBlock(callback: (height: number) => void) {
     if (!callback) {
       return;
     }

@@ -15,6 +15,7 @@ import { blockWatcher } from "./block-watcher";
 
 (async () => {
   const [dataSource, schema] = await Promise.all([initializeDataSource(), generateSchema()]);
+  startBlockWatcher();
   await startServer(schema, dataSource);
 })();
 
@@ -34,4 +35,11 @@ async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
 
   const { url } = await server.listen({ port: 3000 });
   console.log(`🚀 Server ready at ${url}`);
+}
+
+async function startBlockWatcher() {
+  blockWatcher.start();
+  blockWatcher.onNewBlock(() => redisClient.flushdb());
+
+  console.log(`🚀 Block watcher started`);
 }
