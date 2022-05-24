@@ -1,7 +1,8 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 import { BoxEntity } from "./box-entity";
 import { DataInputEntity } from "./data-input-entity";
 import { InputEntity } from "./input-entity";
+import { TransactionEntityBase } from "./transaction-entity-base";
 
 /*
   Schema
@@ -19,10 +20,7 @@ import { InputEntity } from "./input-entity";
 */
 
 @Entity({ name: "node_transactions" })
-export class TransactionEntity extends BaseEntity {
-  @PrimaryColumn({ name: "id" })
-  transactionId!: string;
-
+export class TransactionEntity extends TransactionEntityBase {
   @Column({ name: "header_id" })
   headerId!: string;
 
@@ -34,9 +32,6 @@ export class TransactionEntity extends BaseEntity {
 
   @Column({ name: "timestamp", type: "bigint" })
   timestamp!: bigint;
-
-  @Column({ name: "size" })
-  size!: number;
 
   @Column({ name: "index" })
   index!: number;
