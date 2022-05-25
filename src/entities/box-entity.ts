@@ -1,9 +1,7 @@
 import {
   Entity,
   Column,
-  PrimaryColumn,
   OneToMany,
-  BaseEntity,
   OneToOne,
   JoinColumn,
   ManyToOne
@@ -11,6 +9,7 @@ import {
 import { AssetEntity } from "./asset-entity";
 import { InputEntity } from "./input-entity";
 import { TransactionEntity } from "./transaction-entity";
+import { BoxEntityBase } from "./box-entity-base";
 
 /* 
   Schema 
@@ -32,62 +31,17 @@ import { TransactionEntity } from "./transaction-entity";
     PRIMARY KEY (box_id, header_id)
 */
 
-enum NonMandatoryRegisterKey {
-  R4 = "R4",
-  R5 = "R5",
-  R6 = "R6",
-  R7 = "R7",
-  R8 = "R8",
-  R9 = "R9"
-}
-
-type Register = {
-  serializedValue: string;
-  sigmaType?: string;
-  renderedValue?: string;
-};
-
-export type Registers = {
-  [key in NonMandatoryRegisterKey]: Register;
-};
 
 @Entity({ name: "node_outputs" })
-export class BoxEntity extends BaseEntity {
-  @PrimaryColumn({ name: "box_id" })
-  boxId!: string;
-
-  @Column({ name: "tx_id" })
-  transactionId!: string;
-
+export class BoxEntity extends BoxEntityBase {
   @Column({ name: "header_id" })
   headerId!: string;
-
-  @Column({ name: "value", type: "bigint" })
-  value!: bigint;
-
-  @Column({ name: "creation_height" })
-  creationHeight!: number;
 
   @Column({ name: "settlement_height" })
   settlementHeight!: number;
 
-  @Column({ name: "index" })
-  index!: number;
-
   @Column({ name: "global_index" })
   globalIndex!: number;
-
-  @Column({ name: "ergo_tree" })
-  ergoTree!: string;
-
-  @Column({ name: "ergo_tree_template_hash" })
-  ergoTreeTemplateHash!: string;
-
-  @Column({ name: "address" })
-  address!: string;
-
-  @Column({ name: "additional_registers", type: "json" })
-  additionalRegisters!: Registers;
 
   @Column({ name: "main_chain", type: "boolean" })
   mainChain!: boolean;
