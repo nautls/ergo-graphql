@@ -9,6 +9,23 @@ type AdProof {
   proofBytes: String!
 }
 
+type Address {
+  balance: AddressBalance!
+  transactionsCount: Int!
+}
+
+type AddressBalance {
+  assets(tokenId: String): [AddressBalanceAssets!]!
+  nanoErgs: BigInt!
+}
+
+type AddressBalanceAssets {
+  amount: BigInt!
+  decimals: Int
+  name: String
+  tokenId: String!
+}
+
 type Asset {
   headerId: String!
   token: Token!
@@ -87,6 +104,7 @@ type Input {
 scalar JSON
 
 type Query {
+  addresses(address: String!, atHeight: Int): Address!
   blockHeaders(height: Int, parentId: String, skip: Int = 0, take: TakeAmount = 10): [Header!]!
   boxes(address: String, boxId: String, ergoTree: String, ergoTreeTemplateHash: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [Box!]!
   dataInputs(boxId: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [DataInput!]!

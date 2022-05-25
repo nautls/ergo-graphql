@@ -4,3 +4,4 @@ export * from "./input-resolver";
 export * from "./transaction-resolver";
 export * from "./data-input-resolver";
 export * from "./header-resolver";
+export * from "./address-resolver";
