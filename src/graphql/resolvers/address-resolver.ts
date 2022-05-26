@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from "graphql";
-import { Arg, Ctx, FieldResolver, Info, Int, Query, Resolver, Root } from "type-graphql";
+import { Arg, Ctx, FieldResolver, Info, Int, Query, Resolver } from "type-graphql";
 import { appDataSource } from "../../data-source";
 import {
   AssetEntity,
