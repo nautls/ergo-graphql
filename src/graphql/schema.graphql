@@ -89,6 +89,11 @@ type Header {
   votes: [Int!]!
 }
 
+interface ITransaction {
+  size: Int!
+  transactionId: String!
+}
+
 type Input {
   box: Box!
   boxId: String!
@@ -103,12 +108,19 @@ type Input {
 
 scalar JSON
 
+type Mempool {
+  size: Int!
+  transactions(skip: Int = 0, take: TakeAmount = 100): [UnconfirmedTransaction!]!
+  transactionsCount: Int!
+}
+
 type Query {
   addresses(address: String!, atHeight: Int): Address!
   blockHeaders(height: Int, parentId: String, skip: Int = 0, take: TakeAmount = 10): [Header!]!
   boxes(address: String, boxId: String, ergoTree: String, ergoTreeTemplateHash: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [Box!]!
   dataInputs(boxId: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [DataInput!]!
   inputs(boxId: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [Input!]!
+  mempool: Mempool!
   tokens(boxId: String, skip: Int = 0, take: TakeAmount = 100): [Token!]!
   transactions(fromHeight: Int, headerId: String, inclusionHeight: Int, skip: Int = 0, take: TakeAmount = 100, toHeight: Int): [Transaction!]!
 }
@@ -127,7 +139,7 @@ type Token {
   type: String
 }
 
-type Transaction {
+type Transaction implements ITransaction {
   coinbase: Boolean!
   dataInputs: [DataInput!]!
   globalIndex: Int!
@@ -139,5 +151,10 @@ type Transaction {
   outputs: [Box!]!
   size: Int!
   timestamp: BigInt!
+  transactionId: String!
+}
+
+type UnconfirmedTransaction implements ITransaction {
+  size: Int!
   transactionId: String!
 }
