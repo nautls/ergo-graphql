@@ -1,6 +1,6 @@
 import { BaseEntity, Column, PrimaryColumn } from "typeorm";
 
-export class InputEntityBase extends BaseEntity {
+export abstract class InputEntityBase extends BaseEntity {
   @PrimaryColumn({ name: "box_id" })
   boxId!: string;
 

@@ -19,7 +19,7 @@ export type Registers = {
   [key in NonMandatoryRegisterKey]: Register;
 };
 
-export class BoxEntityBase extends BaseEntity {
+export abstract class BoxEntityBase extends BaseEntity {
   @PrimaryColumn({ name: "box_id" })
   boxId!: string;
 

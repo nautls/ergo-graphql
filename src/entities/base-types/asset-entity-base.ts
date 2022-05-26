@@ -1,6 +1,6 @@
 import { BaseEntity, Column, PrimaryColumn } from "typeorm";
 
-export class AssetEntityBase extends BaseEntity {
+export abstract class AssetEntityBase extends BaseEntity {
   @PrimaryColumn({ name: "token_id" })
   tokenId!: string;
 
