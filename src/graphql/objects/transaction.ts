@@ -1,13 +1,11 @@
 import { Field, ObjectType } from "type-graphql";
+import { ITransaction } from "../interfaces/transaction-interface";
 import { Box } from "./box";
 import { DataInput } from "./data-input";
 import { Input } from "./input";
 
-@ObjectType({ simpleResolvers: true })
-export class Transaction {
-  @Field()
-  transactionId!: string;
-
+@ObjectType({ implements: ITransaction, simpleResolvers: true })
+export class Transaction extends ITransaction {
   @Field()
   headerId!: string;
 
@@ -19,9 +17,6 @@ export class Transaction {
 
   @Field()
   timestamp!: bigint;
-
-  @Field()
-  size!: number;
 
   @Field()
   index!: number;
