@@ -1,7 +1,13 @@
 import { GraphQLResolveInfo } from "graphql";
 import { Arg, FieldResolver, Info, Int, Query, Resolver, Root } from "type-graphql";
 import { appDataSource } from "../../data-source";
-import { AssetEntity, BoxEntity, InputEntity, TokenEntity } from "../../entities";
+import {
+  AssetEntity,
+  BoxEntity,
+  InputEntity,
+  TokenEntity,
+  TransactionEntity
+} from "../../entities";
 import { Address } from "../objects/address";
 import { isFieldSelected } from "./utils";
 
@@ -57,20 +63,35 @@ export class AddressResolver {
 
   @FieldResolver()
   async transactionsCount(@Root() root: { args: { address: string; atHeight: number } }) {
-    let query = appDataSource
-      .getRepository(InputEntity)
-      .createQueryBuilder("input")
-      .leftJoin(BoxEntity, "box", "box.boxId = input.boxId")
-      .select("COUNT(DISTINCT(input.transactionId))", "count")
-      .where("box.address = :address", { address: root.args.address });
+    let inputsQuery = appDataSource
+      .getRepository(BoxEntity)
+      .createQueryBuilder("box")
+      .select("input.transactionId", "transactionId")
+      .leftJoin(InputEntity, "input", "box.boxId = input.boxId and input.mainChain = true")
+      .where("box.mainChain = true and box.address = :address");
+    let outputsQuery = appDataSource
+      .getRepository(BoxEntity)
+      .createQueryBuilder("box")
+      .select("box.transactionId", "transactionId")
+      .where("box.mainChain = true and box.address = :address");
 
     if (root.args.atHeight) {
-      query = query.andWhere("box.creationHeight <= :height", {
-        height: root.args.atHeight
-      });
+      inputsQuery = inputsQuery.andWhere("box.creationHeight <= :height");
+      outputsQuery = outputsQuery.andWhere("box.creationHeight <= :height");
     }
 
-    const { count } = await query.getRawOne();
+    const { count } = await appDataSource
+      .getRepository(TransactionEntity)
+      .createQueryBuilder("tx")
+      .select("COUNT(DISTINCT(tx.transactionId))", "count")
+      .innerJoin(
+        `(${inputsQuery.getSql()} UNION ${outputsQuery.getSql()})`,
+        "boxes",
+        `"boxes"."transactionId" = tx.transactionId`
+      )
+      .where("tx.mainChain = true")
+      .setParameters({ address: root.args.address, height: root.args.atHeight })
+      .getRawOne();
 
     return count;
   }
