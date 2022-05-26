@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from "graphql";
-import { Arg, FieldResolver, Info, Int, Query, Resolver, Root } from "type-graphql";
+import { Arg, Ctx, FieldResolver, Info, Int, Query, Resolver, Root } from "type-graphql";
 import { appDataSource } from "../../data-source";
 import {
   AssetEntity,
@@ -16,26 +16,28 @@ export class AddressResolver {
   @Query(() => Address)
   async addresses(
     @Arg("address", () => String, { nullable: false }) address: string,
-    @Arg("atHeight", () => Int, { nullable: true }) atHeight: number
+    @Arg("atHeight", () => Int, { nullable: true }) atHeight: number,
+    @Ctx() context: { args: { address: string; atHeight: number } }
   ) {
-    return { args: { address, atHeight } };
+    context.args = { address, atHeight };
+    return {};
   }
 
   @FieldResolver()
   async balance(
-    @Root() root: { args: { address: string; atHeight: number } },
+    @Ctx() context: { args: { address: string; atHeight: number } },
     @Info() info: GraphQLResolveInfo
   ) {
     const repository = appDataSource.getRepository(BoxEntity);
     let baseQuery = repository
       .createQueryBuilder("box")
       .leftJoinAndSelect(InputEntity, "input", "box.boxId = input.boxId")
-      .where("box.address = :address", { address: root.args.address })
+      .where("box.address = :address", { address: context.args.address })
       .andWhere("input.boxId IS NULL");
 
-    if (root.args.atHeight) {
+    if (context.args.atHeight) {
       baseQuery = baseQuery.andWhere("box.creationHeight <= :height", {
-        height: root.args.atHeight
+        height: context.args.atHeight
       });
     }
 
@@ -62,7 +64,7 @@ export class AddressResolver {
   }
 
   @FieldResolver()
-  async transactionsCount(@Root() root: { args: { address: string; atHeight: number } }) {
+  async transactionsCount(@Ctx() context: { args: { address: string; atHeight: number } }) {
     let inputsQuery = appDataSource
       .getRepository(BoxEntity)
       .createQueryBuilder("box")
@@ -75,7 +77,7 @@ export class AddressResolver {
       .select("box.transactionId", "transactionId")
       .where("box.mainChain = true and box.address = :address");
 
-    if (root.args.atHeight) {
+    if (context.args.atHeight) {
       inputsQuery = inputsQuery.andWhere("box.creationHeight <= :height");
       outputsQuery = outputsQuery.andWhere("box.creationHeight <= :height");
     }
@@ -87,10 +89,10 @@ export class AddressResolver {
       .innerJoin(
         `(${inputsQuery.getSql()} UNION ${outputsQuery.getSql()})`,
         "boxes",
-        `"boxes"."transactionId" = tx.transactionId`
+        '"boxes"."transactionId" = tx.transactionId'
       )
       .where("tx.mainChain = true")
-      .setParameters({ address: root.args.address, height: root.args.atHeight })
+      .setParameters({ address: context.args.address, height: context.args.atHeight })
       .getRawOne();
 
     return count;
