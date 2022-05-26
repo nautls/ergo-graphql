@@ -1,9 +1,5 @@
-import {
-  Entity,
-  JoinColumn,
-  ManyToOne
-} from "typeorm";
-import { DataInputEntityBase } from "./data-input-entity-base";
+import { Entity, JoinColumn, ManyToOne } from "typeorm";
+import { DataInputEntityBase } from "./base-types/data-input-entity-base";
 import { UnconfirmedTransactionEntity } from "./unconfirmed-transaction-entity";
 
 /*
@@ -16,7 +12,7 @@ import { UnconfirmedTransactionEntity } from "./unconfirmed-transaction-entity";
 
 @Entity({ name: "node_u_data_inputs" })
 export class UnconfirmedDataInputEntity extends DataInputEntityBase {
-  @ManyToOne(() => UnconfirmedTransactionEntity, (tx) => tx.dataInputs, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UnconfirmedTransactionEntity, (tx) => tx.dataInputs, { onDelete: "CASCADE" })
   @JoinColumn({ name: "tx_id" })
   transaction!: UnconfirmedTransactionEntity;
 }

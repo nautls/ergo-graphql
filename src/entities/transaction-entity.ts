@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany } from "typeorm";
 import { BoxEntity } from "./box-entity";
 import { DataInputEntity } from "./data-input-entity";
 import { InputEntity } from "./input-entity";
-import { TransactionEntityBase } from "./transaction-entity-base";
+import { TransactionEntityBase } from "./base-types/transaction-entity-base";
 
 /*
   Schema

@@ -1,10 +1,6 @@
-import {
-  Entity,
-  JoinColumn,
-  ManyToOne,
-} from "typeorm";
+import { Entity, JoinColumn, ManyToOne } from "typeorm";
 import { UnconfirmedTransactionEntity } from "./unconfirmed-transaction-entity";
-import { InputEntityBase } from "./input-entity-base";
+import { InputEntityBase } from "./base-types/input-entity-base";
 
 /*
   Schema
@@ -18,7 +14,7 @@ import { InputEntityBase } from "./input-entity-base";
 
 @Entity({ name: "node_u_inputs" })
 export class UnconfirmedInputEntity extends InputEntityBase {
-  @ManyToOne(() => UnconfirmedTransactionEntity, (tx) => tx.inputs, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UnconfirmedTransactionEntity, (tx) => tx.inputs, { onDelete: "CASCADE" })
   @JoinColumn({ name: "tx_id" })
   transaction!: UnconfirmedTransactionEntity;
 }

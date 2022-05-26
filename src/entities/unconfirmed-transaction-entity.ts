@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany } from "typeorm";
-import { TransactionEntityBase } from "./transaction-entity-base";
+import { TransactionEntityBase } from "./base-types/transaction-entity-base";
 import { UnconfirmedBoxEntity } from "./unconfirmed-box-entity";
 import { UnconfirmedDataInputEntity } from "./unconfirmed-data-input-entity";
 import { UnconfirmedInputEntity } from "./unconfirmed-input-entity";
@@ -19,7 +19,7 @@ export class UnconfirmedTransactionEntity extends TransactionEntityBase {
 
   @OneToMany(() => UnconfirmedInputEntity, (input) => input.transaction)
   inputs!: UnconfirmedInputEntity[];
-  
+
   @OneToMany(() => UnconfirmedBoxEntity, (box) => box.transaction)
   outputs!: UnconfirmedBoxEntity[];
 

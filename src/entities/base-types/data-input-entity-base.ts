@@ -1,8 +1,4 @@
-import {
-  BaseEntity,
-  Column,
-  PrimaryColumn
-} from "typeorm";
+import { BaseEntity, Column, PrimaryColumn } from "typeorm";
 
 export class DataInputEntityBase extends BaseEntity {
   @PrimaryColumn({ name: "box_id" })

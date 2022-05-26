@@ -1,13 +1,7 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { BoxEntity } from "./box-entity";
 import { TransactionEntity } from "./transaction-entity";
-import { InputEntityBase } from "./input-entity-base";
+import { InputEntityBase } from "./base-types/input-entity-base";
 
 /*
   Schema

@@ -1,13 +1,7 @@
-import {
-  Entity,
-  Column,
-  OneToOne,
-  JoinColumn,
-  ManyToOne
-} from "typeorm";
+import { Entity, Column, OneToOne, JoinColumn, ManyToOne } from "typeorm";
 import { BoxEntity } from "./box-entity";
 import { TokenEntity } from "./token-entity";
-import { AssetEntityBase } from "./asset-entity-base";
+import { AssetEntityBase } from "./base-types/asset-entity-base";
 
 /* 
   Schema

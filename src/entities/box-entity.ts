@@ -1,15 +1,8 @@
-import {
-  Entity,
-  Column,
-  OneToMany,
-  OneToOne,
-  JoinColumn,
-  ManyToOne
-} from "typeorm";
+import { Entity, Column, OneToMany, OneToOne, JoinColumn, ManyToOne } from "typeorm";
 import { AssetEntity } from "./asset-entity";
 import { InputEntity } from "./input-entity";
 import { TransactionEntity } from "./transaction-entity";
-import { BoxEntityBase } from "./box-entity-base";
+import { BoxEntityBase } from "./base-types/box-entity-base";
 
 /* 
   Schema 
@@ -30,7 +23,6 @@ import { BoxEntityBase } from "./box-entity-base";
     main_chain              BOOLEAN     NOT NULL,
     PRIMARY KEY (box_id, header_id)
 */
-
 
 @Entity({ name: "node_outputs" })
 export class BoxEntity extends BoxEntityBase {

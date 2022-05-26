@@ -1,8 +1,4 @@
-import {
-  BaseEntity,
-  Column,
-  PrimaryColumn
-} from "typeorm";
+import { BaseEntity, Column, PrimaryColumn } from "typeorm";
 
 export class AssetEntityBase extends BaseEntity {
   @PrimaryColumn({ name: "token_id" })
@@ -15,5 +11,5 @@ export class AssetEntityBase extends BaseEntity {
   index!: number;
 
   @Column({ name: "value", type: "bigint" })
-  value!: bigint;  
+  value!: bigint;
 }

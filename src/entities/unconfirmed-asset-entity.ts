@@ -1,10 +1,6 @@
-import {
-  Entity,
-  JoinColumn,
-  ManyToOne
-} from "typeorm";
+import { Entity, JoinColumn, ManyToOne } from "typeorm";
 import { UnconfirmedBoxEntity } from "./unconfirmed-box-entity";
-import { AssetEntityBase } from "./asset-entity-base";
+import { AssetEntityBase } from "./base-types/asset-entity-base";
 
 /*
   Schema
@@ -17,7 +13,7 @@ import { AssetEntityBase } from "./asset-entity-base";
 
 @Entity({ name: "node_u_assets" })
 export class UnconfirmedAssetEntity extends AssetEntityBase {
-  @ManyToOne(() => UnconfirmedBoxEntity, (box) => box.assets, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UnconfirmedBoxEntity, (box) => box.assets, { onDelete: "CASCADE" })
   @JoinColumn({ name: "box_id" })
   box!: UnconfirmedBoxEntity;
 }

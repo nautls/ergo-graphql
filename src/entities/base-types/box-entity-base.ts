@@ -1,8 +1,4 @@
-import {
-  Column,
-  PrimaryColumn,
-  BaseEntity,
-} from "typeorm";
+import { Column, PrimaryColumn, BaseEntity } from "typeorm";
 
 enum NonMandatoryRegisterKey {
   R4 = "R4",
