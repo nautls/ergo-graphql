@@ -1,14 +1,13 @@
 import {
-  BaseEntity,
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
-  PrimaryColumn
+  OneToOne
 } from "typeorm";
 import { BoxEntity } from "./box-entity";
 import { TransactionEntity } from "./transaction-entity";
+import { DataInputEntityBase } from "./data-input-entity-base";
 
 /*
   Schema
@@ -21,18 +20,9 @@ import { TransactionEntity } from "./transaction-entity";
 */
 
 @Entity({ name: "node_data_inputs" })
-export class DataInputEntity extends BaseEntity {
-  @PrimaryColumn({ name: "box_id" })
-  boxId!: string;
-
-  @Column({ name: "tx_id" })
-  transactionId!: string;
-
+export class DataInputEntity extends DataInputEntityBase {
   @Column({ name: "header_id" })
   headerId!: string;
-
-  @Column({ name: "index" })
-  index!: number;
 
   @Column({ name: "main_chain" })
   mainChain!: boolean;
