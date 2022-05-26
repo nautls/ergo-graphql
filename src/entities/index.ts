@@ -1,3 +1,4 @@
+export { Registers } from "./box-entity-base";
 export * from "./token-entity";
 export * from "./box-entity";
 export * from "./asset-entity";
