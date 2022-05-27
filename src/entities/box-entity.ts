@@ -38,9 +38,9 @@ export class BoxEntity extends BoxEntityBase {
   @Column({ name: "main_chain", type: "boolean" })
   mainChain!: boolean;
 
-  @OneToOne(() => InputEntity)
+  @OneToOne(() => InputEntity, { nullable: true })
   @JoinColumn({ name: "box_id" })
-  spentBy!: InputEntity;
+  spentBy?: InputEntity;
 
   @OneToMany(() => AssetEntity, (asset) => asset.box)
   assets!: AssetEntity[];
