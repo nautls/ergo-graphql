@@ -1,26 +1,18 @@
 import { Field, ObjectType } from "type-graphql";
 import { Box } from "./box";
 import { Transaction } from "./transaction";
+import { IDataInput } from "../interfaces/data-input-interface";
 
-@ObjectType({ simpleResolvers: true })
-export class DataInput {
-  @Field()
-  boxId!: string;
-
+@ObjectType({ implements: IDataInput , simpleResolvers: true })
+export class DataInput extends IDataInput {
   @Field(() => Box)
   box!: Box;
-
-  @Field()
-  transactionId!: string;
 
   @Field(() => Transaction)
   transaction!: Transaction;
 
   @Field()
   headerId!: string;
-
-  @Field()
-  index!: number;
 
   @Field()
   mainChain!: boolean;

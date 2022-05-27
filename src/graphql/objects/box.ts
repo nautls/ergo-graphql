@@ -1,18 +1,11 @@
 import { Field, ObjectType } from "type-graphql";
-import { Registers } from "../../entities";
-import { JSONScalar } from "../scalars";
 import { Asset } from "./asset";
 import { Input } from "./input";
 import { Transaction } from "./transaction";
+import { IBox } from "../interfaces/box-interface";
 
-@ObjectType({ simpleResolvers: true })
-export class Box {
-  @Field()
-  boxId!: string;
-
-  @Field()
-  transactionId!: string;
-
+@ObjectType({ implements: IBox, simpleResolvers: true })
+export class Box extends IBox {
   @Field(() => Transaction)
   transaction!: Transaction;
 
@@ -20,34 +13,13 @@ export class Box {
   headerId!: string;
 
   @Field()
-  value!: bigint;
-
-  @Field()
-  creationHeight!: number;
-
-  @Field()
   settlementHeight!: number;
-
-  @Field()
-  index!: number;
 
   @Field()
   globalIndex!: number;
 
-  @Field()
-  ergoTree!: string;
-
-  @Field()
-  ergoTreeTemplateHash!: string;
-
-  @Field()
-  address!: string;
-
   @Field(() => [Asset])
   assets!: Asset[];
-
-  @Field(() => JSONScalar)
-  additionalRegisters!: Registers;
 
   @Field()
   mainChain!: boolean;
