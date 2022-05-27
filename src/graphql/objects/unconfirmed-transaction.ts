@@ -6,6 +6,7 @@ import { UnconfirmedDataInput } from "./unconfirmed-data-input";
 
 @ObjectType({ implements: ITransaction, simpleResolvers: true })
 export class UnconfirmedTransaction extends ITransaction {
+  @Field()
   timestamp!: bigint;
 
   @Field(() => [UnconfirmedInput])
