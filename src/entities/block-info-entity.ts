@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, JoinColumn, OneToOne } from "typeorm";
+import { Entity, Column, PrimaryColumn, JoinColumn, OneToOne, BaseEntity } from "typeorm";
 import { HeaderEntity } from "./header-entity";
 
 /*
@@ -30,7 +30,7 @@ import { HeaderEntity } from "./header-entity";
 */
 
 @Entity({ name: "blocks_info" })
-export class BlockInfoEntity {
+export class BlockInfoEntity extends BaseEntity {
   @PrimaryColumn({ name: "header_id" })
   headerId!: string;
 

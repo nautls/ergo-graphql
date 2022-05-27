@@ -35,6 +35,33 @@ type Asset {
 
 scalar BigInt
 
+type Block {
+  blockChainTotalSize: BigInt!
+  blockCoins: BigInt!
+  blockFee: BigInt!
+  blockMiningTime: BigInt!
+  blockSize: Int!
+  difficulty: BigInt!
+  header: Header!
+  headerId: String!
+  height: Int!
+  mainChain: Boolean!
+  maxBoxGix: BigInt!
+  maxTxGix: BigInt!
+  minerAddress: String!
+  minerRevenue: BigInt!
+  minerReward: BigInt!
+  timestamp: BigInt!
+  totalCoinsInTxs: BigInt!
+  totalCoinsIssued: BigInt!
+  totalFees: BigInt!
+  totalMinersReward: BigInt!
+  totalMiningTime: BigInt!
+  totalTxsCount: BigInt!
+  txsCount: Int!
+  txsSize: Int!
+}
+
 type Box {
   additionalRegisters: JSON!
   address: String!
@@ -117,6 +144,7 @@ type Mempool {
 type Query {
   addresses(address: String!, atHeight: Int): Address!
   blockHeaders(height: Int, parentId: String, skip: Int = 0, take: TakeAmount = 10): [Header!]!
+  blocks(headerId: String, height: Int, skip: Int = 0, take: TakeAmount = 10): [Block!]!
   boxes(address: String, boxId: String, ergoTree: String, ergoTreeTemplateHash: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [Box!]!
   dataInputs(boxId: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [DataInput!]!
   inputs(boxId: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [Input!]!

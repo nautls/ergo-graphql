@@ -9,7 +9,8 @@ import {
   DataInputResolver,
   HeaderResolver,
   AddressResolver,
-  MempoolResolver
+  MempoolResolver,
+  BlockResolver
 } from "./resolvers";
 
 export async function generateSchema() {
@@ -24,7 +25,8 @@ export async function generateSchema() {
       DataInputResolver,
       HeaderResolver,
       AddressResolver,
-      MempoolResolver
+      MempoolResolver,
+      BlockResolver
     ],
     scalarsMap: [
       { type: Number, scalar: Int },

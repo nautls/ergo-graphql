@@ -6,3 +6,4 @@ export * from "./data-input-resolver";
 export * from "./header-resolver";
 export * from "./address-resolver";
 export * from "./mempool-resolver";
+export * from "./block-resolver";
