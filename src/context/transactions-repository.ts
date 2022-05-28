@@ -1,6 +1,6 @@
 import { BoxEntity, InputEntity, TransactionEntity } from "../entities";
 import { removeUndefined } from "../utils";
-import { BaseRepository } from "./base-repository";
+import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
 
 type TransactionFindOptions = FindManyParams<TransactionEntity> & {
@@ -9,6 +9,10 @@ type TransactionFindOptions = FindManyParams<TransactionEntity> & {
 };
 
 export class TransactionRepository extends BaseRepository<TransactionEntity> {
+  constructor(context: RepositoryDataContext) {
+    super(TransactionEntity, "tx", context);
+  }
+
   public override async find(options: TransactionFindOptions): Promise<TransactionEntity[]> {
     return this.findBase(options, (query) => {
       const { fromHeight, toHeight } = options;
@@ -43,7 +47,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
     }
 
     const { count } = await this.repository
-      .createQueryBuilder("tx")
+      .createQueryBuilder(this.alias)
       .select("COUNT(DISTINCT(tx.transactionId))", "count")
       .innerJoin(
         `(${inputsQuery.getSql()} UNION ${outputsQuery.getSql()})`,

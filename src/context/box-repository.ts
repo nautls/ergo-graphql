@@ -1,8 +1,13 @@
 import { AssetEntity, BoxEntity, InputEntity, TokenEntity } from "../entities";
+import { Box } from "../graphql";
 import { removeUndefined } from "../utils";
-import { BaseRepository } from "./base-repository";
+import { BaseRepository, RepositoryDataContext } from "./base-repository";
 
 export class BoxRepository extends BaseRepository<BoxEntity> {
+  constructor(context: RepositoryDataContext) {
+    super(Box, "box", context);
+  }
+
   public async sum(options: {
     where: { address: string; maxHeight?: number };
     include: { nanoErgs: boolean; assets: boolean };

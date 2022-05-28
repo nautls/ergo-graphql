@@ -1,10 +1,14 @@
 import { UnconfirmedTransactionEntity } from "../entities";
-import { BaseRepository } from "./base-repository";
+import { BaseRepository, RepositoryDataContext } from "./base-repository";
 
 export class UnconfirmedTransactionRepository extends BaseRepository<UnconfirmedTransactionEntity> {
+  constructor(context: RepositoryDataContext) {
+    super(UnconfirmedTransactionEntity, "utx", context);
+  }
+
   public async count(): Promise<number> {
     const { count } = await this.repository
-      .createQueryBuilder("utx")
+      .createQueryBuilder(this.alias)
       .select("COUNT(utx.transactionId)", "count")
       .getRawOne();
 
@@ -13,7 +17,7 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
 
   public async sum(options: { by: "size" }) {
     const { sum } = await this.repository
-      .createQueryBuilder("utx")
+      .createQueryBuilder(this.alias)
       .select(`SUM(utx.${options.by})`, "sum")
       .getRawOne();
 
