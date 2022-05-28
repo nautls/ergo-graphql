@@ -1,21 +1,31 @@
 import { GraphQLResolveInfo } from "graphql";
-import { Arg, Ctx, Info, Query, Resolver } from "type-graphql";
-import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
+import { Args, ArgsType, Ctx, Field, Info, Int, Query, Resolver } from "type-graphql";
 import { Transaction } from "../objects/transaction";
-import { TakeAmountScalar } from "../scalars";
 import { removeUndefined } from "../../utils";
 import { GraphQLContext } from "../context-type";
+import { PaginationArguments } from "./pagination-arguments";
+
+@ArgsType()
+class TransactionArguments {
+  @Field(() => String, { nullable: true })
+  headerId?: string;
+
+  @Field(() => Int, { nullable: true })
+  inclusionHeight?: number;
+
+  @Field(() => Int, { nullable: true })
+  fromHeight?: number;
+
+  @Field(() => Int, { nullable: true })
+  toHeight?: number;
+}
 
 @Resolver(Transaction)
 export class TransactionResolver {
   @Query(() => [Transaction])
   async transactions(
-    @Arg("skip", { defaultValue: DEFAULT_SKIP }) skip: number,
-    @Arg("take", () => TakeAmountScalar, { defaultValue: MAX_TAKE }) take: number,
-    @Arg("fromHeight", () => Number, { nullable: true }) fromHeight: number | undefined,
-    @Arg("toHeight", () => Number, { nullable: true }) toHeight: number | undefined,
-    @Arg("headerId", () => String, { nullable: true }) headerId: string | undefined,
-    @Arg("inclusionHeight", () => Number, { nullable: true }) inclusionHeight: number | undefined,
+    @Args() { headerId, inclusionHeight, fromHeight, toHeight }: TransactionArguments,
+    @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {

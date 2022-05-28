@@ -1,20 +1,38 @@
 import { GraphQLResolveInfo } from "graphql";
-import { Arg, Ctx, FieldResolver, Info, Int, Query, Resolver } from "type-graphql";
 import { GraphQLContextWithArgs } from "../context-type";
 import { Address } from "../objects/address";
 import { isFieldSelected } from "./utils";
+import {
+  Args,
+  ArgsType,
+  Ctx,
+  Field,
+  FieldResolver,
+  Info,
+  Int,
+  Query,
+  Resolver
+} from "type-graphql";
 
 type ContextArgs = {
   address: string;
   atHeight?: number;
 };
 
+@ArgsType()
+class AddressesQueryArgs {
+  @Field(() => String, { nullable: false })
+  address!: string;
+
+  @Field(() => Int, { nullable: true })
+  atHeight?: number;
+}
+
 @Resolver(Address)
 export class AddressResolver {
   @Query(() => Address)
   async addresses(
-    @Arg("address", () => String, { nullable: false }) address: string,
-    @Arg("atHeight", () => Int, { nullable: true }) atHeight: number,
+    @Args() { address, atHeight }: AddressesQueryArgs,
     @Ctx() context: GraphQLContextWithArgs<ContextArgs>
   ) {
     context.args = { address, atHeight };

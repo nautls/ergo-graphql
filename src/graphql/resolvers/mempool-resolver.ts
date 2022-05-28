@@ -1,9 +1,8 @@
 import { GraphQLResolveInfo } from "graphql";
-import { Arg, Ctx, FieldResolver, Info, Query, Resolver } from "type-graphql";
-import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
+import { Args, Ctx, FieldResolver, Info, Query, Resolver } from "type-graphql";
 import { GraphQLContext } from "../context-type";
 import { Mempool } from "../objects";
-import { TakeAmountScalar } from "../scalars";
+import { PaginationArguments } from "./pagination-arguments";
 
 @Resolver(Mempool)
 export class MempoolResolver {
@@ -25,8 +24,7 @@ export class MempoolResolver {
 
   @FieldResolver()
   async transactions(
-    @Arg("skip", { defaultValue: DEFAULT_SKIP }) skip: number,
-    @Arg("take", () => TakeAmountScalar, { defaultValue: MAX_TAKE }) take: number,
+    @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {

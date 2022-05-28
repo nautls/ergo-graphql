@@ -1,26 +1,35 @@
 import { GraphQLResolveInfo } from "graphql";
-import { Arg, Ctx, Info, Query, Resolver } from "type-graphql";
-import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
+import { Args, ArgsType, Ctx, Field, Info, Query, Resolver } from "type-graphql";
+import { TokenEntity } from "../../entities";
 import { Token } from "../objects";
-import { TakeAmountScalar } from "../scalars";
 import { removeUndefined } from "../../utils";
-import { GraphQLContext } from "../context-type";
+import { PaginationArguments } from "./pagination-arguments";
+import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
+
+@ArgsType()
+class TokensQueryArgs {
+  @Field(() => String, { nullable: true })
+  tokenId?: string;
+
+  @Field(() => String, { nullable: true })
+  boxId?: string;
+}
 
 @Resolver(Token)
 export class TokenResolver {
   @Query(() => [Token])
   async tokens(
-    @Arg("skip", { defaultValue: DEFAULT_SKIP }) skip: number,
-    @Arg("take", () => TakeAmountScalar, { defaultValue: MAX_TAKE }) take: number,
-    @Arg("boxId", () => String, { nullable: true }) boxId: string | undefined,
-    @Ctx() context: GraphQLContext,
+    @Args() { tokenId, boxId }: TokensQueryArgs,
+    @Args({ validate: true }) { skip, take }: PaginationArguments,
+    @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {
-    return context.repository.tokens.find({
-      resolverInfo: info,
-      where: removeUndefined({ boxId }),
-      skip,
-      take
-    });
+    const where = removeUndefined({ tokenId, boxId });
+
+    return await context.loader
+      .loadEntity(TokenEntity, "token")
+      .info(info)
+      .ejectQueryBuilder((query) => query.where(where).skip(skip).take(take))
+      .loadMany();
   }
 }
