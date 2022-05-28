@@ -1,10 +1,9 @@
 import { GraphQLResolveInfo } from "graphql";
 import { Args, ArgsType, Ctx, Field, Info, Query, Resolver } from "type-graphql";
-import { TokenEntity } from "../../entities";
 import { Token } from "../objects";
 import { removeUndefined } from "../../utils";
 import { PaginationArguments } from "./pagination-arguments";
-import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
+import { GraphQLContext } from "../context-type";
 
 @ArgsType()
 class TokensQueryArgs {
@@ -21,15 +20,14 @@ export class TokenResolver {
   async tokens(
     @Args() { tokenId, boxId }: TokensQueryArgs,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
-    @Ctx() context: { loader: GraphQLDatabaseLoader },
+    @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
-    const where = removeUndefined({ tokenId, boxId });
-
-    return await context.loader
-      .loadEntity(TokenEntity, "token")
-      .info(info)
-      .ejectQueryBuilder((query) => query.where(where).skip(skip).take(take))
-      .loadMany();
+    return context.repository.tokens.find({
+      resolverInfo: info,
+      where: removeUndefined({ tokenId, boxId }),
+      skip,
+      take
+    });
   }
 }
