@@ -37,7 +37,7 @@ export class AddressResolver {
 
   @FieldResolver()
   async transactionsCount(@Ctx() context: GraphQLContextWithArgs<ContextArgs>) {
-    return await context.repository.transactions.countBy({
+    return await context.repository.transactions.count({
       where: {
         address: context.args.address,
         maxHeight: context.args.atHeight

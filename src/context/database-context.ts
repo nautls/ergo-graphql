@@ -7,15 +7,17 @@ import {
   HeaderEntity,
   InputEntity,
   TokenEntity,
-  TransactionEntity
+  TransactionEntity,
+  UnconfirmedTransactionEntity
 } from "../entities";
 import { BaseRepository } from "./base-repository";
 import { BoxRepository } from "./box-repository";
 import { IRepository } from "./repository-interface";
-import { TransactionsRepository } from "./transactions-repository";
+import { TransactionRepository } from "./transactions-repository";
+import { UnconfirmedTransactionRepository } from "./unconfirmed-transactions-repository";
 
 export class DatabaseContext {
-  public readonly transactions!: TransactionsRepository;
+  public readonly transactions!: TransactionRepository;
   public readonly blockInfo!: IRepository<BlockInfoEntity>;
   public readonly boxes!: BoxRepository;
   public readonly dataInputs!: IRepository<DataInputEntity>;
@@ -23,18 +25,26 @@ export class DatabaseContext {
   public readonly headers!: IRepository<HeaderEntity>;
   public readonly tokens!: IRepository<TokenEntity>;
 
+  public readonly unconfirmedTransactions!: UnconfirmedTransactionRepository;
+
   constructor(dataSource: DataSource) {
     const context = {
       dataSource,
       graphQLDataLoader: new GraphQLDatabaseLoader(dataSource)
     };
 
-    this.transactions = new TransactionsRepository(TransactionEntity, "tx", context);
+    this.transactions = new TransactionRepository(TransactionEntity, "tx", context);
     this.blockInfo = new BaseRepository(BlockInfoEntity, "block", context);
     this.boxes = new BoxRepository(BoxEntity, "box", context);
     this.dataInputs = new BaseRepository(DataInputEntity, "data-input", context);
     this.inputs = new BaseRepository(InputEntity, "input", context);
     this.headers = new BaseRepository(HeaderEntity, "header", context);
     this.tokens = new BaseRepository(TokenEntity, "token", context);
+
+    this.unconfirmedTransactions = new UnconfirmedTransactionRepository(
+      UnconfirmedTransactionEntity,
+      "utx",
+      context
+    );
   }
 }

@@ -8,7 +8,7 @@ type TransactionFindOptions = FindManyParams<TransactionEntity> & {
   toHeight?: number;
 };
 
-export class TransactionsRepository extends BaseRepository<TransactionEntity> {
+export class TransactionRepository extends BaseRepository<TransactionEntity> {
   public override async find(options: TransactionFindOptions): Promise<TransactionEntity[]> {
     return this.findBase(options, (query) => {
       const { fromHeight, toHeight } = options;
@@ -24,9 +24,7 @@ export class TransactionsRepository extends BaseRepository<TransactionEntity> {
     });
   }
 
-  public async countBy(options: {
-    where: { address: string; maxHeight?: number };
-  }): Promise<number> {
+  public async count(options: { where: { address: string; maxHeight?: number } }): Promise<number> {
     let inputsQuery = this.dataSource
       .getRepository(BoxEntity)
       .createQueryBuilder("box")
