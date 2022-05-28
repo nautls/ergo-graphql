@@ -1,20 +1,28 @@
 import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
 import { GraphQLResolveInfo } from "graphql";
-import { Arg, Ctx, Info, Query, Resolver } from "type-graphql";
-import { DEFAULT_SKIP } from "../../consts";
-import { BlockInfoEntity } from "../../entities";
-import { TakeAmountScalar } from "../scalars";
+import { Args, ArgsType, Ctx, Field, Info, Int, Query, Resolver } from "type-graphql";
 import { removeUndefined } from "../../utils";
 import { Block } from "../objects/block";
+import { BlockInfoEntity } from "../../entities";
+import { PaginationArguments } from "./pagination-arguments";
+
+@ArgsType()
+class BlockQueryArgs extends PaginationArguments {
+  @Field(() => String, { nullable: true })
+  headerId?: string;
+
+  @Field(() => Int, { nullable: true })
+  height?: number;
+
+  @Field(() => Int, { defaultValue: 10 })
+  take = 10;
+}
 
 @Resolver(Block)
 export class BlockResolver {
   @Query(() => [Block])
   async blocks(
-    @Arg("skip", { defaultValue: DEFAULT_SKIP }) skip: number,
-    @Arg("take", () => TakeAmountScalar, { defaultValue: 10 }) take: number,
-    @Arg("headerId", () => String, { nullable: true }) headerId: string | undefined,
-    @Arg("height", () => Number, { nullable: true }) height: number | undefined,
+    @Args({ validate: true }) { headerId, height, skip, take }: BlockQueryArgs,
     @Ctx() context: { loader: GraphQLDatabaseLoader },
     @Info() info: GraphQLResolveInfo
   ) {

@@ -26,8 +26,11 @@ type AddressBalanceAssets {
   tokenId: String!
 }
 
-type Asset {
+type Asset implements IAsset {
+  box: Box!
+  boxId: String!
   headerId: String!
+  index: Int!
   token: Token!
   tokenId: String!
   value: BigInt!
@@ -62,7 +65,7 @@ type Block {
   txsSize: Int!
 }
 
-type Box {
+type Box implements IBox {
   additionalRegisters: JSON!
   address: String!
   assets: [Asset!]!
@@ -81,7 +84,7 @@ type Box {
   value: BigInt!
 }
 
-type DataInput {
+type DataInput implements IDataInput {
   box: Box!
   boxId: String!
   headerId: String!
@@ -116,12 +119,45 @@ type Header {
   votes: [Int!]!
 }
 
+interface IAsset {
+  boxId: String!
+  index: Int!
+  tokenId: String!
+  value: BigInt!
+}
+
+interface IBox {
+  additionalRegisters: JSON!
+  address: String!
+  boxId: String!
+  creationHeight: Int!
+  ergoTree: String!
+  ergoTreeTemplateHash: String!
+  index: Int!
+  transactionId: String!
+  value: BigInt!
+}
+
+interface IDataInput {
+  boxId: String!
+  index: Int!
+  transactionId: String!
+}
+
+interface IInput {
+  boxId: String!
+  extension: JSON!
+  index: Int!
+  proofBytes: String
+  transactionId: String!
+}
+
 interface ITransaction {
   size: Int!
   transactionId: String!
 }
 
-type Input {
+type Input implements IInput {
   box: Box!
   boxId: String!
   extension: JSON!
@@ -137,24 +173,21 @@ scalar JSON
 
 type Mempool {
   size: Int!
-  transactions(skip: Int = 0, take: TakeAmount = 100): [UnconfirmedTransaction!]!
+  transactions(skip: Int = 0, take: Int = 100): [UnconfirmedTransaction!]!
   transactionsCount: Int!
 }
 
 type Query {
   addresses(address: String!, atHeight: Int): Address!
-  blockHeaders(height: Int, parentId: String, skip: Int = 0, take: TakeAmount = 10): [Header!]!
-  blocks(headerId: String, height: Int, skip: Int = 0, take: TakeAmount = 10): [Block!]!
-  boxes(address: String, boxId: String, ergoTree: String, ergoTreeTemplateHash: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [Box!]!
-  dataInputs(boxId: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [DataInput!]!
-  inputs(boxId: String, headerId: String, skip: Int = 0, take: TakeAmount = 100, transactionId: String): [Input!]!
+  blockHeaders(height: Int, parentId: String, skip: Int = 0, take: Int = 10): [Header!]!
+  blocks(headerId: String, height: Int, skip: Int = 0, take: Int = 10): [Block!]!
+  boxes(address: String, boxId: String, ergoTree: String, ergoTreeTemplateHash: String, headerId: String, skip: Int = 0, take: Int = 100, transactionId: String): [Box!]!
+  dataInputs(boxId: String, headerId: String, skip: Int = 0, take: Int = 100, transactionId: String): [DataInput!]!
+  inputs(boxId: String, headerId: String, skip: Int = 0, take: Int = 100, transactionId: String): [Input!]!
   mempool: Mempool!
-  tokens(boxId: String, skip: Int = 0, take: TakeAmount = 100): [Token!]!
-  transactions(fromHeight: Int, headerId: String, inclusionHeight: Int, skip: Int = 0, take: TakeAmount = 100, toHeight: Int): [Transaction!]!
+  tokens(boxId: String, skip: Int = 0, take: Int = 100, tokenId: String): [Token!]!
+  transactions(fromHeight: Int, headerId: String, inclusionHeight: Int, skip: Int = 0, take: Int = 100, toHeight: Int): [Transaction!]!
 }
-
-"""Pagination take amount type"""
-scalar TakeAmount
 
 type Token {
   box: Box!
@@ -182,7 +215,49 @@ type Transaction implements ITransaction {
   transactionId: String!
 }
 
+type UnconfirmedAsset implements IAsset {
+  box: UnconfirmedBox!
+  boxId: String!
+  index: Int!
+  tokenId: String!
+  value: BigInt!
+}
+
+type UnconfirmedBox implements IBox {
+  additionalRegisters: JSON!
+  address: String!
+  assets: [UnconfirmedAsset!]!
+  boxId: String!
+  creationHeight: Int!
+  ergoTree: String!
+  ergoTreeTemplateHash: String!
+  index: Int!
+  transaction: UnconfirmedTransaction!
+  transactionId: String!
+  value: BigInt!
+}
+
+type UnconfirmedDataInput implements IDataInput {
+  boxId: String!
+  index: Int!
+  transaction: UnconfirmedTransaction!
+  transactionId: String!
+}
+
+type UnconfirmedInput implements IInput {
+  boxId: String!
+  extension: JSON!
+  index: Int!
+  proofBytes: String
+  transaction: UnconfirmedTransaction!
+  transactionId: String!
+}
+
 type UnconfirmedTransaction implements ITransaction {
+  dataInputs: [UnconfirmedDataInput!]!
+  inputs: [UnconfirmedInput!]!
+  outputs: [UnconfirmedBox!]!
   size: Int!
+  timestamp: BigInt!
   transactionId: String!
 }

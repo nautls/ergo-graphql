@@ -1,5 +1,15 @@
 import { GraphQLResolveInfo } from "graphql";
-import { Arg, Ctx, FieldResolver, Info, Int, Query, Resolver } from "type-graphql";
+import {
+  Args,
+  ArgsType,
+  Ctx,
+  Field,
+  FieldResolver,
+  Info,
+  Int,
+  Query,
+  Resolver
+} from "type-graphql";
 import { appDataSource } from "../../data-source";
 import {
   AssetEntity,
@@ -11,23 +21,28 @@ import {
 import { Address } from "../objects/address";
 import { isFieldSelected } from "./utils";
 
+@ArgsType()
+class AddressesQueryArgs {
+  @Field(() => String, { nullable: false })
+  address!: string;
+
+  @Field(() => Int, { nullable: true })
+  atHeight?: number;
+}
+
 @Resolver(Address)
 export class AddressResolver {
   @Query(() => Address)
   async addresses(
-    @Arg("address", () => String, { nullable: false }) address: string,
-    @Arg("atHeight", () => Int, { nullable: true }) atHeight: number,
-    @Ctx() context: { args: { address: string; atHeight: number } }
+    @Args() { address, atHeight }: AddressesQueryArgs,
+    @Ctx() context: { args: AddressesQueryArgs }
   ) {
     context.args = { address, atHeight };
     return {};
   }
 
   @FieldResolver()
-  async balance(
-    @Ctx() context: { args: { address: string; atHeight: number } },
-    @Info() info: GraphQLResolveInfo
-  ) {
+  async balance(@Ctx() context: { args: AddressesQueryArgs }, @Info() info: GraphQLResolveInfo) {
     const repository = appDataSource.getRepository(BoxEntity);
     let baseQuery = repository
       .createQueryBuilder("box")
@@ -64,7 +79,7 @@ export class AddressResolver {
   }
 
   @FieldResolver()
-  async transactionsCount(@Ctx() context: { args: { address: string; atHeight: number } }) {
+  async transactionsCount(@Ctx() context: { args: AddressesQueryArgs }) {
     let inputsQuery = appDataSource
       .getRepository(BoxEntity)
       .createQueryBuilder("box")
