@@ -1,11 +1,10 @@
-import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
 import { GraphQLResolveInfo } from "graphql";
 import { Arg, Ctx, Info, Query, Resolver } from "type-graphql";
 import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
-import { BoxEntity } from "../../entities";
 import { Box } from "../objects";
 import { TakeAmountScalar } from "../scalars";
 import { removeUndefined } from "../../utils";
+import { GraphQLContext } from "../context-type";
 
 @Resolver(Box)
 export class BoxResolver {
@@ -20,24 +19,21 @@ export class BoxResolver {
     @Arg("ergoTree", () => String, { nullable: true }) ergoTree: string | undefined,
     @Arg("ergoTreeTemplateHash", () => String, { nullable: true })
     ergoTreeTemplateHash: string | undefined,
-    @Ctx() context: { loader: GraphQLDatabaseLoader },
+    @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
-    const where = removeUndefined({
-      address,
-      boxId,
-      transactionId,
-      headerId,
-      ergoTree,
-      ergoTreeTemplateHash
+    return context.repository.boxes.find({
+      resolverInfo: info,
+      where: removeUndefined({
+        address,
+        boxId,
+        transactionId,
+        headerId,
+        ergoTree,
+        ergoTreeTemplateHash
+      }),
+      skip,
+      take
     });
-
-    return await context.loader
-      .loadEntity(BoxEntity, "box")
-      .info(info)
-      .ejectQueryBuilder((query) => {
-        return query.where(where).skip(skip).take(take);
-      })
-      .loadMany();
   }
 }

@@ -1,11 +1,10 @@
-import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
 import { GraphQLResolveInfo } from "graphql";
 import { Arg, Ctx, Info, Query, Resolver } from "type-graphql";
 import { DEFAULT_SKIP, MAX_TAKE } from "../../consts";
-import { InputEntity } from "../../entities";
 import { DataInput } from "../objects/data-input";
 import { TakeAmountScalar } from "../scalars";
 import { removeUndefined } from "../../utils";
+import { GraphQLContext } from "../context-type";
 
 @Resolver(DataInput)
 export class DataInputResolver {
@@ -16,19 +15,18 @@ export class DataInputResolver {
     @Arg("transactionId", () => String, { nullable: true }) transactionId: string | undefined,
     @Arg("boxId", () => String, { nullable: true }) boxId: string | undefined,
     @Arg("headerId", () => String, { nullable: true }) headerId: string | undefined,
-    @Ctx() context: { loader: GraphQLDatabaseLoader },
+    @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
-    const where = removeUndefined({
-      transactionId,
-      boxId,
-      headerId
+    return context.repository.dataInputs.find({
+      resolverInfo: info,
+      where: removeUndefined({
+        transactionId,
+        boxId,
+        headerId
+      }),
+      skip,
+      take
     });
-
-    return await context.loader
-      .loadEntity(InputEntity, "dataInput")
-      .info(info)
-      .ejectQueryBuilder((query) => query.where(where).skip(skip).take(take))
-      .loadMany();
   }
 }

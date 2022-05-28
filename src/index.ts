@@ -4,7 +4,6 @@ import "./prototypes";
 
 import { simpleEstimator, fieldExtensionsEstimator } from "graphql-query-complexity";
 import { createComplexityPlugin } from "graphql-query-complexity-apollo-plugin";
-import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
 import { ApolloServer } from "apollo-server";
 import { initializeDataSource } from "./data-source";
 import { GraphQLSchema } from "graphql";
@@ -16,6 +15,7 @@ import { redisClient } from "./caching";
 import { blockWatcher } from "./block-watcher";
 import { ApolloServerPluginCacheControl } from "apollo-server-core";
 import { MAX_CACHE_AGE, DEFAULT_MAX_QUERY_COMPLEXITY } from "./consts";
+import { DatabaseContext } from "./context/database-context";
 
 const { TS_NODE_DEV, MAX_QUERY_COMPLEXITY } = process.env;
 
@@ -29,7 +29,7 @@ async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
   const server = new ApolloServer({
     csrfPrevention: true,
     schema,
-    context: { loader: new GraphQLDatabaseLoader(dataSource) },
+    context: { repository: new DatabaseContext(dataSource) },
     plugins: [
       createComplexityPlugin({
         schema,
