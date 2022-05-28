@@ -31,11 +31,11 @@ export class DatabaseContext {
     };
 
     this.transactions = new TransactionRepository(context);
-    this.blockInfo = new BaseRepository(BlockInfoEntity, "block", context);
+    this.blockInfo = new BaseRepository(BlockInfoEntity, "block", context, { mainChain: true });
     this.boxes = new BoxRepository(context);
-    this.dataInputs = new BaseRepository(DataInputEntity, "data-input", context);
-    this.inputs = new BaseRepository(InputEntity, "input", context);
-    this.headers = new BaseRepository(HeaderEntity, "header", context);
+    this.dataInputs = new BaseRepository(DataInputEntity, "dti", context, { mainChain: true });
+    this.inputs = new BaseRepository(InputEntity, "input", context, { mainChain: true });
+    this.headers = new BaseRepository(HeaderEntity, "header", context, { mainChain: true });
     this.tokens = new BaseRepository(TokenEntity, "token", context);
 
     this.unconfirmedTransactions = new UnconfirmedTransactionRepository(context);

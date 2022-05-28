@@ -19,12 +19,20 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
   protected readonly createGraphQLQueryBuilder!: () => GraphQLQueryBuilder<any>;
   protected readonly alias!: string;
 
-  constructor(entity: EntityTarget<T>, alias: string, context: RepositoryDataContext) {
+  private readonly baseFilters?: Partial<T>;
+
+  constructor(
+    entity: EntityTarget<T>,
+    alias: string,
+    context: RepositoryDataContext,
+    baseFilter?: Partial<T>
+  ) {
     this.alias = alias;
     this.dataSource = context.dataSource;
     this.repository = context.dataSource.getRepository(entity);
     this.createGraphQLQueryBuilder = () =>
       context.graphQLDataLoader.loadEntity(entity as any, alias);
+    this.baseFilters = baseFilter;
   }
 
   protected createQueryBuilder(): SelectQueryBuilder<T> {
@@ -48,20 +56,27 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
         .info(options.resolverInfo)
         .ejectQueryBuilder((query) => {
           query = query
-            .where(options.where || {})
+            .where(this.createWhere(options.where))
             .skip(options.skip)
             .take(options.take);
-
           return queryCallback ? queryCallback(query) : query;
         })
         .loadMany();
     }
 
     const query = this.createQueryBuilder()
-      .where(options.where || {})
+      .where(this.createWhere(options.where))
       .skip(options.skip)
       .take(options.take);
     return (queryCallback ? queryCallback(query) : query).getMany();
+  }
+
+  private createWhere(where?: Partial<T>): Partial<T> {
+    if (this.baseFilters) {
+      return { ...where, ...this.baseFilters };
+    }
+
+    return where || {};
   }
 
   protected firstBase(
@@ -72,13 +87,13 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       return this.createGraphQLQueryBuilder()
         .info(options.resolverInfo)
         .ejectQueryBuilder((query) => {
-          query = query.where(options.where || {});
+          query = query.where(this.createWhere(options.where));
           return queryCallback ? queryCallback(query) : query;
         })
         .loadOne();
     }
 
-    const query = this.createQueryBuilder().where(options.where || {});
+    const query = this.createQueryBuilder().where(this.createWhere(options.where));
     return (queryCallback ? queryCallback(query) : query).getOne();
   }
 }
