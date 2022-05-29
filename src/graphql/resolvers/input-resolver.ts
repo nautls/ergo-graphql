@@ -1,9 +1,8 @@
-import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
 import { GraphQLResolveInfo } from "graphql";
 import { Args, ArgsType, Ctx, Field, Info, Query, Resolver } from "type-graphql";
-import { InputEntity } from "../../entities";
 import { Input } from "../objects";
 import { removeUndefined } from "../../utils";
+import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
 
 @ArgsType()
@@ -24,19 +23,18 @@ export class InputResolver {
   async inputs(
     @Args() { transactionId, boxId, headerId }: InputsQueryArgs,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
-    @Ctx() context: { loader: GraphQLDatabaseLoader },
+    @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
-    const where = removeUndefined({
-      transactionId,
-      boxId,
-      headerId
+    return context.repository.inputs.find({
+      resolverInfo: info,
+      where: removeUndefined({
+        transactionId,
+        boxId,
+        headerId
+      }),
+      skip,
+      take
     });
-
-    return await context.loader
-      .loadEntity(InputEntity, "input")
-      .info(info)
-      .ejectQueryBuilder((query) => query.where(where).skip(skip).take(take))
-      .loadMany();
   }
 }

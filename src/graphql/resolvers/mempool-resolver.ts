@@ -1,8 +1,6 @@
-import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
 import { GraphQLResolveInfo } from "graphql";
 import { Args, Ctx, FieldResolver, Info, Query, Resolver } from "type-graphql";
-import { appDataSource } from "../../data-source";
-import { UnconfirmedTransactionEntity } from "../../entities";
+import { GraphQLContext } from "../context-type";
 import { Mempool } from "../objects";
 import { PaginationArguments } from "./pagination-arguments";
 
@@ -15,37 +13,25 @@ export class MempoolResolver {
   }
 
   @FieldResolver()
-  async size() {
-    const { size } = await appDataSource
-      .getRepository(UnconfirmedTransactionEntity)
-      .createQueryBuilder("utx")
-      .select("SUM(utx.size)", "size")
-      .getRawOne();
-
-    return size;
+  async size(@Ctx() context: GraphQLContext) {
+    return await context.repository.unconfirmedTransactions.sum({ by: "size" });
   }
 
   @FieldResolver()
-  async transactionsCount() {
-    const { count } = await appDataSource
-      .getRepository(UnconfirmedTransactionEntity)
-      .createQueryBuilder("utx")
-      .select("COUNT(utx.transactionId)", "count")
-      .getRawOne();
-
-    return count;
+  async transactionsCount(@Ctx() context: GraphQLContext) {
+    return await context.repository.unconfirmedTransactions.count();
   }
 
   @FieldResolver()
   async transactions(
     @Args({ validate: true }) { skip, take }: PaginationArguments,
-    @Ctx() context: { loader: GraphQLDatabaseLoader },
+    @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
-    return await context.loader
-      .loadEntity(UnconfirmedTransactionEntity, "utx")
-      .info(info)
-      .ejectQueryBuilder((query) => query.skip(skip).take(take))
-      .loadMany();
+    return context.repository.unconfirmedTransactions.find({
+      resolverInfo: info,
+      skip,
+      take
+    });
   }
 }

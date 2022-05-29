@@ -1,9 +1,8 @@
-import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
 import { GraphQLResolveInfo } from "graphql";
 import { Args, ArgsType, Ctx, Field, Info, Int, Query, Resolver } from "type-graphql";
-import { HeaderEntity } from "../../entities";
 import { Header } from "../objects";
 import { removeUndefined } from "../../utils";
+import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
 
 @ArgsType()
@@ -23,20 +22,17 @@ export class HeaderResolver {
   @Query(() => [Header])
   async blockHeaders(
     @Args({ validate: true }) { parentId, height, skip, take }: BlockHeadersQueryArgs,
-    @Ctx() context: { loader: GraphQLDatabaseLoader },
+    @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
-    const where = removeUndefined({
-      parentId,
-      height
+    return context.repository.headers.find({
+      resolverInfo: info,
+      where: removeUndefined({
+        parentId,
+        height
+      }),
+      skip,
+      take
     });
-
-    return await context.loader
-      .loadEntity(HeaderEntity, "header")
-      .info(info)
-      .ejectQueryBuilder((query) => {
-        return query.where(where).skip(skip).take(take);
-      })
-      .loadMany();
   }
 }

@@ -1,9 +1,8 @@
-import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
 import { GraphQLResolveInfo } from "graphql";
 import { Args, ArgsType, Ctx, Field, Info, Query, Resolver } from "type-graphql";
-import { BoxEntity } from "../../entities";
 import { Box } from "../objects";
 import { removeUndefined } from "../../utils";
+import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
 
 @ArgsType()
@@ -34,24 +33,21 @@ export class BoxResolver {
     @Args()
     { address, boxId, transactionId, headerId, ergoTree, ergoTreeTemplateHash }: BoxesQueryArgs,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
-    @Ctx() context: { loader: GraphQLDatabaseLoader },
+    @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
-    const where = removeUndefined({
-      address,
-      boxId,
-      transactionId,
-      headerId,
-      ergoTree,
-      ergoTreeTemplateHash
+    return context.repository.boxes.find({
+      resolverInfo: info,
+      where: removeUndefined({
+        address,
+        boxId,
+        transactionId,
+        headerId,
+        ergoTree,
+        ergoTreeTemplateHash
+      }),
+      skip,
+      take
     });
-
-    return await context.loader
-      .loadEntity(BoxEntity, "box")
-      .info(info)
-      .ejectQueryBuilder((query) => {
-        return query.where(where).skip(skip).take(take);
-      })
-      .loadMany();
   }
 }
