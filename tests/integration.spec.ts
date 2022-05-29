@@ -16,7 +16,7 @@ type Spec = {
 
 const specs: Spec[] = [
   {
-    name: "address",
+    name: "address balance and transactions count",
     query: {
       query: `query Query($address: String!, $atHeight: Int) {
           addresses(address: $address, atHeight: $atHeight) {
@@ -42,7 +42,7 @@ const specs: Spec[] = [
   }
 ];
 
-describe("address", () => {
+describe("integration tests", () => {
   let server!: ApolloServer;
 
   beforeAll(async () => {
