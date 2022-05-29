@@ -7,6 +7,7 @@ import { GraphQLResponse } from "apollo-server-types";
 import { initializeDataSource } from "../src/data-source";
 import { generateSchema } from "../src/graphql/schema";
 import { DatabaseContext } from "../src/context/database-context";
+import { DataSource } from "typeorm";
 
 type Spec = {
   name: string;
@@ -44,11 +45,12 @@ const specs: Spec[] = [
 
 describe("integration tests", () => {
   let server!: ApolloServer;
+  let dataSource!: DataSource;
 
   beforeAll(async () => {
-    const [dataSource, schema] = await Promise.all([initializeDataSource(), generateSchema()]);
+    const [data, schema] = await Promise.all([initializeDataSource(), generateSchema()]);
+    dataSource = data;
     server = new ApolloServer({
-      csrfPrevention: true,
       schema,
       context: { repository: new DatabaseContext(dataSource) }
     });
@@ -56,6 +58,7 @@ describe("integration tests", () => {
 
   afterAll(() => {
     server.stop();
+    dataSource.destroy();
   });
 
   for (const spec of specs) {
