@@ -8,6 +8,7 @@ import { initializeDataSource } from "../src/data-source";
 import { generateSchema } from "../src/graphql/schema";
 import { DatabaseContext } from "../src/context/database-context";
 import { DataSource } from "typeorm";
+import { Address } from "../src/graphql/objects/address";
 
 type Spec = {
   name: string;
@@ -19,8 +20,8 @@ const specs: Spec[] = [
   {
     name: "address balance and transactions count",
     query: {
-      query: `query Query($address: String!, $atHeight: Int) {
-          addresses(address: $address, atHeight: $atHeight) {
+      query: `query Query($addresses: [String!]!, $atHeight: Int) {
+          addresses(addresses: $addresses, atHeight: $atHeight) {
             transactionsCount
             balance { 
               nanoErgs 
@@ -29,16 +30,42 @@ const specs: Spec[] = [
           }
         }`,
       variables: {
-        address: "9hY16vzHmmfyVBwKeFGHvb2bMFsG94A1u7To1QWtUokACyFVENQ",
+        addresses: [
+          "9hY16vzHmmfyVBwKeFGHvb2bMFsG94A1u7To1QWtUokACyFVENQ",
+          "9gT3jR5PU9QKrgDuZJ6tKNpoCUwsGPhV6uVg6SL2hmdZGWicq9m",
+          "9emAvMvreC9QEGHLV9pupwmteHuJt62qvkH6HnPjUESgQRotfaC",
+          "9fh7mb1w4mFpD9aZDs8atNjnp27xN1HQnsgQk1cRiPaeCWMCfRJ"
+        ],
         atHeight: 759893
       }
     },
     assert: (output) => {
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
-      expect(output.data?.addresses.transactionsCount).toEqual(167);
-      expect(output.data?.addresses.balance.nanoErgs).toEqual(1723811075n);
-      expect(output.data?.addresses.balance.assets).toHaveLength(18);
+      expect(output.data?.addresses).toHaveLength(4);
+      if (!output.data) {
+        return;
+      }
+
+      for (const address of output.data.addresses) {
+        if (address.address === "9hY16vzHmmfyVBwKeFGHvb2bMFsG94A1u7To1QWtUokACyFVENQ") {
+          expect(address.transactionsCount).toEqual(167);
+          expect(address.balance.nanoErgs).toEqual(1723811075n);
+          expect(address.balance.assets).toHaveLength(18);
+        } else if (address.address === "9gT3jR5PU9QKrgDuZJ6tKNpoCUwsGPhV6uVg6SL2hmdZGWicq9m") {
+          expect(address.transactionsCount).toEqual(2);
+          expect(address.balance.nanoErgs).toEqual(87680777n);
+          expect(address.balance.assets).toHaveLength(3);
+        } else if (address.address === "9emAvMvreC9QEGHLV9pupwmteHuJt62qvkH6HnPjUESgQRotfaC") {
+          expect(address.transactionsCount).toEqual(1);
+          expect(address.balance.nanoErgs).toEqual(1000000n);
+          expect(address.balance.assets).toHaveLength(1);
+        } else if (address.address === "9fh7mb1w4mFpD9aZDs8atNjnp27xN1HQnsgQk1cRiPaeCWMCfRJ") {
+          expect(address.transactionsCount).toEqual(0);
+          expect(address.balance.nanoErgs).toEqual(0n);
+          expect(address.balance.assets).toHaveLength(0);
+        }
+      }
     }
   }
 ];

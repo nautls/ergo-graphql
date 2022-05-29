@@ -11,54 +11,62 @@ import {
   Info,
   Int,
   Query,
-  Resolver
+  Resolver,
+  Root
 } from "type-graphql";
-
-type ContextArgs = {
-  address: string;
-  atHeight?: number;
-};
+import { ArrayMaxSize } from "class-validator";
 
 @ArgsType()
 class AddressesQueryArgs {
-  @Field(() => String, { nullable: false })
-  address!: string;
+  @Field(() => [String], { nullable: false })
+  @ArrayMaxSize(20)
+  addresses!: string[];
 
   @Field(() => Int, { nullable: true })
   atHeight?: number;
 }
 
+type ContextArgs = {
+  height?: number;
+};
+
 @Resolver(Address)
 export class AddressResolver {
-  @Query(() => Address)
+  @Query(() => [Address])
   async addresses(
-    @Args() { address, atHeight }: AddressesQueryArgs,
-    @Ctx() context: GraphQLContextWithArgs<ContextArgs>
-  ) {
-    context.args = { address, atHeight };
-    return {};
-  }
-
-  @FieldResolver()
-  async balance(
+    @Args({ validate: true }) { addresses, atHeight }: AddressesQueryArgs,
     @Ctx() context: GraphQLContextWithArgs<ContextArgs>,
     @Info() info: GraphQLResolveInfo
   ) {
-    return await context.repository.boxes.sum({
-      where: { address: context.args.address, maxHeight: context.args.atHeight },
-      include: {
-        nanoErgs: isFieldSelected(info, "nanoErgs"),
-        assets: isFieldSelected(info, "assets")
-      }
+    context.args = { height: atHeight };
+
+    const balances = isFieldSelected(info, "balance")
+      ? await context.repository.boxes.sum({
+          where: { addresses, maxHeight: atHeight },
+          include: {
+            nanoErgs: isFieldSelected(info, "balance.nanoErgs"),
+            assets: isFieldSelected(info, "balance.assets")
+          }
+        })
+      : [];
+
+    return addresses.map((address) => {
+      return {
+        address,
+        balance: balances.find((b) => b.address === address) || { nanoErgs: 0, assets: [] }
+      };
     });
   }
 
   @FieldResolver()
-  async transactionsCount(@Ctx() context: GraphQLContextWithArgs<ContextArgs>) {
+  async transactionsCount(
+    @Root() root: Address,
+    @Ctx() context: GraphQLContextWithArgs<ContextArgs>
+  ) {
     return await context.repository.transactions.count({
       where: {
-        address: context.args.address,
-        maxHeight: context.args.atHeight
+        address: root.address,
+        maxHeight: context.args.height
       }
     });
   }

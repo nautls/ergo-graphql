@@ -16,7 +16,7 @@ class AddressBalanceAssets {
 }
 
 @ObjectType({ simpleResolvers: true })
-class AddressBalance {
+export class AddressBalance {
   @Field()
   nanoErgs!: bigint;
 
@@ -36,6 +36,9 @@ class AddressBalance {
 
 @ObjectType({ simpleResolvers: true })
 export class Address {
+  @Field()
+  address!: string;
+
   @Field(() => AddressBalance)
   balance!: AddressBalance;
 
