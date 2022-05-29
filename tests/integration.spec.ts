@@ -8,7 +8,6 @@ import { initializeDataSource } from "../src/data-source";
 import { generateSchema } from "../src/graphql/schema";
 import { DatabaseContext } from "../src/context/database-context";
 import { DataSource } from "typeorm";
-import { Address } from "../src/graphql/objects/address";
 
 type Spec = {
   name: string;
