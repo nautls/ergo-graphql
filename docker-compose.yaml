@@ -1,9 +1,20 @@
-version: '3.8'
+version: "3.8"
+
 services:
-  ergo_graphql:
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - 6379:6379
+  ergo-graphql:
     build: .
-    image: ergo_graphql
-    container_name: ergo_graphql
+    image: ergo-graphql
+    restart: always
+    container_name: ergo-graphql
     ports:
       - 3000:3000
+    environment:
+      REDIS_HOST: redis
     command: npm start
+    depends_on:
+      - redis
