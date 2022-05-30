@@ -13,6 +13,9 @@ class TransactionArguments {
   @Field(() => Int, { nullable: true })
   inclusionHeight?: number;
 
+  @Field(() => String, { nullable: true })
+  address?: string;
+
   @Field(() => Int, { nullable: true })
   fromHeight?: number;
 
@@ -24,7 +27,7 @@ class TransactionArguments {
 export class TransactionResolver {
   @Query(() => [Transaction])
   async transactions(
-    @Args() { headerId, inclusionHeight, fromHeight, toHeight }: TransactionArguments,
+    @Args() { headerId, inclusionHeight, address, fromHeight, toHeight }: TransactionArguments,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
@@ -32,10 +35,11 @@ export class TransactionResolver {
     return await context.repository.transactions.find({
       resolverInfo: info,
       where: removeUndefined({ headerId, inclusionHeight }),
-      take,
-      skip,
+      address,
       fromHeight,
-      toHeight
+      toHeight,
+      skip,
+      take
     });
   }
 }

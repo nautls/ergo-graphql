@@ -17,17 +17,17 @@ type Spec = {
 
 const specs: Spec[] = [
   {
-    name: "address balance and transactions count",
+    name: "[addresses] balance and transactions count",
     query: {
       query: `query Query($addresses: [String!]!, $atHeight: Int) {
-          addresses(addresses: $addresses, atHeight: $atHeight) {
-            transactionsCount
-            balance { 
-              nanoErgs 
-              assets { tokenId }
-            }
+        addresses(addresses: $addresses, atHeight: $atHeight) {
+          transactionsCount
+          balance { 
+            nanoErgs 
+            assets { tokenId }
           }
-        }`,
+        }
+      }`,
       variables: {
         addresses: [
           "9hY16vzHmmfyVBwKeFGHvb2bMFsG94A1u7To1QWtUokACyFVENQ",
@@ -36,7 +36,7 @@ const specs: Spec[] = [
         atHeight: 759893
       }
     },
-    assert: (output) => {
+    assert(output) {
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
       expect(output.data?.addresses).toHaveLength(2);
@@ -55,6 +55,26 @@ const specs: Spec[] = [
           expect(address.balance.assets).toHaveLength(0);
         }
       }
+    }
+  },
+  {
+    name: "[transactions] filter by address and height",
+    query: {
+      query: `query Addresses($address: String, $toHeight: Int) {
+        transactions(address: $address, toHeight: $toHeight) {
+          inclusionHeight
+          transactionId
+        }
+      }`,
+      variables: {
+        address: "9i2bQmRpCPLmDdVgBNyeAy7dDXqBQfjvcxVVt5YMzbDud6AvJS8",
+        toHeight: 759893
+      }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.transactions).toHaveLength(4);
     }
   }
 ];

@@ -6,6 +6,7 @@ import { FindManyParams } from "./repository-interface";
 type TransactionFindOptions = FindManyParams<TransactionEntity> & {
   fromHeight?: number;
   toHeight?: number;
+  address?: string;
 };
 
 export class TransactionRepository extends BaseRepository<TransactionEntity> {
@@ -15,13 +16,26 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
 
   public override async find(options: TransactionFindOptions): Promise<TransactionEntity[]> {
     return this.findBase(options, (query) => {
-      const { fromHeight, toHeight } = options;
+      const { fromHeight, toHeight, address } = options;
 
       if (fromHeight) {
-        query = query.andWhere(`${query.alias}.inclusionHeight > :fromHeight`, { fromHeight });
+        query = query.andWhere(`${query.alias}.inclusionHeight >= :fromHeight`, { fromHeight });
       }
       if (toHeight) {
-        query = query.andWhere(`${query.alias}.inclusionHeight < :toHeight`, { toHeight });
+        query = query.andWhere(`${query.alias}.inclusionHeight <= :toHeight`, { toHeight });
+      }
+
+      if (address) {
+        const inputsQuery = this.createInputQuery();
+        const outputsQuery = this.createOutputQuery();
+
+        query = query
+          .innerJoin(
+            `(${inputsQuery.getSql()} UNION ${outputsQuery.getSql()})`,
+            "boxes",
+            '"boxes"."transactionId" = tx.transactionId'
+          )
+          .setParameters({ address });
       }
 
       return query;
@@ -29,22 +43,8 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
   }
 
   public async count(options: { where: { address: string; maxHeight?: number } }): Promise<number> {
-    let inputsQuery = this.dataSource
-      .getRepository(BoxEntity)
-      .createQueryBuilder("box")
-      .select("input.transactionId", "transactionId")
-      .leftJoin(InputEntity, "input", "box.boxId = input.boxId AND input.mainChain = true")
-      .where("box.mainChain = true AND box.address = :address");
-    let outputsQuery = this.dataSource
-      .getRepository(BoxEntity)
-      .createQueryBuilder("box")
-      .select("box.transactionId", "transactionId")
-      .where("box.mainChain = true AND box.address = :address");
-
-    if (options.where.maxHeight) {
-      inputsQuery = inputsQuery.andWhere("box.creationHeight <= :height");
-      outputsQuery = outputsQuery.andWhere("box.creationHeight <= :height");
-    }
+    const inputsQuery = this.createInputQuery(options.where.maxHeight);
+    const outputsQuery = this.createOutputQuery(options.where.maxHeight);
 
     const { count } = await this.repository
       .createQueryBuilder(this.alias)
@@ -54,12 +54,41 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
         "boxes",
         '"boxes"."transactionId" = tx.transactionId'
       )
-      .where("tx.mainChain = true")
+      .where(`${this.alias}.mainChain = true`)
       .setParameters(
         removeUndefined({ address: options.where.address, height: options.where.maxHeight })
       )
       .getRawOne();
 
     return count;
+  }
+
+  private createOutputQuery(height?: number) {
+    let query = this.dataSource
+      .getRepository(BoxEntity)
+      .createQueryBuilder("box")
+      .select("box.transactionId", "transactionId")
+      .where("box.mainChain = true AND box.address = :address");
+
+    if (height) {
+      query = query.andWhere("box.creationHeight <= :height");
+    }
+
+    return query;
+  }
+
+  private createInputQuery(height?: number) {
+    let query = this.dataSource
+      .getRepository(BoxEntity)
+      .createQueryBuilder("box")
+      .select("input.transactionId", "transactionId")
+      .leftJoin(InputEntity, "input", "box.boxId = input.boxId AND input.mainChain = true")
+      .where("box.mainChain = true AND box.address = :address");
+
+    if (height) {
+      query = query.andWhere("box.creationHeight <= :height");
+    }
+
+    return query;
   }
 }
