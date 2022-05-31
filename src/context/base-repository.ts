@@ -6,10 +6,12 @@ import GraphQLDatabaseLoader, {
   GraphQLQueryBuilder
 } from "@mando75/typeorm-graphql-loader";
 import { FindManyParams, FindOneParams, IRepository } from "./repository-interface";
+import { DatabaseContext } from "./database-context";
 
 export type RepositoryDataContext = {
   dataSource: DataSource;
   graphQLDataLoader: GraphQLDatabaseLoader;
+  context: DatabaseContext;
 };
 
 export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
@@ -17,6 +19,7 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
   protected readonly dataSource!: DataSource;
 
   protected readonly createGraphQLQueryBuilder!: () => GraphQLQueryBuilder<any>;
+  protected readonly context!: DatabaseContext;
   protected readonly alias!: string;
 
   private readonly baseFilters?: Partial<T>;
@@ -32,6 +35,7 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
     this.repository = context.dataSource.getRepository(entity);
     this.createGraphQLQueryBuilder = () =>
       context.graphQLDataLoader.loadEntity(entity as any, alias);
+    this.context = context.context;
     this.baseFilters = baseFilter;
   }
 

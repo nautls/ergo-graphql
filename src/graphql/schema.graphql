@@ -10,6 +10,7 @@ type AdProof {
 }
 
 type Address {
+  address: String!
   balance: AddressBalance!
   transactionsCount: Int!
 }
@@ -178,7 +179,7 @@ type Mempool {
 }
 
 type Query {
-  addresses(address: String!, atHeight: Int): Address!
+  addresses(addresses: [String!]!, atHeight: Int): [Address!]!
   blockHeaders(height: Int, parentId: String, skip: Int = 0, take: Int = 10): [Header!]!
   blocks(headerId: String, height: Int, skip: Int = 0, take: Int = 10): [Block!]!
   boxes(address: String, boxId: String, ergoTree: String, ergoTreeTemplateHash: String, headerId: String, skip: Int = 0, take: Int = 100, transactionId: String): [Box!]!
@@ -186,7 +187,7 @@ type Query {
   inputs(boxId: String, headerId: String, skip: Int = 0, take: Int = 100, transactionId: String): [Input!]!
   mempool: Mempool!
   tokens(boxId: String, skip: Int = 0, take: Int = 100, tokenId: String): [Token!]!
-  transactions(fromHeight: Int, headerId: String, inclusionHeight: Int, skip: Int = 0, take: Int = 100, toHeight: Int): [Transaction!]!
+  transactions(address: String, headerId: String, inclusionHeight: Int, maxHeight: Int, minHeight: Int, skip: Int = 0, take: Int = 100): [Transaction!]!
 }
 
 type Token {

@@ -4,8 +4,8 @@ import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
 
 type TransactionFindOptions = FindManyParams<TransactionEntity> & {
-  fromHeight?: number;
-  toHeight?: number;
+  minHeight?: number;
+  maxHeight?: number;
   address?: string;
 };
 
@@ -15,31 +15,38 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
   }
 
   public override async find(options: TransactionFindOptions): Promise<TransactionEntity[]> {
-    return this.findBase(options, (query) => {
-      const { fromHeight, toHeight, address } = options;
+    const { minHeight, maxHeight, address } = options;
 
-      if (fromHeight) {
-        query = query.andWhere(`${query.alias}.inclusionHeight >= :fromHeight`, { fromHeight });
-      }
-      if (toHeight) {
-        query = query.andWhere(`${query.alias}.inclusionHeight <= :toHeight`, { toHeight });
-      }
+    let idsQuery = this.repository
+      .createQueryBuilder("txId")
+      .where("txId.mainChain = true")
+      .skip(options.skip)
+      .take(options.take);
 
-      if (address) {
-        const inputsQuery = this.createInputQuery();
-        const outputsQuery = this.createOutputQuery();
+    if (address) {
+      const inputQuery = this.createInputQuery(maxHeight);
+      const outputQuery = this.createOutputQuery(maxHeight);
+      idsQuery = idsQuery
+        .select(`"boxes"."transactionId"`)
+        .from(`(${inputQuery.getQuery()} UNION ${outputQuery.getQuery()})`, "boxes");
+    } else {
+      idsQuery = idsQuery.select("txId.transactionId", "txId");
+    }
 
-        query = query
-          .innerJoin(
-            `(${inputsQuery.getSql()} UNION ${outputsQuery.getSql()})`,
-            "boxes",
-            '"boxes"."transactionId" = tx.transactionId'
-          )
-          .setParameters({ address });
-      }
+    if (minHeight) {
+      idsQuery = idsQuery.andWhere("txId.inclusionHeight >= :minHeight", { minHeight });
+    }
+    if (maxHeight) {
+      idsQuery = idsQuery.andWhere("txId.inclusionHeight <= :maxHeight", { maxHeight });
+    }
 
-      return query;
-    });
+    options.take = undefined;
+    options.skip = undefined;
+    return this.findBase(options, (query) =>
+      query
+        .andWhere(`${this.alias}.transactionId in (${idsQuery.getQuery()})`)
+        .setParameters(removeUndefined({ height: maxHeight, maxHeight, minHeight, address }))
+    );
   }
 
   public async count(options: { where: { address: string; maxHeight?: number } }): Promise<number> {

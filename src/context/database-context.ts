@@ -1,5 +1,5 @@
 import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
-import { DataSource } from "typeorm";
+import { DataSource, DataSourceOptions } from "typeorm";
 import {
   BlockInfoEntity,
   DataInputEntity,
@@ -7,7 +7,7 @@ import {
   InputEntity,
   TokenEntity
 } from "../entities";
-import { BaseRepository } from "./base-repository";
+import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { BoxRepository } from "./box-repository";
 import { IRepository } from "./repository-interface";
 import { TransactionRepository } from "./transactions-repository";
@@ -25,13 +25,14 @@ export class DatabaseContext {
   public readonly unconfirmedTransactions!: UnconfirmedTransactionRepository;
 
   constructor(dataSource: DataSource) {
-    const context = {
+    const context: RepositoryDataContext = {
       dataSource,
-      graphQLDataLoader: new GraphQLDatabaseLoader(dataSource)
+      graphQLDataLoader: new GraphQLDatabaseLoader(dataSource),
+      context: this
     };
 
     this.transactions = new TransactionRepository(context);
-    this.blockInfo = new BaseRepository(BlockInfoEntity, "block", context, { mainChain: true });
+    this.blockInfo = new BaseRepository(BlockInfoEntity, "box", context, { mainChain: true });
     this.boxes = new BoxRepository(context);
     this.dataInputs = new BaseRepository(DataInputEntity, "dti", context, { mainChain: true });
     this.inputs = new BaseRepository(InputEntity, "input", context, { mainChain: true });

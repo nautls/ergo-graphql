@@ -60,21 +60,40 @@ const specs: Spec[] = [
   {
     name: "[transactions] filter by address and height",
     query: {
-      query: `query Addresses($address: String, $toHeight: Int) {
-        transactions(address: $address, toHeight: $toHeight) {
+      query: `query Query($address: String, $maxHeight: Int) {
+        transactions(address: $address, maxHeight: $maxHeight) {
           inclusionHeight
           transactionId
         }
       }`,
       variables: {
         address: "9i2bQmRpCPLmDdVgBNyeAy7dDXqBQfjvcxVVt5YMzbDud6AvJS8",
-        toHeight: 759893
+        maxHeight: 759893
       }
     },
     assert(output) {
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
       expect(output.data?.transactions).toHaveLength(4);
+    }
+  },
+  {
+    name: "[transactions] no filters",
+    query: {
+      query: `query Query($take: Int) {
+        transactions(take: $take) {
+          inclusionHeight
+          transactionId
+        }
+      }`,
+      variables: {
+        take: 10
+      }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.transactions).toHaveLength(10);
     }
   }
 ];

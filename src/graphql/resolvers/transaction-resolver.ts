@@ -17,17 +17,18 @@ class TransactionArguments {
   address?: string;
 
   @Field(() => Int, { nullable: true })
-  fromHeight?: number;
+  minHeight?: number;
 
   @Field(() => Int, { nullable: true })
-  toHeight?: number;
+  maxHeight?: number;
 }
 
 @Resolver(Transaction)
 export class TransactionResolver {
   @Query(() => [Transaction])
   async transactions(
-    @Args() { headerId, inclusionHeight, address, fromHeight, toHeight }: TransactionArguments,
+    @Args()
+    { headerId, inclusionHeight, address, minHeight, maxHeight }: TransactionArguments,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
@@ -36,8 +37,8 @@ export class TransactionResolver {
       resolverInfo: info,
       where: removeUndefined({ headerId, inclusionHeight }),
       address,
-      fromHeight,
-      toHeight,
+      minHeight,
+      maxHeight,
       skip,
       take
     });
