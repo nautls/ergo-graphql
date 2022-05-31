@@ -57,7 +57,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       .createQueryBuilder(this.alias)
       .select("COUNT(DISTINCT(tx.transactionId))", "count")
       .innerJoin(
-        `(${inputsQuery.getSql()} UNION ${outputsQuery.getSql()})`,
+        `(${inputsQuery.getQuery()} UNION ${outputsQuery.getQuery()})`,
         "boxes",
         '"boxes"."transactionId" = tx.transactionId'
       )
