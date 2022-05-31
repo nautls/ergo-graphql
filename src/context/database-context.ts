@@ -1,5 +1,5 @@
 import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
-import { DataSource, DataSourceOptions } from "typeorm";
+import { DataSource } from "typeorm";
 import {
   BlockInfoEntity,
   DataInputEntity,
