@@ -14,7 +14,8 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
   }) {
     let baseQuery = this.repository
       .createQueryBuilder("box")
-      .leftJoin(InputEntity, "input", "box.boxId = input.boxId")
+      .leftJoin(InputEntity, "input", "box.boxId = input.boxId and input.mainChain = true")
+      .where("box.mainChain = true")
       .where("box.address in (:...addresses)")
       .select("box.address", "address")
       .andWhere("input.boxId IS NULL")
