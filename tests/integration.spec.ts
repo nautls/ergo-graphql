@@ -31,7 +31,8 @@ const specs: Spec[] = [
       variables: {
         addresses: [
           "9hY16vzHmmfyVBwKeFGHvb2bMFsG94A1u7To1QWtUokACyFVENQ",
-          "9fh7mb1w4mFpD9aZDs8atNjnp27xN1HQnsgQk1cRiPaeCWMCfRJ"
+          "9fh7mb1w4mFpD9aZDs8atNjnp27xN1HQnsgQk1cRiPaeCWMCfRJ",
+          "9gT3jR5PU9QKrgDuZJ6tKNpoCUwsGPhV6uVg6SL2hmdZGWicq9m"
         ],
         atHeight: 759893
       }
@@ -39,7 +40,7 @@ const specs: Spec[] = [
     assert(output) {
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
-      expect(output.data?.addresses).toHaveLength(2);
+      expect(output.data?.addresses).toHaveLength(3);
       if (!output.data) {
         return;
       }
@@ -53,6 +54,8 @@ const specs: Spec[] = [
           expect(address.transactionsCount).toEqual(0);
           expect(address.balance.nanoErgs).toEqual(0n);
           expect(address.balance.assets).toHaveLength(0);
+        } else if (address.address === "9gT3jR5PU9QKrgDuZJ6tKNpoCUwsGPhV6uVg6SL2hmdZGWicq9m") {
+          expect(address.balance.nanoErgs).toEqual(87680777n);
         }
       }
     }

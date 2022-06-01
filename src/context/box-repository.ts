@@ -1,5 +1,5 @@
 import { unionBy } from "lodash";
-import { AssetEntity, BoxEntity, InputEntity, TokenEntity } from "../entities";
+import { AssetEntity, BoxEntity, InputEntity, TokenEntity, TransactionEntity } from "../entities";
 import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 
@@ -14,10 +14,10 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
   }) {
     let baseQuery = this.repository
       .createQueryBuilder("box")
+      .select("box.address", "address")
       .leftJoin(InputEntity, "input", "box.boxId = input.boxId and input.mainChain = true")
       .where("box.mainChain = true")
-      .where("box.address in (:...addresses)")
-      .select("box.address", "address")
+      .andWhere("box.address in (:...addresses)")
       .andWhere("input.boxId IS NULL")
       .groupBy("box.address")
       .setParameters(
@@ -28,7 +28,13 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       );
 
     if (options.where.maxHeight) {
-      baseQuery = baseQuery.andWhere("box.creationHeight <= :height");
+      baseQuery = baseQuery
+        .leftJoin(
+          TransactionEntity,
+          "tx",
+          "tx.transactionId = input.transactionId and tx.inclusionHeight <= :height"
+        )
+        .andWhere("box.creationHeight <= :height");
     }
 
     const nanoErgs = options.include.nanoErgs
