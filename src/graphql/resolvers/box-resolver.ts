@@ -19,6 +19,9 @@ class BoxesQueryArgs {
   @Field(() => String, { nullable: true })
   headerId?: string;
 
+  @Field(() => Boolean, { nullable: true })
+  spent?: boolean;
+
   @Field(() => String, { nullable: true })
   ergoTree?: string;
 
@@ -31,7 +34,15 @@ export class BoxResolver {
   @Query(() => [Box])
   async boxes(
     @Args()
-    { address, boxId, transactionId, headerId, ergoTree, ergoTreeTemplateHash }: BoxesQueryArgs,
+    {
+      address,
+      boxId,
+      transactionId,
+      headerId,
+      ergoTree,
+      ergoTreeTemplateHash,
+      spent
+    }: BoxesQueryArgs,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
@@ -46,6 +57,7 @@ export class BoxResolver {
         ergoTree,
         ergoTreeTemplateHash
       }),
+      spent,
       skip,
       take
     });

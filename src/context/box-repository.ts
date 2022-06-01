@@ -2,10 +2,34 @@ import { unionBy } from "lodash";
 import { AssetEntity, BoxEntity, InputEntity, TokenEntity, TransactionEntity } from "../entities";
 import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
+import { FindManyParams } from "./repository-interface";
+
+type BoxFindOptions = FindManyParams<BoxEntity> & {
+  spent?: boolean;
+  tokenId?: number;
+  // register?: string;
+};
 
 export class BoxRepository extends BaseRepository<BoxEntity> {
   constructor(context: RepositoryDataContext) {
     super(BoxEntity, "box", context, { mainChain: true });
+  }
+
+  public override find(options: BoxFindOptions): Promise<BoxEntity[]> {
+    const { spent } = options;
+    return this.findBase(options, (query) => {
+      if (spent !== undefined && spent !== null) {
+        query = query.leftJoin(
+          InputEntity,
+          "input",
+          `input.boxId = ${this.alias}.boxId and input.mainChain = true`
+        );
+
+        query = spent ? query.where("input.boxId IS NOT NULL") : query.where("input.boxId IS NULL");
+      }
+
+      return query;
+    });
   }
 
   public async sum(options: {

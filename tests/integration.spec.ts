@@ -8,6 +8,7 @@ import { initializeDataSource } from "../src/data-source";
 import { generateSchema } from "../src/graphql/schema";
 import { DatabaseContext } from "../src/context/database-context";
 import { DataSource } from "typeorm";
+import { Box } from "../src/graphql";
 
 type Spec = {
   name: string;
@@ -97,6 +98,44 @@ const specs: Spec[] = [
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
       expect(output.data?.transactions).toHaveLength(10);
+    }
+  },
+  {
+    name: "[box] filter spent boxes",
+    query: {
+      query: `query Query($spent: Boolean) {
+      boxes(spent: $spent) {
+        spentBy {
+          boxId
+        }
+      }
+    }`,
+      variables: { spent: true }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.boxes).toHaveLength(100);
+      expect(output.data?.boxes).not.toContain((x: Box) => x.spentBy === null);
+    }
+  },
+  {
+    name: "[box] filter unspent boxes",
+    query: {
+      query: `query Query($spent: Boolean) {
+      boxes(spent: $spent) {
+        spentBy {
+          boxId
+        }
+      }
+    }`,
+      variables: { spent: false }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.boxes).toHaveLength(100);
+      expect(output.data?.boxes).not.toContain((x: Box) => x.spentBy !== null);
     }
   }
 ];
