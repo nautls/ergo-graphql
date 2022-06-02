@@ -6,8 +6,7 @@ import { FindManyParams } from "./repository-interface";
 
 type BoxFindOptions = FindManyParams<BoxEntity> & {
   spent?: boolean;
-  tokenId?: number;
-  // register?: string;
+  tokenId?: string;
 };
 
 export class BoxRepository extends BaseRepository<BoxEntity> {
@@ -16,7 +15,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
   }
 
   public override find(options: BoxFindOptions): Promise<BoxEntity[]> {
-    const { spent } = options;
+    const { spent, tokenId } = options;
     return this.findBase(options, (query) => {
       if (spent !== undefined && spent !== null) {
         query = query.leftJoin(
@@ -26,6 +25,15 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
         );
 
         query = spent ? query.where("input.boxId IS NOT NULL") : query.where("input.boxId IS NULL");
+      }
+
+      if (tokenId) {
+        query = query.innerJoin(
+          AssetEntity,
+          "asset",
+          "asset.boxId = box.boxId and asset.tokenId = :tokenId",
+          { tokenId }
+        );
       }
 
       return query;

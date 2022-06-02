@@ -8,7 +8,8 @@ import { initializeDataSource } from "../src/data-source";
 import { generateSchema } from "../src/graphql/schema";
 import { DatabaseContext } from "../src/context/database-context";
 import { DataSource } from "typeorm";
-import { Box } from "../src/graphql";
+import { Asset, Box } from "../src/graphql";
+import { arrayContains } from "class-validator";
 
 type Spec = {
   name: string;
@@ -116,7 +117,7 @@ const specs: Spec[] = [
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
       expect(output.data?.boxes).toHaveLength(100);
-      expect(output.data?.boxes).not.toContain((x: Box) => x.spentBy === null);
+      expect(output.data?.boxes).not.toEqual(expect.arrayContaining([{ spentBy: null }]));
     }
   },
   {
@@ -135,7 +136,37 @@ const specs: Spec[] = [
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
       expect(output.data?.boxes).toHaveLength(100);
-      expect(output.data?.boxes).not.toContain((x: Box) => x.spentBy !== null);
+      expect(output.data?.boxes).toEqual(expect.arrayContaining([{ spentBy: null }]));
+    }
+  },
+  {
+    name: "[box] filter by tokenId",
+    query: {
+      query: `query Query($tokenId: String) {
+        boxes(tokenId: $tokenId) {
+          boxId
+          assets {
+            tokenId
+          }
+        }
+      }`,
+      variables: { tokenId: "fbbaac7337d051c10fc3da0ccb864f4d32d40027551e1c3ea3ce361f39b91e40" }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.boxes).toHaveLength(100);
+      if (!output.data) {
+        return;
+      }
+
+      for (const box of output.data.boxes as Box[]) {
+        expect(box.assets).toEqual(
+          expect.arrayContaining([
+            { tokenId: "fbbaac7337d051c10fc3da0ccb864f4d32d40027551e1c3ea3ce361f39b91e40" }
+          ])
+        );
+      }
     }
   }
 ];

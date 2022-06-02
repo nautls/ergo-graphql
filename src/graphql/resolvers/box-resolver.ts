@@ -23,6 +23,9 @@ class BoxesQueryArgs {
   spent?: boolean;
 
   @Field(() => String, { nullable: true })
+  tokenId?: string;
+
+  @Field(() => String, { nullable: true })
   ergoTree?: string;
 
   @Field(() => String, { nullable: true })
@@ -41,6 +44,7 @@ export class BoxResolver {
       headerId,
       ergoTree,
       ergoTreeTemplateHash,
+      tokenId,
       spent
     }: BoxesQueryArgs,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
@@ -58,6 +62,7 @@ export class BoxResolver {
         ergoTreeTemplateHash
       }),
       spent,
+      tokenId,
       skip,
       take
     });
