@@ -1,12 +1,29 @@
-import { unionBy } from "lodash";
-import { AssetEntity, BoxEntity, InputEntity, TokenEntity, TransactionEntity } from "../entities";
+import { isEmpty, unionBy } from "lodash";
+import {
+  AssetEntity,
+  BoxEntity,
+  BoxRegisterEntity,
+  InputEntity,
+  TokenEntity,
+  TransactionEntity
+} from "../entities";
 import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
 
+type Registers = {
+  R4?: string;
+  R5?: string;
+  R6?: string;
+  R7?: string;
+  R8?: string;
+  R9?: string;
+};
+
 type BoxFindOptions = FindManyParams<BoxEntity> & {
   spent?: boolean;
   tokenId?: string;
+  registers?: Registers;
 };
 
 export class BoxRepository extends BaseRepository<BoxEntity> {
@@ -15,7 +32,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
   }
 
   public override find(options: BoxFindOptions): Promise<BoxEntity[]> {
-    const { spent, tokenId } = options;
+    const { spent, tokenId, registers } = options;
     return this.findBase(options, (query) => {
       if (spent !== undefined && spent !== null) {
         query = query.leftJoin(
@@ -34,6 +51,21 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
           "asset.boxId = box.boxId and asset.tokenId = :tokenId",
           { tokenId }
         );
+      }
+
+      if (registers && !isEmpty(registers)) {
+        query = query.leftJoin(BoxRegisterEntity, "rx", `${this.alias}.boxId = rx.boxId`);
+        for (const key of Object.keys(registers)) {
+          const value = registers[key as keyof Registers];
+          if (!value) {
+            continue;
+          }
+
+          query = query.andWhere(`rx.registerId = :key and rx.serializedValue = :value`, {
+            key,
+            value
+          });
+        }
       }
 
       return query;

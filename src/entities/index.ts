@@ -11,6 +11,7 @@ export * from "./epochs-parameter-entity";
 export * from "./extension-entity";
 export * from "./header-entity";
 export * from "./script-constant-entity";
+export * from "./box-register-entity";
 export * from "./unconfirmed-asset-entity";
 export * from "./unconfirmed-box-entity";
 export * from "./unconfirmed-data-input-entity";

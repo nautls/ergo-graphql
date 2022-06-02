@@ -3,6 +3,7 @@ import { AssetEntity } from "./asset-entity";
 import { InputEntity } from "./input-entity";
 import { TransactionEntity } from "./transaction-entity";
 import { BoxEntityBase } from "./base-types/box-entity-base";
+import { BoxRegisterEntity } from "./box-register-entity";
 
 /* 
   Schema 
@@ -44,6 +45,9 @@ export class BoxEntity extends BoxEntityBase {
 
   @OneToMany(() => AssetEntity, (asset) => asset.box)
   assets!: AssetEntity[];
+
+  @OneToMany(() => BoxRegisterEntity, (asset) => asset.box)
+  registers!: AssetEntity[];
 
   @ManyToOne(() => TransactionEntity, (tx) => tx.inputs)
   @JoinColumn({ name: "tx_id" })
