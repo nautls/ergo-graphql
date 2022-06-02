@@ -28,48 +28,75 @@ type BoxFindOptions = FindManyParams<BoxEntity> & {
 
 export class BoxRepository extends BaseRepository<BoxEntity> {
   constructor(context: RepositoryDataContext) {
-    super(BoxEntity, "box", context, { mainChain: true });
+    super(BoxEntity, "box", context);
   }
 
   public override find(options: BoxFindOptions): Promise<BoxEntity[]> {
-    const { spent, tokenId, registers } = options;
-    return this.findBase(options, (query) => {
-      if (spent !== undefined && spent !== null) {
-        query = query.leftJoin(
-          InputEntity,
-          "input",
-          `input.boxId = ${this.alias}.boxId and input.mainChain = true`
-        );
+    const { spent, tokenId, registers, where, skip, take } = options;
+    let idsQuery = this.createQueryBuilder()
+      .select(`${this.alias}.boxId`)
+      .andWhere(`${this.alias}.mainChain = true`)
+      .skip(skip)
+      .take(take);
 
-        query = spent ? query.where("input.boxId IS NOT NULL") : query.where("input.boxId IS NULL");
-      }
+    if (where && !isEmpty(where)) {
+      idsQuery = idsQuery.where(where);
+    }
 
-      if (tokenId) {
-        query = query.innerJoin(
-          AssetEntity,
-          "asset",
-          "asset.boxId = box.boxId and asset.tokenId = :tokenId",
-          { tokenId }
-        );
-      }
+    if (spent !== undefined && spent !== null) {
+      idsQuery = idsQuery.leftJoin(
+        InputEntity,
+        "input",
+        `input.boxId = ${this.alias}.boxId and input.mainChain = true`
+      );
 
-      if (registers && !isEmpty(registers)) {
-        query = query.leftJoin(BoxRegisterEntity, "rx", `${this.alias}.boxId = rx.boxId`);
-        for (const key of Object.keys(registers)) {
-          const value = registers[key as keyof Registers];
-          if (!value) {
-            continue;
-          }
+      idsQuery = spent
+        ? idsQuery.where("input.boxId IS NOT NULL")
+        : idsQuery.where("input.boxId IS NULL");
+    }
 
-          query = query.andWhere(`rx.registerId = :key and rx.serializedValue = :value`, {
-            key,
-            value
-          });
+    if (tokenId) {
+      idsQuery = idsQuery.innerJoin(
+        AssetEntity,
+        "asset",
+        "asset.boxId = box.boxId and asset.tokenId = :tokenId",
+        { tokenId }
+      );
+    }
+
+    if (registers && !isEmpty(registers)) {
+      idsQuery = idsQuery.leftJoin(BoxRegisterEntity, "rx", `${this.alias}.boxId = rx.boxId`);
+      for (const key of Object.keys(registers)) {
+        const value = registers[key as keyof Registers];
+        if (!value) {
+          continue;
         }
-      }
 
-      return query;
-    });
+        idsQuery = idsQuery.andWhere(
+          `rx.registerId = :${key}_key and rx.serializedValue = :${key}_value`
+        );
+      }
+    }
+
+    return this.findBase({ resolverInfo: options.resolverInfo }, (query) =>
+      query.andWhere(`${this.alias}.boxId in (${idsQuery.getQuery()})`).setParameters(
+        removeUndefined({
+          tokenId,
+          R4_key: "R4",
+          R4_value: registers?.R4,
+          R5_key: "R5",
+          R5_value: registers?.R5,
+          R6_key: "R6",
+          R6_value: registers?.R6,
+          R7_key: "R7",
+          R7_value: registers?.R7,
+          R8_key: "R8",
+          R8_value: registers?.R8,
+          R9_key: "R9",
+          R9_value: registers?.R9
+        })
+      )
+    );
   }
 
   public async sum(options: {

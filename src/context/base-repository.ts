@@ -7,6 +7,7 @@ import GraphQLDatabaseLoader, {
 } from "@mando75/typeorm-graphql-loader";
 import { FindManyParams, FindOneParams, IRepository } from "./repository-interface";
 import { DatabaseContext } from "./database-context";
+import { isEmpty } from "lodash";
 
 export type RepositoryDataContext = {
   dataSource: DataSource;
@@ -59,19 +60,23 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       return this.createGraphQLQueryBuilder()
         .info(options.resolverInfo)
         .ejectQueryBuilder((query) => {
-          query = query
-            .where(this.createWhere(options.where))
-            .skip(options.skip)
-            .take(options.take);
+          query = query.skip(options.skip).take(options.take);
+          const where = this.createWhere(options.where);
+          if (where && !isEmpty(where)) {
+            query = query.where(where);
+          }
+
           return queryCallback ? queryCallback(query) : query;
         })
         .loadMany();
     }
 
-    const query = this.createQueryBuilder()
-      .where(this.createWhere(options.where))
-      .skip(options.skip)
-      .take(options.take);
+    let query = this.createQueryBuilder().skip(options.skip).take(options.take);
+    const where = this.createWhere(options.where);
+    if (where && !isEmpty(where)) {
+      query = query.where(where);
+    }
+
     return (queryCallback ? queryCallback(query) : query).getMany();
   }
 
