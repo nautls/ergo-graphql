@@ -11,7 +11,7 @@ type TransactionFindOptions = FindManyParams<TransactionEntity> & {
 
 export class TransactionRepository extends BaseRepository<TransactionEntity> {
   constructor(context: RepositoryDataContext) {
-    super(TransactionEntity, "tx", context, { mainChain: true });
+    super(TransactionEntity, "tx", context);
   }
 
   public override async find(options: TransactionFindOptions): Promise<TransactionEntity[]> {
@@ -19,7 +19,8 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
 
     let idsQuery = this.repository
       .createQueryBuilder("txId")
-      .where("txId.mainChain = true")
+      .where(options.where || {})
+      .andWhere("txId.mainChain = true")
       .skip(options.skip)
       .take(options.take);
 
@@ -40,9 +41,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       idsQuery = idsQuery.andWhere("txId.inclusionHeight <= :maxHeight", { maxHeight });
     }
 
-    options.take = undefined;
-    options.skip = undefined;
-    return this.findBase(options, (query) =>
+    return this.findBase({ resolverInfo: options.resolverInfo }, (query) =>
       query
         .andWhere(`${this.alias}.transactionId in (${idsQuery.getQuery()})`)
         .setParameters(removeUndefined({ height: maxHeight, maxHeight, minHeight, address }))

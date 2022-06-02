@@ -8,8 +8,7 @@ import { initializeDataSource } from "../src/data-source";
 import { generateSchema } from "../src/graphql/schema";
 import { DatabaseContext } from "../src/context/database-context";
 import { DataSource } from "typeorm";
-import { Asset, Box } from "../src/graphql";
-import { arrayContains } from "class-validator";
+import { Box } from "../src/graphql";
 
 type Spec = {
   name: string;
@@ -63,7 +62,7 @@ const specs: Spec[] = [
     }
   },
   {
-    name: "[transactions] filter by address and height",
+    name: "[transactions] filter by address and max height",
     query: {
       query: `query Query($address: String, $maxHeight: Int) {
         transactions(address: $address, maxHeight: $maxHeight) {
