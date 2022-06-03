@@ -2,8 +2,6 @@ import "dotenv/config";
 import "reflect-metadata";
 import "./prototypes";
 
-import { simpleEstimator, fieldExtensionsEstimator } from "graphql-query-complexity";
-import { createComplexityPlugin } from "graphql-query-complexity-apollo-plugin";
 import { ApolloServer } from "apollo-server";
 import { initializeDataSource } from "./data-source";
 import { GraphQLSchema } from "graphql";
@@ -31,18 +29,6 @@ async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
     schema,
     context: { repository: new DatabaseContext(dataSource) },
     plugins: [
-      createComplexityPlugin({
-        schema,
-        estimators: [fieldExtensionsEstimator(), simpleEstimator({ defaultComplexity: 1 })],
-        maximumComplexity: MAX_QUERY_COMPLEXITY
-          ? Number.parseInt(MAX_QUERY_COMPLEXITY, 10)
-          : DEFAULT_MAX_QUERY_COMPLEXITY,
-        onComplete: (complexity: number) => {
-          if (TS_NODE_DEV === "true" && complexity > 0) {
-            console.log("Query complexity:", complexity);
-          }
-        }
-      }),
       ApolloServerPluginCacheControl({ defaultMaxAge: MAX_CACHE_AGE, calculateHttpHeaders: true }),
       responseCachePlugin({ cache: new BaseRedisCache({ client: redisClient }) })
     ]
