@@ -12,7 +12,7 @@ declare global {
       REDIS_USER_NAME?: string;
       REDIS_USER_PWD?: string;
 
-      MAX_QUERY_COMPLEXITY?: string;
+      MAX_QUERY_DEPTH?: string;
       TS_NODE_DEV: string;
     }
   }

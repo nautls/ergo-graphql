@@ -2,8 +2,6 @@ import "dotenv/config";
 import "reflect-metadata";
 import "./prototypes";
 
-import { simpleEstimator, fieldExtensionsEstimator } from "graphql-query-complexity";
-import { createComplexityPlugin } from "graphql-query-complexity-apollo-plugin";
 import { ApolloServer } from "apollo-server";
 import { initializeDataSource } from "./data-source";
 import { GraphQLSchema } from "graphql";
@@ -14,10 +12,11 @@ import { BaseRedisCache } from "apollo-server-cache-redis";
 import { redisClient } from "./caching";
 import { blockWatcher } from "./block-watcher";
 import { ApolloServerPluginCacheControl } from "apollo-server-core";
-import { MAX_CACHE_AGE, DEFAULT_MAX_QUERY_COMPLEXITY } from "./consts";
+import { MAX_CACHE_AGE, DEFAULT_MAX_QUERY_DEPTH } from "./consts";
 import { DatabaseContext } from "./context/database-context";
+import depthLimit from "graphql-depth-limit";
 
-const { TS_NODE_DEV, MAX_QUERY_COMPLEXITY } = process.env;
+const { TS_NODE_DEV, MAX_QUERY_DEPTH } = process.env;
 
 (async () => {
   const [dataSource, schema] = await Promise.all([initializeDataSource(), generateSchema()]);
@@ -31,20 +30,19 @@ async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
     schema,
     context: { repository: new DatabaseContext(dataSource) },
     plugins: [
-      createComplexityPlugin({
-        schema,
-        estimators: [fieldExtensionsEstimator(), simpleEstimator({ defaultComplexity: 1 })],
-        maximumComplexity: MAX_QUERY_COMPLEXITY
-          ? Number.parseInt(MAX_QUERY_COMPLEXITY, 10)
-          : DEFAULT_MAX_QUERY_COMPLEXITY,
-        onComplete: (complexity: number) => {
-          if (TS_NODE_DEV === "true" && complexity > 0) {
-            console.log("Query complexity:", complexity);
-          }
-        }
-      }),
       ApolloServerPluginCacheControl({ defaultMaxAge: MAX_CACHE_AGE, calculateHttpHeaders: true }),
       responseCachePlugin({ cache: new BaseRedisCache({ client: redisClient }) })
+    ],
+    validationRules: [
+      depthLimit(
+        MAX_QUERY_DEPTH ? parseInt(MAX_QUERY_DEPTH, 10) : DEFAULT_MAX_QUERY_DEPTH,
+        {},
+        depths => {
+          if(TS_NODE_DEV === "true"){
+            console.log('Query Depths:', depths);
+          }
+        }
+      )
     ]
   });
 
