@@ -1,4 +1,5 @@
 import { isEmpty, unionBy } from "lodash";
+import { QueryBuilder } from "typeorm";
 import {
   AssetEntity,
   BoxEntity,
@@ -33,9 +34,10 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
 
   public override find(options: BoxFindOptions): Promise<BoxEntity[]> {
     const { spent, tokenId, registers, where, skip, take } = options;
-    let idsQuery = this.createQueryBuilder()
-      .select(`${this.alias}.boxId`)
-      .andWhere(`${this.alias}.mainChain = true`)
+    let idsQuery = this.repository
+      .createQueryBuilder("bid")
+      .select("bid.boxId", "boxId")
+      .andWhere("bid.mainChain = true")
       .skip(skip)
       .take(take);
 
@@ -47,7 +49,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       idsQuery = idsQuery.leftJoin(
         InputEntity,
         "input",
-        `input.boxId = ${this.alias}.boxId and input.mainChain = true`
+        "input.boxId = bid.boxId and input.mainChain = true"
       );
 
       idsQuery = spent
@@ -59,13 +61,13 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       idsQuery = idsQuery.innerJoin(
         AssetEntity,
         "asset",
-        "asset.boxId = box.boxId and asset.tokenId = :tokenId",
+        "asset.boxId = bid.boxId and asset.tokenId = :tokenId",
         { tokenId }
       );
     }
 
     if (registers && !isEmpty(registers)) {
-      idsQuery = idsQuery.leftJoin(BoxRegisterEntity, "rx", `${this.alias}.boxId = rx.boxId`);
+      idsQuery = idsQuery.leftJoin(BoxRegisterEntity, "rx", "bid.boxId = rx.boxId");
       for (const key of Object.keys(registers)) {
         const value = registers[key as keyof Registers];
         if (!value) {
@@ -78,8 +80,15 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       }
     }
 
+    const limitQuery = this.dataSource
+      .createQueryBuilder()
+      .select(`DISTINCT("ids"."boxId")`, "boxId")
+      .from(`(${idsQuery.getQuery()})`, "ids")
+      .skip(skip)
+      .take(take);
+
     return this.findBase({ resolverInfo: options.resolverInfo }, (query) =>
-      query.andWhere(`${this.alias}.boxId in (${idsQuery.getQuery()})`).setParameters(
+      query.andWhere(`${this.alias}.boxId in (${limitQuery.getQuery()})`).setParameters(
         removeUndefined({
           tokenId,
           R4_key: "R4",
