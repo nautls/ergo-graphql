@@ -28,13 +28,13 @@ type AddressBalanceAssets {
 }
 
 type Asset implements IAsset {
+  amount: BigInt!
   box: Box!
   boxId: String!
   headerId: String!
   index: Int!
   token: Token!
   tokenId: String!
-  value: BigInt!
 }
 
 scalar BigInt
@@ -121,10 +121,10 @@ type Header {
 }
 
 interface IAsset {
+  amount: BigInt!
   boxId: String!
   index: Int!
   tokenId: String!
-  value: BigInt!
 }
 
 interface IBox {
@@ -227,11 +227,11 @@ type Transaction implements ITransaction {
 }
 
 type UnconfirmedAsset implements IAsset {
+  amount: BigInt!
   box: UnconfirmedBox!
   boxId: String!
   index: Int!
   tokenId: String!
-  value: BigInt!
 }
 
 type UnconfirmedBox implements IBox {

@@ -11,5 +11,5 @@ export abstract class AssetEntityBase extends BaseEntity {
   index!: number;
 
   @Column({ name: "value", type: "bigint" })
-  value!: bigint;
+  amount!: bigint;
 }

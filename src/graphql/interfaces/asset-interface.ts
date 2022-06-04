@@ -12,5 +12,5 @@ export abstract class IAsset {
   index!: number;
 
   @Field()
-  value!: bigint;
+  amount!: bigint;
 }
