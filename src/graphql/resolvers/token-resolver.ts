@@ -12,20 +12,23 @@ class TokensQueryArgs {
 
   @Field(() => String, { nullable: true })
   boxId?: string;
+
+  @Field(() => String, { nullable: true })
+  name?: string;
 }
 
 @Resolver(Token)
 export class TokenResolver {
   @Query(() => [Token])
   async tokens(
-    @Args() { tokenId, boxId }: TokensQueryArgs,
+    @Args() { tokenId, boxId, name }: TokensQueryArgs,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
     return context.repository.tokens.find({
       resolverInfo: info,
-      where: removeUndefined({ tokenId, boxId }),
+      where: removeUndefined({ tokenId, boxId, name }),
       skip,
       take
     });
