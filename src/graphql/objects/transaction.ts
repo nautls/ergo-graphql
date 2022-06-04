@@ -22,7 +22,7 @@ export class Transaction extends ITransaction {
   index!: number;
 
   @Field()
-  globalIndex!: number;
+  globalIndex!: bigint;
 
   @Field()
   mainChain!: boolean;

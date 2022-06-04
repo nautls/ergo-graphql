@@ -37,7 +37,7 @@ export class TransactionEntity extends TransactionEntityBase {
   index!: number;
 
   @Column({ name: "global_index", type: "bigint" })
-  globalIndex!: number;
+  globalIndex!: bigint;
 
   @Column({ name: "main_chain" })
   mainChain!: boolean;

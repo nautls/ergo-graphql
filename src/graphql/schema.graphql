@@ -214,7 +214,7 @@ type Token {
 type Transaction implements ITransaction {
   coinbase: Boolean!
   dataInputs: [DataInput!]!
-  globalIndex: Int!
+  globalIndex: BigInt!
   headerId: String!
   inclusionHeight: Int!
   index: Int!
