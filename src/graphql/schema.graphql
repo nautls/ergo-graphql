@@ -173,6 +173,7 @@ type Input implements IInput {
 scalar JSON
 
 type Mempool {
+  boxes(address: String, boxId: String, ergoTreeTemplateHash: String, skip: Int = 0, take: Int = 100, transactionId: String): [UnconfirmedBox!]!
   size: Int!
   transactions(skip: Int = 0, take: Int = 100): [UnconfirmedTransaction!]!
   transactionsCount: Int!
