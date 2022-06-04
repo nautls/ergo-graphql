@@ -16,7 +16,7 @@ export class Box extends IBox {
   settlementHeight!: number;
 
   @Field()
-  globalIndex!: number;
+  globalIndex!: bigint;
 
   @Field(() => [Asset])
   assets!: Asset[];

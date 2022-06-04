@@ -33,8 +33,8 @@ export class BoxEntity extends BoxEntityBase {
   @Column({ name: "settlement_height" })
   settlementHeight!: number;
 
-  @Column({ name: "global_index" })
-  globalIndex!: number;
+  @Column({ name: "global_index", type: "bigint" })
+  globalIndex!: bigint;
 
   @Column({ name: "main_chain", type: "boolean" })
   mainChain!: boolean;

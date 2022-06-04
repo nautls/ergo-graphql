@@ -11,7 +11,7 @@ type TransactionFindOptions = FindManyParams<TransactionEntity> & {
 
 export class TransactionRepository extends BaseRepository<TransactionEntity> {
   constructor(context: RepositoryDataContext) {
-    super(TransactionEntity, "tx", { context });
+    super(TransactionEntity, "tx", { context, defaults: { orderBy: { globalIndex: "DESC" } } });
   }
 
   public override async find(options: TransactionFindOptions): Promise<TransactionEntity[]> {

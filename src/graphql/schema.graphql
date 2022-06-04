@@ -74,7 +74,7 @@ type Box implements IBox {
   creationHeight: Int!
   ergoTree: String!
   ergoTreeTemplateHash: String!
-  globalIndex: Int!
+  globalIndex: BigInt!
   headerId: String!
   index: Int!
   mainChain: Boolean!

@@ -5,7 +5,7 @@ import GraphQLDatabaseLoader, {
   EjectQueryCallback,
   GraphQLQueryBuilder
 } from "@mando75/typeorm-graphql-loader";
-import { FindManyParams, FindOneParams, IRepository } from "./repository-interface";
+import { FindManyParams, FindOneParams, IRepository, isFindMany } from "./repository-interface";
 import { isEmpty } from "lodash";
 
 export type RepositoryDataContext = {
@@ -23,7 +23,7 @@ export type RepositoryOptions<T> = {
   defaults?: RepositoryDefaults<T>;
 };
 
-type OrderBy<T> = Record<keyof T, "ASC" | "DESC">;
+type OrderBy<T> = Partial<Record<keyof T, "ASC" | "DESC">>;
 
 export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
   protected readonly repository!: Repository<T>;
@@ -63,32 +63,14 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       return this.createGraphQLQueryBuilder()
         .info(options.resolverInfo)
         .ejectQueryBuilder((query) => {
-          query = query.skip(options.skip).take(options.take);
-          const where = this.createWhere(options.where);
-          if (where && !isEmpty(where)) {
-            query = query.where(where);
-          }
-
+          query = this.mountQuery(query as unknown as SelectQueryBuilder<T>, options);
           return queryCallback ? queryCallback(query) : query;
         })
         .loadMany();
     }
 
-    let query = this.createQueryBuilder().skip(options.skip).take(options.take);
-    const where = this.createWhere(options.where);
-    if (where && !isEmpty(where)) {
-      query = query.where(where);
-    }
-
+    const query = this.mountQuery(this.createQueryBuilder(), options);
     return (queryCallback ? queryCallback(query) : query).getMany();
-  }
-
-  private createWhere(where?: Partial<T>): Partial<T> | undefined {
-    if (this.defaults?.where) {
-      return { ...where, ...this.defaults.where };
-    }
-
-    return where;
   }
 
   protected firstBase(
@@ -99,22 +81,40 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       return this.createGraphQLQueryBuilder()
         .info(options.resolverInfo)
         .ejectQueryBuilder((query) => {
-          const where = this.createWhere(options.where);
-          if (where) {
-            query = query.where(where);
-          }
-
+          query = this.mountQuery(query as unknown as SelectQueryBuilder<T>, options);
           return queryCallback ? queryCallback(query) : query;
         })
         .loadOne();
     }
 
-    let query = this.createQueryBuilder();
+    const query = this.mountQuery(this.createQueryBuilder(), options);
+    return (queryCallback ? queryCallback(query) : query).getOne();
+  }
+
+  private mountQuery(query: SelectQueryBuilder<T>, options: FindManyParams<T> | FindOneParams<T>) {
+    if (isFindMany(options)) {
+      query = query.skip(options.skip).take(options.take);
+    }
+
+    if (this.defaults?.orderBy) {
+      for (const key in this.defaults.orderBy) {
+        query = query.addOrderBy(`${this.alias}.${key}`, this.defaults.orderBy[key]);
+      }
+    }
+
     const where = this.createWhere(options.where);
-    if (where) {
+    if (where && !isEmpty(where)) {
       query = query.where(where);
     }
 
-    return (queryCallback ? queryCallback(query) : query).getOne();
+    return query as any;
+  }
+
+  private createWhere(where?: Partial<T>): Partial<T> | undefined {
+    if (this.defaults?.where) {
+      return { ...where, ...this.defaults.where };
+    }
+
+    return where;
   }
 }

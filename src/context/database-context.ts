@@ -38,11 +38,19 @@ export class DatabaseContext {
     this.unconfirmedTransactions = new UnconfirmedTransactionRepository(context);
 
     const defaults = { where: { mainChain: true } };
-    this.blockInfo = new BaseRepository(BlockInfoEntity, "block", { context, defaults });
     this.dataInputs = new BaseRepository(DataInputEntity, "dti", { context, defaults });
     this.inputs = new BaseRepository(InputEntity, "input", { context, defaults });
-    this.headers = new BaseRepository(HeaderEntity, "header", { context, defaults });
     this.tokens = new BaseRepository(TokenEntity, "token", { context });
     this.unconfirmedBoxes = new BaseRepository(UnconfirmedBoxEntity, "u_box", { context });
+
+    this.blockInfo = new BaseRepository(BlockInfoEntity, "block", {
+      context,
+      defaults: { ...defaults, orderBy: { height: "DESC" } }
+    });
+
+    this.headers = new BaseRepository(HeaderEntity, "header", {
+      context,
+      defaults: { ...defaults, orderBy: { height: "DESC" } }
+    });
   }
 }

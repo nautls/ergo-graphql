@@ -28,7 +28,7 @@ type BoxFindOptions = FindManyParams<BoxEntity> & {
 
 export class BoxRepository extends BaseRepository<BoxEntity> {
   constructor(context: RepositoryDataContext) {
-    super(BoxEntity, "box", { context });
+    super(BoxEntity, "box", { context, defaults: { orderBy: { globalIndex: "DESC" } } });
   }
 
   public override find(options: BoxFindOptions): Promise<BoxEntity[]> {
