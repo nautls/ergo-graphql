@@ -5,7 +5,8 @@ import {
   DataInputEntity,
   HeaderEntity,
   InputEntity,
-  TokenEntity
+  TokenEntity,
+  UnconfirmedBoxEntity
 } from "../entities";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { BoxRepository } from "./box-repository";
@@ -21,6 +22,8 @@ export class DatabaseContext {
   public readonly inputs!: IRepository<InputEntity>;
   public readonly headers!: IRepository<HeaderEntity>;
   public readonly tokens!: IRepository<TokenEntity>;
+
+  public readonly unconfirmedBoxes: IRepository<UnconfirmedBoxEntity>;
 
   public readonly unconfirmedTransactions!: UnconfirmedTransactionRepository;
 
@@ -40,5 +43,6 @@ export class DatabaseContext {
     this.inputs = new BaseRepository(InputEntity, "input", { context, defaults });
     this.headers = new BaseRepository(HeaderEntity, "header", { context, defaults });
     this.tokens = new BaseRepository(TokenEntity, "token", { context });
+    this.unconfirmedBoxes = new BaseRepository(UnconfirmedBoxEntity, "u_box", { context });
   }
 }
