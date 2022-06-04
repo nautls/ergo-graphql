@@ -88,23 +88,26 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       .take(take);
 
     return this.findBase({ resolverInfo: options.resolverInfo }, (query) =>
-      query.andWhere(`${this.alias}.boxId in (${limitQuery.getQuery()})`).setParameters(
-        removeUndefined({
-          tokenId,
-          R4_key: "R4",
-          R4_value: registers?.R4,
-          R5_key: "R5",
-          R5_value: registers?.R5,
-          R6_key: "R6",
-          R6_value: registers?.R6,
-          R7_key: "R7",
-          R7_value: registers?.R7,
-          R8_key: "R8",
-          R8_value: registers?.R8,
-          R9_key: "R9",
-          R9_value: registers?.R9
-        })
-      )
+      query
+        .andWhere(`${this.alias}.boxId in (${limitQuery.getQuery()})`)
+        .setParameters(idsQuery.getParameters())
+        .setParameters(
+          removeUndefined({
+            tokenId,
+            R4_key: "R4",
+            R4_value: registers?.R4,
+            R5_key: "R5",
+            R5_value: registers?.R5,
+            R6_key: "R6",
+            R6_value: registers?.R6,
+            R7_key: "R7",
+            R7_value: registers?.R7,
+            R8_key: "R8",
+            R8_value: registers?.R8,
+            R9_key: "R9",
+            R9_value: registers?.R9
+          })
+        )
     );
   }
 

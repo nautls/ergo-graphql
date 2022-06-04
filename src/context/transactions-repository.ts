@@ -19,10 +19,13 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
 
     let idsQuery = this.repository
       .createQueryBuilder("txId")
-      .where(options.where || {})
       .andWhere("txId.mainChain = true")
       .skip(options.skip)
       .take(options.take);
+
+    if (options.where) {
+      idsQuery = idsQuery.where(options.where);
+    }
 
     if (address) {
       const inputQuery = this.createInputQuery(maxHeight);
@@ -44,6 +47,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
     return this.findBase({ resolverInfo: options.resolverInfo }, (query) =>
       query
         .andWhere(`${this.alias}.transactionId in (${idsQuery.getQuery()})`)
+        .setParameters(idsQuery.getParameters())
         .setParameters(removeUndefined({ height: maxHeight, maxHeight, minHeight, address }))
     );
   }
