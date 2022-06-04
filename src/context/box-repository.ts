@@ -1,5 +1,4 @@
 import { isEmpty, unionBy } from "lodash";
-import { QueryBuilder } from "typeorm";
 import {
   AssetEntity,
   BoxEntity,
@@ -29,7 +28,7 @@ type BoxFindOptions = FindManyParams<BoxEntity> & {
 
 export class BoxRepository extends BaseRepository<BoxEntity> {
   constructor(context: RepositoryDataContext) {
-    super(BoxEntity, "box", context);
+    super(BoxEntity, "box", { context });
   }
 
   public override find(options: BoxFindOptions): Promise<BoxEntity[]> {

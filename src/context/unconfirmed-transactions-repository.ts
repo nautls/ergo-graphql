@@ -3,7 +3,7 @@ import { BaseRepository, RepositoryDataContext } from "./base-repository";
 
 export class UnconfirmedTransactionRepository extends BaseRepository<UnconfirmedTransactionEntity> {
   constructor(context: RepositoryDataContext) {
-    super(UnconfirmedTransactionEntity, "utx", context);
+    super(UnconfirmedTransactionEntity, "utx", { context });
   }
 
   public async count(): Promise<number> {

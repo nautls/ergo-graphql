@@ -27,18 +27,18 @@ export class DatabaseContext {
   constructor(dataSource: DataSource) {
     const context: RepositoryDataContext = {
       dataSource,
-      graphQLDataLoader: new GraphQLDatabaseLoader(dataSource),
-      context: this
+      graphQLDataLoader: new GraphQLDatabaseLoader(dataSource)
     };
 
     this.transactions = new TransactionRepository(context);
-    this.blockInfo = new BaseRepository(BlockInfoEntity, "box", context, { mainChain: true });
     this.boxes = new BoxRepository(context);
-    this.dataInputs = new BaseRepository(DataInputEntity, "dti", context, { mainChain: true });
-    this.inputs = new BaseRepository(InputEntity, "input", context, { mainChain: true });
-    this.headers = new BaseRepository(HeaderEntity, "header", context, { mainChain: true });
-    this.tokens = new BaseRepository(TokenEntity, "token", context);
-
     this.unconfirmedTransactions = new UnconfirmedTransactionRepository(context);
+
+    const defaults = { where: { mainChain: true } };
+    this.blockInfo = new BaseRepository(BlockInfoEntity, "box", { context, defaults });
+    this.dataInputs = new BaseRepository(DataInputEntity, "dti", { context, defaults });
+    this.inputs = new BaseRepository(InputEntity, "input", { context, defaults });
+    this.headers = new BaseRepository(HeaderEntity, "header", { context, defaults });
+    this.tokens = new BaseRepository(TokenEntity, "token", { context });
   }
 }

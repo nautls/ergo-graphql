@@ -6,38 +6,41 @@ import GraphQLDatabaseLoader, {
   GraphQLQueryBuilder
 } from "@mando75/typeorm-graphql-loader";
 import { FindManyParams, FindOneParams, IRepository } from "./repository-interface";
-import { DatabaseContext } from "./database-context";
 import { isEmpty } from "lodash";
 
 export type RepositoryDataContext = {
   dataSource: DataSource;
   graphQLDataLoader: GraphQLDatabaseLoader;
-  context: DatabaseContext;
 };
+
+export type RepositoryDefaults<T> = {
+  where?: Partial<T>;
+  orderBy?: OrderBy<T>;
+};
+
+export type RepositoryOptions<T> = {
+  context: RepositoryDataContext;
+  defaults?: RepositoryDefaults<T>;
+};
+
+type OrderBy<T> = Record<keyof T, "ASC" | "DESC">;
 
 export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
   protected readonly repository!: Repository<T>;
   protected readonly dataSource!: DataSource;
 
   protected readonly createGraphQLQueryBuilder!: () => GraphQLQueryBuilder<any>;
-  protected readonly context!: DatabaseContext;
   protected readonly alias!: string;
 
-  private readonly baseFilters?: Partial<T>;
+  private readonly defaults?: RepositoryDefaults<T>;
 
-  constructor(
-    entity: EntityTarget<T>,
-    alias: string,
-    context: RepositoryDataContext,
-    baseFilter?: Partial<T>
-  ) {
+  constructor(entity: EntityTarget<T>, alias: string, options: RepositoryOptions<T>) {
     this.alias = alias;
-    this.dataSource = context.dataSource;
-    this.repository = context.dataSource.getRepository(entity);
+    this.dataSource = options.context.dataSource;
+    this.repository = options.context.dataSource.getRepository(entity);
     this.createGraphQLQueryBuilder = () =>
-      context.graphQLDataLoader.loadEntity(entity as any, alias);
-    this.context = context.context;
-    this.baseFilters = baseFilter;
+      options.context.graphQLDataLoader.loadEntity(entity as any, alias);
+    this.defaults = options.defaults;
   }
 
   protected createQueryBuilder(): SelectQueryBuilder<T> {
@@ -80,12 +83,12 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
     return (queryCallback ? queryCallback(query) : query).getMany();
   }
 
-  private createWhere(where?: Partial<T>): Partial<T> {
-    if (this.baseFilters) {
-      return { ...where, ...this.baseFilters };
+  private createWhere(where?: Partial<T>): Partial<T> | undefined {
+    if (this.defaults?.where) {
+      return { ...where, ...this.defaults.where };
     }
 
-    return where || {};
+    return where;
   }
 
   protected firstBase(
@@ -96,13 +99,22 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       return this.createGraphQLQueryBuilder()
         .info(options.resolverInfo)
         .ejectQueryBuilder((query) => {
-          query = query.where(this.createWhere(options.where));
+          const where = this.createWhere(options.where);
+          if (where) {
+            query = query.where(where);
+          }
+
           return queryCallback ? queryCallback(query) : query;
         })
         .loadOne();
     }
 
-    const query = this.createQueryBuilder().where(this.createWhere(options.where));
+    let query = this.createQueryBuilder();
+    const where = this.createWhere(options.where);
+    if (where) {
+      query = query.where(where);
+    }
+
     return (queryCallback ? queryCallback(query) : query).getOne();
   }
 }
