@@ -67,7 +67,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
 
     if (registers && !isEmpty(registers)) {
       idsQuery = idsQuery.leftJoin(BoxRegisterEntity, "rx", "bid.boxId = rx.boxId");
-      for (const key of Object.keys(registers)) {
+      for (const key in Object.keys(registers)) {
         const value = registers[key as keyof Registers];
         if (!value) {
           continue;
@@ -93,17 +93,17 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
         .setParameters(
           removeUndefined({
             tokenId,
-            R4_key: "R4",
+            R4_key: registers?.R4 ? "R4" : undefined,
             R4_value: registers?.R4,
-            R5_key: "R5",
+            R5_key: registers?.R5 ? "R5" : undefined,
             R5_value: registers?.R5,
-            R6_key: "R6",
+            R6_key: registers?.R6 ? "R6" : undefined,
             R6_value: registers?.R6,
-            R7_key: "R7",
+            R7_key: registers?.R7 ? "R7" : undefined,
             R7_value: registers?.R7,
-            R8_key: "R8",
+            R8_key: registers?.R8 ? "R8" : undefined,
             R8_value: registers?.R8,
-            R9_key: "R9",
+            R9_key: registers?.R9 ? "R9" : undefined,
             R9_value: registers?.R9
           })
         )
