@@ -6,6 +6,12 @@ import { Mempool } from "../objects";
 import { PaginationArguments } from "./pagination-arguments";
 
 @ArgsType()
+class UnconfirmedTransactionArguments {
+  @Field(() => String, { nullable: true })
+  transactionId?: string;
+}
+
+@ArgsType()
 class UnconfirmedBoxArguments {
   @Field(() => String, { nullable: true })
   boxId?: string;
@@ -41,11 +47,13 @@ export class MempoolResolver {
   @FieldResolver()
   async transactions(
     @Args({ validate: true }) { skip, take }: PaginationArguments,
+    @Args() { transactionId }: UnconfirmedTransactionArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
     return context.repository.unconfirmedTransactions.find({
       resolverInfo: info,
+      where: removeUndefined({ transactionId }),
       skip,
       take
     });
