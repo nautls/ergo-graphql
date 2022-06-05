@@ -10,7 +10,7 @@ class BlockHeadersQueryArgs extends PaginationArguments {
   @Field(() => String, { nullable: true })
   parentId?: string;
 
-  @Field(() => Number, { nullable: true })
+  @Field(() => Int, { nullable: true })
   height?: number;
 
   @Field(() => Int, { defaultValue: 10 })
