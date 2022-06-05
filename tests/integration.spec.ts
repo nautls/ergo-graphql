@@ -115,7 +115,7 @@ const specs: Spec[] = [
     assert(output) {
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
-      expect(output.data?.boxes).toHaveLength(100);
+      expect(output.data?.boxes).toHaveLength(50);
       expect(output.data?.boxes).not.toEqual(expect.arrayContaining([{ spentBy: null }]));
     }
   },
@@ -134,7 +134,7 @@ const specs: Spec[] = [
     assert(output) {
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
-      expect(output.data?.boxes).toHaveLength(100);
+      expect(output.data?.boxes).toHaveLength(50);
       expect(output.data?.boxes).toEqual(expect.arrayContaining([{ spentBy: null }]));
     }
   },
@@ -154,7 +154,7 @@ const specs: Spec[] = [
     assert(output) {
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
-      expect(output.data?.boxes).toHaveLength(100);
+      expect(output.data?.boxes).toHaveLength(50);
       if (!output.data) {
         return;
       }
