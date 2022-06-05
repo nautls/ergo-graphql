@@ -67,7 +67,8 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
 
     if (registers && !isEmpty(registers)) {
       idsQuery = idsQuery.leftJoin(BoxRegisterEntity, "rx", "bid.boxId = rx.boxId");
-      for (const key in Object.keys(registers)) {
+      for (const key in registers) {
+        console.log(key);
         const value = registers[key as keyof Registers];
         if (!value) {
           continue;
