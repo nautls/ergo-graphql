@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn } from "typeorm";
+import { Entity, Column, PrimaryColumn, BaseEntity } from "typeorm";
 
 /*
   Schema
@@ -17,7 +17,7 @@ import { Entity, Column, PrimaryColumn } from "typeorm";
 */
 
 @Entity({ name: "epochs_parameters" })
-export class EpochsParameterEntity {
+export class EpochsParameterEntity extends BaseEntity {
   @PrimaryColumn({ name: "id" })
   id!: number;
 
