@@ -8,6 +8,9 @@ import { PaginationArguments } from "./pagination-arguments";
 @ArgsType()
 class TransactionArguments {
   @Field(() => String, { nullable: true })
+  transactionId?: string;
+
+  @Field(() => String, { nullable: true })
   headerId?: string;
 
   @Field(() => Int, { nullable: true })
@@ -28,14 +31,18 @@ export class TransactionResolver {
   @Query(() => [Transaction])
   async transactions(
     @Args()
-    { headerId, inclusionHeight, address, minHeight, maxHeight }: TransactionArguments,
+    { transactionId, headerId, inclusionHeight, address, minHeight, maxHeight }: TransactionArguments,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
     return await context.repository.transactions.find({
       resolverInfo: info,
-      where: removeUndefined({ headerId, inclusionHeight }),
+      where: removeUndefined({
+        transactionId,
+        headerId,
+        inclusionHeight
+      }),
       address,
       minHeight,
       maxHeight,

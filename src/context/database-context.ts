@@ -6,6 +6,7 @@ import {
   HeaderEntity,
   InputEntity,
   TokenEntity,
+  EpochsParameterEntity,
   UnconfirmedBoxEntity
 } from "../entities";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
@@ -22,6 +23,8 @@ export class DatabaseContext {
   public readonly inputs!: IRepository<InputEntity>;
   public readonly headers!: IRepository<HeaderEntity>;
   public readonly tokens!: IRepository<TokenEntity>;
+
+  public readonly epochs!: IRepository<EpochsParameterEntity>;
 
   public readonly unconfirmedBoxes: IRepository<UnconfirmedBoxEntity>;
 
@@ -41,6 +44,7 @@ export class DatabaseContext {
     this.dataInputs = new BaseRepository(DataInputEntity, "dti", { context, defaults });
     this.inputs = new BaseRepository(InputEntity, "input", { context, defaults });
     this.tokens = new BaseRepository(TokenEntity, "token", { context });
+    this.epochs = new BaseRepository(EpochsParameterEntity, "epochs", { context });
     this.unconfirmedBoxes = new BaseRepository(UnconfirmedBoxEntity, "u_box", { context });
 
     this.blockInfo = new BaseRepository(BlockInfoEntity, "block", {
