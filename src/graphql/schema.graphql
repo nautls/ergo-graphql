@@ -189,13 +189,13 @@ scalar JSON
 type Mempool {
   boxes(address: String, boxId: String, ergoTreeTemplateHash: String, skip: Int = 0, take: Int = 50, transactionId: String): [UnconfirmedBox!]!
   size: Int!
-  transactions(skip: Int = 0, take: Int = 50): [UnconfirmedTransaction!]!
+  transactions(skip: Int = 0, take: Int = 50, transactionId: String): [UnconfirmedTransaction!]!
   transactionsCount: Int!
 }
 
 type Query {
   addresses(addresses: [String!]!, atHeight: Int): [Address!]!
-  blockHeaders(height: Int, parentId: String, skip: Int = 0, take: Int = 10): [Header!]!
+  blockHeaders(headerId: String, height: Int, parentId: String, skip: Int = 0, take: Int = 10): [Header!]!
   blocks(headerId: String, height: Int, skip: Int = 0, take: Int = 10): [Block!]!
   boxes(address: String, boxId: String, ergoTree: String, ergoTreeTemplateHash: String, headerId: String, registers: Registers, skip: Int = 0, spent: Boolean, take: Int = 50, tokenId: String, transactionId: String): [Box!]!
   dataInputs(boxId: String, headerId: String, skip: Int = 0, take: Int = 50, transactionId: String): [DataInput!]!
@@ -203,7 +203,7 @@ type Query {
   inputs(boxId: String, headerId: String, skip: Int = 0, take: Int = 50, transactionId: String): [Input!]!
   mempool: Mempool!
   tokens(boxId: String, name: String, skip: Int = 0, take: Int = 50, tokenId: String): [Token!]!
-  transactions(address: String, headerId: String, inclusionHeight: Int, maxHeight: Int, minHeight: Int, skip: Int = 0, take: Int = 50): [Transaction!]!
+  transactions(address: String, headerId: String, inclusionHeight: Int, maxHeight: Int, minHeight: Int, skip: Int = 0, take: Int = 50, transactionId: String): [Transaction!]!
 }
 
 input Registers {

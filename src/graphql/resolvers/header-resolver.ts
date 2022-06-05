@@ -8,6 +8,9 @@ import { PaginationArguments } from "./pagination-arguments";
 @ArgsType()
 class BlockHeadersQueryArgs extends PaginationArguments {
   @Field(() => String, { nullable: true })
+  headerId?: string;
+
+  @Field(() => String, { nullable: true })
   parentId?: string;
 
   @Field(() => Number, { nullable: true })
@@ -21,13 +24,14 @@ class BlockHeadersQueryArgs extends PaginationArguments {
 export class HeaderResolver {
   @Query(() => [Header])
   async blockHeaders(
-    @Args({ validate: true }) { parentId, height, skip, take }: BlockHeadersQueryArgs,
+    @Args({ validate: true }) { headerId, parentId, height, skip, take }: BlockHeadersQueryArgs,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
     return context.repository.headers.find({
       resolverInfo: info,
       where: removeUndefined({
+        headerId,
         parentId,
         height
       }),
