@@ -2,6 +2,7 @@ import { Field, ObjectType } from "type-graphql";
 import { JSONScalar } from "../scalars";
 import { AdProof } from "./ad-proof";
 import { Extension } from "./extension";
+import { Block } from "./block";
 
 @ObjectType({ simpleResolvers: true })
 export class Header {
@@ -60,6 +61,9 @@ export class Header {
 
   @Field(() => AdProof)
   adProof!: AdProof[];
+
+  @Field(() => Block)
+  blockInfo!: Block[];
 
   minerPk!: string;
   w!: string;
