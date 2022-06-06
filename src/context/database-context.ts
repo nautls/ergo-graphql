@@ -45,7 +45,7 @@ export class DatabaseContext {
     this.inputs = new BaseRepository(InputEntity, "input", { context, defaults });
     this.tokens = new BaseRepository(TokenEntity, "token", { context });
     this.epochs = new BaseRepository(EpochsParameterEntity, "epochs", { context });
-    this.unconfirmedBoxes = new BaseRepository(UnconfirmedBoxEntity, "u_box", { context });
+    this.unconfirmedBoxes = new BaseRepository(UnconfirmedBoxEntity, "ubox", { context });
 
     this.blockInfo = new BaseRepository(BlockInfoEntity, "block", {
       context,
