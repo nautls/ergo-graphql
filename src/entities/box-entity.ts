@@ -46,8 +46,8 @@ export class BoxEntity extends BoxEntityBase {
   @OneToMany(() => AssetEntity, (asset) => asset.box)
   assets!: AssetEntity[];
 
-  @OneToMany(() => BoxRegisterEntity, (asset) => asset.box)
-  registers!: AssetEntity[];
+  @OneToMany(() => BoxRegisterEntity, (register) => register.box)
+  registers!: BoxRegisterEntity[];
 
   @ManyToOne(() => TransactionEntity, (tx) => tx.inputs)
   @JoinColumn({ name: "tx_id" })

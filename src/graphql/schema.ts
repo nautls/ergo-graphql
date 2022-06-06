@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { join } from "path";
 import { buildSchema, Int } from "type-graphql";
 import { BigIntScalar } from "./scalars";

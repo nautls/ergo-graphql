@@ -1,4 +1,5 @@
 import { Field, ObjectType } from "type-graphql";
+import { Header } from "./header";
 
 @ObjectType({ simpleResolvers: true })
 export class AdProof {
@@ -10,4 +11,7 @@ export class AdProof {
 
   @Field()
   digest!: string;
+
+  @Field(() => Header)
+  header!: Header;
 }
