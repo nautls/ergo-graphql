@@ -5,6 +5,7 @@
 
 type AdProof {
   digest: String!
+  header: Header!
   headerId: String!
   proofBytes: String!
 }
@@ -118,6 +119,7 @@ type Extension {
 type Header {
   adProof: AdProof!
   adProofsRoot: String!
+  blockInfo: Block!
   difficulty: Int!
   extension: Extension!
   extensionHash: String!
