@@ -28,6 +28,7 @@ async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
   const server = new ApolloServer({
     csrfPrevention: true,
     schema,
+    introspection: true,
     context: { repository: new DatabaseContext(dataSource) },
     plugins: [
       ApolloServerPluginCacheControl({ defaultMaxAge: MAX_CACHE_AGE, calculateHttpHeaders: true }),
@@ -37,9 +38,9 @@ async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
       depthLimit(
         MAX_QUERY_DEPTH ? parseInt(MAX_QUERY_DEPTH, 10) : DEFAULT_MAX_QUERY_DEPTH,
         {},
-        depths => {
-          if(TS_NODE_DEV === "true"){
-            console.log('Query Depths:', depths);
+        (depths) => {
+          if (TS_NODE_DEV === "true") {
+            console.log("Query Depths:", depths);
           }
         }
       )

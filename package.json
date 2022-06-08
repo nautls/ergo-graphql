@@ -5,7 +5,6 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "ts-node-dev --transpile-only --no-notify --exit-child src/index.ts",
-    "gen": "ts-node --transpile-only src/graphql/schema.ts",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "build": "tsc",
