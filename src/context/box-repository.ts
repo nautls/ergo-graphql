@@ -28,86 +28,65 @@ type BoxFindOptions = FindManyParams<BoxEntity> & {
 
 export class BoxRepository extends BaseRepository<BoxEntity> {
   constructor(context: RepositoryDataContext) {
-    super(BoxEntity, "box", { context, defaults: { orderBy: { globalIndex: "DESC" } } });
+    super(BoxEntity, "box", {
+      context,
+      defaults: { where: { mainChain: true }, orderBy: { globalIndex: "DESC" } }
+    });
   }
 
   public override find(options: BoxFindOptions): Promise<BoxEntity[]> {
-    const { spent, tokenId, registers, where, skip, take } = options;
-    let idsQuery = this.repository
-      .createQueryBuilder("bid")
-      .select("bid.boxId", "boxId")
-      .andWhere("bid.mainChain = true")
-      .skip(skip)
-      .take(take);
+    const { spent, tokenId, registers } = options;
 
-    if (where && !isEmpty(where)) {
-      idsQuery = idsQuery.where(where);
-    }
-
-    if (spent !== undefined && spent !== null) {
-      idsQuery = idsQuery.leftJoin(
-        InputEntity,
-        "input",
-        "input.boxId = bid.boxId and input.mainChain = true"
-      );
-
-      idsQuery = spent
-        ? idsQuery.where("input.boxId IS NOT NULL")
-        : idsQuery.where("input.boxId IS NULL");
-    }
-
-    if (tokenId) {
-      idsQuery = idsQuery.innerJoin(
-        AssetEntity,
-        "asset",
-        "asset.boxId = bid.boxId and asset.tokenId = :tokenId",
-        { tokenId }
-      );
-    }
-
-    if (registers && !isEmpty(registers)) {
-      idsQuery = idsQuery.leftJoin(BoxRegisterEntity, "rx", "bid.boxId = rx.boxId");
-      for (const key in registers) {
-        const value = registers[key as keyof Registers];
-        if (!value) {
-          continue;
-        }
-
-        idsQuery = idsQuery.andWhere(
-          `rx.registerId = :${key}_key AND rx.serializedValue = :${key}_value`
+    return this.optimizedBaseFind(options, (query) => {
+      if (spent !== undefined && spent !== null) {
+        query = query.leftJoin(
+          InputEntity,
+          "input",
+          "input.boxId = box.boxId AND input.mainChain = true"
         );
+
+        query = spent
+          ? query.andWhere("input.boxId IS NOT NULL")
+          : query.andWhere("input.boxId IS NULL");
       }
-    }
 
-    const limitQuery = this.dataSource
-      .createQueryBuilder()
-      .select(`DISTINCT("ids"."boxId")`, "boxId")
-      .from(`(${idsQuery.getQuery()})`, "ids")
-      .skip(skip)
-      .take(take);
+      if (tokenId) {
+        query = query
+          .leftJoinAndMapOne("one-to-one", AssetEntity, "asset", "asset.boxId = box.boxId")
+          .andWhere("asset.tokenId = :tokenId", { tokenId });
+      }
 
-    return this.findBase({ resolverInfo: options.resolverInfo }, (query) =>
-      query
-        .andWhere(`${this.alias}.boxId in (${limitQuery.getQuery()})`)
-        .setParameters(idsQuery.getParameters())
-        .setParameters(
-          removeUndefined({
-            tokenId,
-            R4_key: registers?.R4 ? "R4" : undefined,
-            R4_value: registers?.R4,
-            R5_key: registers?.R5 ? "R5" : undefined,
-            R5_value: registers?.R5,
-            R6_key: registers?.R6 ? "R6" : undefined,
-            R6_value: registers?.R6,
-            R7_key: registers?.R7 ? "R7" : undefined,
-            R7_value: registers?.R7,
-            R8_key: registers?.R8 ? "R8" : undefined,
-            R8_value: registers?.R8,
-            R9_key: registers?.R9 ? "R9" : undefined,
-            R9_value: registers?.R9
-          })
-        )
-    );
+      if (registers && !isEmpty(registers)) {
+        query = query.leftJoin(BoxRegisterEntity, "rx", "box.boxId = rx.boxId");
+        for (const key in registers) {
+          const value = registers[key as keyof Registers];
+          if (!value) {
+            continue;
+          }
+
+          query = query.andWhere(
+            `rx.registerId = :${key}_key AND rx.serializedValue = :${key}_value`,
+            removeUndefined({
+              tokenId,
+              R4_key: registers?.R4 ? "R4" : undefined,
+              R4_value: registers?.R4,
+              R5_key: registers?.R5 ? "R5" : undefined,
+              R5_value: registers?.R5,
+              R6_key: registers?.R6 ? "R6" : undefined,
+              R6_value: registers?.R6,
+              R7_key: registers?.R7 ? "R7" : undefined,
+              R7_value: registers?.R7,
+              R8_key: registers?.R8 ? "R8" : undefined,
+              R8_value: registers?.R8,
+              R9_key: registers?.R9 ? "R9" : undefined,
+              R9_value: registers?.R9
+            })
+          );
+        }
+      }
+
+      return query;
+    });
   }
 
   public async sum(options: {
