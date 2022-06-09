@@ -5,7 +5,7 @@ import GraphQLDatabaseLoader, {
   EjectQueryCallback,
   GraphQLQueryBuilder
 } from "@mando75/typeorm-graphql-loader";
-import { FindManyParams, FindOneParams, IRepository, isFindMany } from "./repository-interface";
+import { FindManyParams, FindOneParams, IRepository } from "./repository-interface";
 import { isEmpty } from "lodash";
 
 export type RepositoryDataContext = {
@@ -24,6 +24,8 @@ export type RepositoryOptions<T> = {
 };
 
 type OrderBy<T> = Partial<Record<keyof T, "ASC" | "DESC">>;
+
+type QueryCallback<T extends BaseEntity> = (query: SelectQueryBuilder<T>) => SelectQueryBuilder<T>;
 
 export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
   protected readonly repository!: Repository<T>;
@@ -63,14 +65,72 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       return this.createGraphQLQueryBuilder()
         .info(options.resolverInfo)
         .ejectQueryBuilder((query) => {
-          query = this.mountQuery(query as unknown as SelectQueryBuilder<T>, options);
+          query = this.addWhere(query as unknown as SelectQueryBuilder<T>, options.where);
           return queryCallback ? queryCallback(query) : query;
         })
         .loadMany();
     }
 
-    const query = this.mountQuery(this.createQueryBuilder(), options);
+    const query = this.addWhere(this.createQueryBuilder(), options.where);
     return (queryCallback ? queryCallback(query) : query).getMany();
+  }
+
+  private hasJoin(query: SelectQueryBuilder<unknown>) {
+    console.log(query.expressionMap.joinAttributes.map((x) => x.alias));
+    return !isEmpty(query.expressionMap.joinAttributes);
+  }
+
+  protected optimizedBaseFind(
+    options: FindManyParams<T>,
+    queryCallback?: QueryCallback<T>
+  ): Promise<T[]> {
+    const primaryCol = this.repository.metadata.primaryColumns[0]?.propertyName;
+    if (!primaryCol) {
+      throw Error(`Primary column not found for ${this.repository.metadata.name}`);
+    }
+
+    let baseQuery = this.createQueryBuilder();
+    if (queryCallback) {
+      baseQuery = queryCallback(baseQuery);
+    }
+    baseQuery = this.addWhere(baseQuery, options.where);
+    baseQuery = baseQuery.select(`${this.alias}.${primaryCol}`, primaryCol);
+    baseQuery = this.selectOrderColumns(baseQuery, this.alias);
+
+    const limitQueryAlias = `l_${this.alias}`;
+    let limitQuery = this.dataSource
+      .createQueryBuilder()
+      .from(`(${baseQuery.getQuery()})`, limitQueryAlias)
+      .skip(options.skip)
+      .take(options.take);
+
+    if (this.hasJoin(baseQuery)) {
+      limitQuery = limitQuery.select(`DISTINCT("${limitQueryAlias}"."${primaryCol}")`, primaryCol);
+
+      if (!isEmpty(this.defaults?.orderBy)) {
+        limitQuery = this.selectOrderColumns(limitQuery, limitQueryAlias, { wrap: true });
+        limitQuery = this.setDefaultOrder(limitQuery, limitQueryAlias, { wrap: true });
+        limitQuery = this.dataSource
+          .createQueryBuilder()
+          .select(`"ids"."boxId"`)
+          .from(`(${limitQuery.getQuery()})`, "ids");
+      }
+    } else {
+      limitQuery = limitQuery.select(`"${limitQueryAlias}"."${primaryCol}"`, primaryCol);
+      limitQuery = this.setDefaultOrder(limitQuery, limitQueryAlias, { wrap: true });
+    }
+
+    return this.createGraphQLQueryBuilder()
+      .info(options.resolverInfo)
+      .ejectQueryBuilder((query) => {
+        query
+          .where(`${this.alias}.${primaryCol} IN (${limitQuery.getQuery()})`)
+          .setParameters(baseQuery.getParameters());
+        query = this.setDefaultOrder(query, this.alias) as any;
+
+        return query;
+      })
+      .loadMany();
   }
 
   protected firstBase(
@@ -81,40 +141,63 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       return this.createGraphQLQueryBuilder()
         .info(options.resolverInfo)
         .ejectQueryBuilder((query) => {
-          query = this.mountQuery(query as unknown as SelectQueryBuilder<T>, options);
+          query = this.addWhere(query as unknown as SelectQueryBuilder<T>, options.where);
           return queryCallback ? queryCallback(query) : query;
         })
         .loadOne();
     }
 
-    const query = this.mountQuery(this.createQueryBuilder(), options);
+    const query = this.addWhere(this.createQueryBuilder(), options.where);
     return (queryCallback ? queryCallback(query) : query).getOne();
   }
 
-  private mountQuery(query: SelectQueryBuilder<T>, options: FindManyParams<T> | FindOneParams<T>) {
-    if (isFindMany(options)) {
-      query = query.skip(options.skip).take(options.take);
+  private addWhere(query: SelectQueryBuilder<any>, where?: Partial<T>) {
+    const mergedWhere = this.mountWhere(where);
+    if (mergedWhere && !isEmpty(mergedWhere)) {
+      query = query.andWhere(mergedWhere);
     }
 
-    if (this.defaults?.orderBy) {
-      for (const key in this.defaults.orderBy) {
-        query = query.addOrderBy(`${this.alias}.${key}`, this.defaults.orderBy[key]);
-      }
-    }
-
-    const where = this.createWhere(options.where);
-    if (where && !isEmpty(where)) {
-      query = query.where(where);
-    }
-
-    return query as any;
+    return query;
   }
 
-  private createWhere(where?: Partial<T>): Partial<T> | undefined {
+  private mountWhere(where?: Partial<T>): Partial<T> | undefined {
     if (this.defaults?.where) {
       return { ...where, ...this.defaults.where };
     }
 
     return where;
+  }
+
+  private setDefaultOrder(
+    query: SelectQueryBuilder<T | unknown>,
+    alias: string,
+    options: { wrap: boolean } = { wrap: false }
+  ) {
+    if (!this.defaults?.orderBy) {
+      return query;
+    }
+
+    for (const key in this.defaults.orderBy) {
+      query = query.addOrderBy(
+        options.wrap ? `"${alias}"."${key}"` : `${alias}.${key}`,
+        this.defaults.orderBy[key]
+      );
+    }
+    return query;
+  }
+
+  private selectOrderColumns(
+    query: SelectQueryBuilder<any>,
+    alias: string,
+    options: { wrap: boolean } = { wrap: false }
+  ) {
+    if (!this.defaults?.orderBy) {
+      return query;
+    }
+
+    for (const key in this.defaults.orderBy) {
+      query = query.addSelect(options.wrap ? `"${alias}"."${key}"` : `${alias}.${key}`, key);
+    }
+    return query;
   }
 }

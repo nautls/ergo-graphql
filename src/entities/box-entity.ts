@@ -36,6 +36,9 @@ export class BoxEntity extends BoxEntityBase {
   @Column({ name: "global_index", type: "bigint" })
   globalIndex!: bigint;
 
+  @Column({ name: "timestamp", type: "bigint" })
+  timestamp!: bigint;
+
   @Column({ name: "main_chain", type: "boolean" })
   mainChain!: boolean;
 

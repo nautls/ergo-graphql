@@ -3,7 +3,7 @@ import { BaseEntity } from "typeorm";
 
 export type FindOneParams<T> = {
   where?: Partial<T>;
-  resolverInfo?: GraphQLResolveInfo;
+  resolverInfo: GraphQLResolveInfo;
 };
 
 export type FindManyParams<T> = FindOneParams<T> & {
