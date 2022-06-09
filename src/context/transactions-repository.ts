@@ -11,45 +11,39 @@ type TransactionFindOptions = FindManyParams<TransactionEntity> & {
 
 export class TransactionRepository extends BaseRepository<TransactionEntity> {
   constructor(context: RepositoryDataContext) {
-    super(TransactionEntity, "tx", { context, defaults: { orderBy: { globalIndex: "DESC" } } });
+    super(TransactionEntity, "tx", {
+      context,
+      defaults: { where: { mainChain: true }, orderBy: { globalIndex: "DESC" } }
+    });
   }
 
   public override async find(options: TransactionFindOptions): Promise<TransactionEntity[]> {
     const { minHeight, maxHeight, address } = options;
+    return this.findBase(options, (query) => {
+      if (address) {
+        const inputQuery = this.createInputQuery(maxHeight);
+        const outputQuery = this.createOutputQuery(maxHeight);
 
-    let idsQuery = this.repository
-      .createQueryBuilder("txId")
-      .andWhere("txId.mainChain = true")
-      .skip(options.skip)
-      .take(options.take);
+        query = query.innerJoin(
+          `(${inputQuery.getQuery()} UNION ${outputQuery.getQuery()})`,
+          "boxes",
+          `"boxes"."transactionId" = ${this.alias}.transactionId`
+        );
+      }
 
-    if (options.where) {
-      idsQuery = idsQuery.where(options.where);
-    }
+      if (minHeight) {
+        query = query.andWhere(`${this.alias}.inclusionHeight >= :minHeight`, { minHeight });
+      }
+      if (maxHeight) {
+        query = query.andWhere(`${this.alias}.inclusionHeight <= :maxHeight`, { maxHeight });
+      }
 
-    if (address) {
-      const inputQuery = this.createInputQuery(maxHeight);
-      const outputQuery = this.createOutputQuery(maxHeight);
-      idsQuery = idsQuery
-        .select(`"boxes"."transactionId"`)
-        .from(`(${inputQuery.getQuery()} UNION ${outputQuery.getQuery()})`, "boxes");
-    } else {
-      idsQuery = idsQuery.select("txId.transactionId", "txId");
-    }
+      query = query.setParameters(
+        removeUndefined({ height: maxHeight, maxHeight, minHeight, address })
+      );
 
-    if (minHeight) {
-      idsQuery = idsQuery.andWhere("txId.inclusionHeight >= :minHeight", { minHeight });
-    }
-    if (maxHeight) {
-      idsQuery = idsQuery.andWhere("txId.inclusionHeight <= :maxHeight", { maxHeight });
-    }
-
-    return this.findBase({ resolverInfo: options.resolverInfo }, (query) =>
-      query
-        .andWhere(`${this.alias}.transactionId in (${idsQuery.getQuery()})`)
-        .setParameters(idsQuery.getParameters())
-        .setParameters(removeUndefined({ height: maxHeight, maxHeight, minHeight, address }))
-    );
+      return query;
+    });
   }
 
   public async count(options: { where: { address: string; maxHeight?: number } }): Promise<number> {

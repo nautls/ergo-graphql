@@ -120,7 +120,7 @@ type Header {
   adProof: AdProof!
   adProofsRoot: String!
   blockInfo: Block!
-  difficulty: Int!
+  difficulty: BigInt!
   extension: Extension!
   extensionHash: String!
   headerId: String!

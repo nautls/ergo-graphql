@@ -57,35 +57,22 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
     return this.firstBase(options);
   }
 
-  protected findBase(
-    options: FindManyParams<T>,
-    queryCallback?: EjectQueryCallback<T>
-  ): Promise<T[]> {
-    if (options.resolverInfo) {
-      return this.createGraphQLQueryBuilder()
-        .info(options.resolverInfo)
-        .ejectQueryBuilder((query) => {
-          query = this.addWhere(query as unknown as SelectQueryBuilder<T>, options.where);
-          return queryCallback ? queryCallback(query) : query;
-        })
-        .loadMany();
-    }
-
-    const query = this.addWhere(this.createQueryBuilder(), options.where);
-    return (queryCallback ? queryCallback(query) : query).getMany();
-  }
-
-  private hasManyRowsJoin(query: SelectQueryBuilder<unknown>) {
+  private hasJoinWithManyRows(query: SelectQueryBuilder<unknown>) {
     return (
       !isEmpty(query.expressionMap.joinAttributes) &&
-      query.expressionMap.joinAttributes.find((x) => !x.relation || !x.relation.isOneToOne)
+      query.expressionMap.joinAttributes.find((j) => !j.relation || !j.relation.isOneToOne)
     );
   }
 
-  protected optimizedBaseFind(
-    options: FindManyParams<T>,
-    queryCallback?: QueryCallback<T>
-  ): Promise<T[]> {
+  private isColumnSelected(query: SelectQueryBuilder<unknown>, columnName: string) {
+    return (
+      query.expressionMap.selects.findIndex(
+        (s) => s.selection.endsWith(columnName) || s.aliasName === columnName
+      ) > -1
+    );
+  }
+
+  protected findBase(options: FindManyParams<T>, queryCallback?: QueryCallback<T>): Promise<T[]> {
     const primaryCol = this.repository.metadata.primaryColumns[0]?.propertyName;
     if (!primaryCol) {
       throw Error(`Primary column not found for ${this.repository.metadata.name}`);
@@ -95,8 +82,11 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
     if (queryCallback) {
       baseQuery = queryCallback(baseQuery);
     }
+
+    if (!this.isColumnSelected(baseQuery, primaryCol)) {
+      baseQuery = baseQuery.select(`${this.alias}.${primaryCol}`, primaryCol);
+    }
     baseQuery = this.addWhere(baseQuery, options.where);
-    baseQuery = baseQuery.select(`${this.alias}.${primaryCol}`, primaryCol);
     baseQuery = this.selectOrderColumns(baseQuery, this.alias);
 
     const limitQueryAlias = `l_${this.alias}`;
@@ -106,7 +96,7 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       .skip(options.skip)
       .take(options.take);
 
-    if (this.hasManyRowsJoin(baseQuery)) {
+    if (this.hasJoinWithManyRows(baseQuery)) {
       limitQuery = limitQuery.select(`DISTINCT("${limitQueryAlias}"."${primaryCol}")`, primaryCol);
 
       if (!isEmpty(this.defaults?.orderBy)) {
@@ -114,7 +104,7 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
         limitQuery = this.setDefaultOrder(limitQuery, limitQueryAlias, { wrap: true });
         limitQuery = this.dataSource
           .createQueryBuilder()
-          .select(`"ids"."boxId"`)
+          .select(`"ids"."${primaryCol}"`)
           .from(`(${limitQuery.getQuery()})`, "ids");
       }
     } else {

@@ -1,12 +1,5 @@
 import { isEmpty, unionBy } from "lodash";
-import {
-  AssetEntity,
-  BoxEntity,
-  BoxRegisterEntity,
-  InputEntity,
-  TokenEntity,
-  TransactionEntity
-} from "../entities";
+import { AssetEntity, BoxEntity, InputEntity, TokenEntity, TransactionEntity } from "../entities";
 import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
@@ -37,7 +30,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
   public override find(options: BoxFindOptions): Promise<BoxEntity[]> {
     const { spent, tokenId, registers } = options;
 
-    return this.optimizedBaseFind(options, (query) => {
+    return this.findBase(options, (query) => {
       if (spent !== undefined && spent !== null) {
         query = query.leftJoin(
           "box.spentBy",

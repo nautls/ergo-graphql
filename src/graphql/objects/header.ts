@@ -22,7 +22,7 @@ export class Header {
   nBits!: bigint;
 
   @Field()
-  difficulty!: number;
+  difficulty!: bigint;
 
   @Field()
   timestamp!: bigint;
