@@ -19,12 +19,13 @@ DB_NAME =                 # database name
 DB_USER_NAME =            # database user name
 DB_USER_PWD =             # database user password
 
-REDIS_HOST =              # optional: redis host address, default: localhost
-REDIS_PORT =              # optional: redis host port, default: 6379
-REDIS_USER_NAME =         # optional: redis username, no default
-REDIS_USER_PWD =          # optional: redis user password, no default
+REDIS_HOST = localhost    # optional: redis host address
+REDIS_PORT = 6379         # optional: redis host port
+REDIS_USER_NAME =         # optional: redis username
+REDIS_USER_PWD =          # optional: redis user password
 
-MAX_QUERY_DEPTH =         # optional: maximum query depth, default: 5
+NETWORK = MAINNET         # optional: MAINNET or TESTNET
+MAX_QUERY_DEPTH = 5       # optional: maximum query depth
 ```
 
 ### Compile and run for development

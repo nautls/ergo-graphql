@@ -1,9 +1,32 @@
-import { FieldNode, GraphQLResolveInfo, Kind, SelectionSetNode } from "graphql";
+import {
+  BooleanValueNode,
+  FieldNode,
+  GraphQLResolveInfo,
+  Kind,
+  SelectionSetNode,
+  StringValueNode
+} from "graphql";
+import { isEmpty } from "lodash";
+
+export function getArgumentValue(
+  info: GraphQLResolveInfo,
+  field: string,
+  argumentName: string
+): unknown | undefined {
+  let node = getMainNode(info);
+  node = findField(node?.selectionSet, field);
+  if (!node || isEmpty(node.arguments)) {
+    return;
+  }
+
+  return (node.arguments?.find((arg) => arg.name.value === argumentName)?.value as StringValueNode)
+    ?.value;
+}
 
 export function isFieldSelected(info: GraphQLResolveInfo, field: string): boolean {
   const fields = field.split(".");
 
-  let node = info.fieldNodes.find((n) => n.name.value === info.fieldName);
+  let node = getMainNode(info);
   for (const field of fields) {
     node = findField(node?.selectionSet, field);
     if (!node) {
@@ -12,6 +35,10 @@ export function isFieldSelected(info: GraphQLResolveInfo, field: string): boolea
   }
 
   return true;
+}
+
+function getMainNode(info: GraphQLResolveInfo) {
+  return info.fieldNodes.find((n) => n.name.value === info.fieldName);
 }
 
 function findField(

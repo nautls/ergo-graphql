@@ -1,4 +1,6 @@
+import { MINER_FEE_TREE } from "../consts";
 import { BoxEntity, InputEntity, TransactionEntity } from "../entities";
+import { getArgumentValue } from "../graphql/resolvers/utils";
 import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
@@ -19,31 +21,55 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
 
   public override async find(options: TransactionFindOptions): Promise<TransactionEntity[]> {
     const { minHeight, maxHeight, address } = options;
-    return this.findBase(options, (query) => {
-      if (address) {
-        const inputQuery = this.createInputQuery(maxHeight);
-        const outputQuery = this.createOutputQuery(maxHeight);
+    return this.findBase(
+      options,
+      (filterQuery) => {
+        if (address) {
+          const inputQuery = this.createInputQuery(maxHeight);
+          const outputQuery = this.createOutputQuery(maxHeight);
 
-        query = query.innerJoin(
-          `(${inputQuery.getQuery()} UNION ${outputQuery.getQuery()})`,
-          "boxes",
-          `"boxes"."transactionId" = ${this.alias}.transactionId`
+          filterQuery = filterQuery.innerJoin(
+            `(${inputQuery.getQuery()} UNION ${outputQuery.getQuery()})`,
+            "boxes",
+            `"boxes"."transactionId" = ${this.alias}.transactionId`
+          );
+        }
+
+        if (minHeight) {
+          filterQuery = filterQuery.andWhere(`${this.alias}.inclusionHeight >= :minHeight`, {
+            minHeight
+          });
+        }
+        if (maxHeight) {
+          filterQuery = filterQuery.andWhere(`${this.alias}.inclusionHeight <= :maxHeight`, {
+            maxHeight
+          });
+        }
+
+        filterQuery = filterQuery.setParameters(
+          removeUndefined({ height: maxHeight, maxHeight, minHeight, address })
         );
-      }
 
-      if (minHeight) {
-        query = query.andWhere(`${this.alias}.inclusionHeight >= :minHeight`, { minHeight });
-      }
-      if (maxHeight) {
-        query = query.andWhere(`${this.alias}.inclusionHeight <= :maxHeight`, { maxHeight });
-      }
+        return filterQuery;
+      },
+      (selectQuery) => {
+        if (address && getArgumentValue(options.resolverInfo, "outputs", "onlyRelevant") === true) {
+          const outputsJoin = selectQuery.expressionMap.joinAttributes.find(
+            (x) => x.relation?.propertyName === "outputs"
+          );
 
-      query = query.setParameters(
-        removeUndefined({ height: maxHeight, maxHeight, minHeight, address })
-      );
+          if (outputsJoin) {
+            const relevantCondition = `${outputsJoin.alias.name}.address = :address OR ${outputsJoin.alias.name}.ergoTree = :minerTree`;
+            outputsJoin.condition = outputsJoin.condition
+              ? `${outputsJoin.condition} AND (${relevantCondition})`
+              : relevantCondition;
+            selectQuery = selectQuery.setParameters({ minerTree: MINER_FEE_TREE });
+          }
+        }
 
-      return query;
-    });
+        return selectQuery;
+      }
+    );
   }
 
   public async count(options: { where: { address: string; maxHeight?: number } }): Promise<number> {

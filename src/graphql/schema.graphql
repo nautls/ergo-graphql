@@ -237,7 +237,10 @@ type Transaction implements ITransaction {
   index: Int!
   inputs: [Input!]!
   mainChain: Boolean!
-  outputs: [Box!]!
+  outputs(
+    """Only includes outputs owned by `address` and the miner fee output"""
+    onlyRelevant: Boolean
+  ): [Box!]!
   size: Int!
   timestamp: BigInt!
   transactionId: String!

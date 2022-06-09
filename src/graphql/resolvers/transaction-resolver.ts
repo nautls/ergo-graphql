@@ -31,7 +31,14 @@ export class TransactionResolver {
   @Query(() => [Transaction])
   async transactions(
     @Args()
-    { transactionId, headerId, inclusionHeight, address, minHeight, maxHeight }: TransactionArguments,
+    {
+      transactionId,
+      headerId,
+      inclusionHeight,
+      address,
+      minHeight,
+      maxHeight
+    }: TransactionArguments,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo

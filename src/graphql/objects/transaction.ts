@@ -1,4 +1,5 @@
-import { Field, ObjectType } from "type-graphql";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Arg, Field, ObjectType } from "type-graphql";
 import { ITransaction } from "../interfaces/transaction-interface";
 import { Box } from "./box";
 import { DataInput } from "./data-input";
@@ -33,6 +34,16 @@ export class Transaction extends ITransaction {
   @Field(() => [DataInput])
   dataInputs!: DataInput[];
 
-  @Field(() => [Box])
+  @Field(() => [Box], { name: "outputs" })
+  assetsResolver(
+    @Arg("onlyRelevant", () => Boolean, {
+      nullable: true,
+      description: "Only includes outputs owned by `address` and the miner fee output"
+    })
+    onlyRelevant?: boolean
+  ): Box[] {
+    return this.outputs;
+  }
+
   outputs!: Box[];
 }

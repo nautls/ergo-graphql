@@ -12,7 +12,9 @@ declare global {
       REDIS_USER_NAME?: string;
       REDIS_USER_PWD?: string;
 
+      NETWORK?: "MAINNET" | "TESTNET";
       MAX_QUERY_DEPTH?: string;
+
       TS_NODE_DEV: string;
     }
   }

@@ -72,15 +72,19 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
     );
   }
 
-  protected findBase(options: FindManyParams<T>, queryCallback?: QueryCallback<T>): Promise<T[]> {
+  protected findBase(
+    options: FindManyParams<T>,
+    filterCallback?: QueryCallback<T>,
+    selectCallback?: QueryCallback<any>
+  ): Promise<T[]> {
     const primaryCol = this.repository.metadata.primaryColumns[0]?.propertyName;
     if (!primaryCol) {
       throw Error(`Primary column not found for ${this.repository.metadata.name}`);
     }
 
     let baseQuery = this.createQueryBuilder();
-    if (queryCallback) {
-      baseQuery = queryCallback(baseQuery);
+    if (filterCallback) {
+      baseQuery = filterCallback(baseQuery);
     }
 
     if (!this.isColumnSelected(baseQuery, primaryCol)) {
@@ -120,7 +124,7 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
           .setParameters(baseQuery.getParameters());
         query = this.setDefaultOrder(query, this.alias) as any;
 
-        return query;
+        return selectCallback ? selectCallback(query) : query;
       })
       .loadMany();
   }
