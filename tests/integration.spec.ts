@@ -149,7 +149,7 @@ const specs: Spec[] = [
           }
         }
       }`,
-      variables: { tokenId: "fbbaac7337d051c10fc3da0ccb864f4d32d40027551e1c3ea3ce361f39b91e40" }
+      variables: { tokenId: "f93d64ff18035e39c46217b862fcc92d99fa66b36c58c1340186dd1ced08bef0" }
     },
     assert(output) {
       expect(output.errors).toBeUndefined();
@@ -162,7 +162,7 @@ const specs: Spec[] = [
       for (const box of output.data.boxes as Box[]) {
         expect(box.assets).toEqual(
           expect.arrayContaining([
-            { tokenId: "fbbaac7337d051c10fc3da0ccb864f4d32d40027551e1c3ea3ce361f39b91e40" }
+            { tokenId: "f93d64ff18035e39c46217b862fcc92d99fa66b36c58c1340186dd1ced08bef0" }
           ])
         );
       }
