@@ -1,11 +1,4 @@
-import {
-  BooleanValueNode,
-  FieldNode,
-  GraphQLResolveInfo,
-  Kind,
-  SelectionSetNode,
-  StringValueNode
-} from "graphql";
+import { FieldNode, GraphQLResolveInfo, Kind, SelectionSetNode, StringValueNode } from "graphql";
 import { isEmpty } from "lodash";
 
 export function getArgumentValue(
