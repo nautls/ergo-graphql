@@ -75,9 +75,11 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
     return (queryCallback ? queryCallback(query) : query).getMany();
   }
 
-  private hasJoin(query: SelectQueryBuilder<unknown>) {
-    console.log(query.expressionMap.joinAttributes.map((x) => x.alias));
-    return !isEmpty(query.expressionMap.joinAttributes);
+  private hasManyRowsJoin(query: SelectQueryBuilder<unknown>) {
+    return (
+      !isEmpty(query.expressionMap.joinAttributes) &&
+      query.expressionMap.joinAttributes.find((x) => !x.relation || !x.relation.isOneToOne)
+    );
   }
 
   protected optimizedBaseFind(
@@ -104,7 +106,7 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       .skip(options.skip)
       .take(options.take);
 
-    if (this.hasJoin(baseQuery)) {
+    if (this.hasManyRowsJoin(baseQuery)) {
       limitQuery = limitQuery.select(`DISTINCT("${limitQueryAlias}"."${primaryCol}")`, primaryCol);
 
       if (!isEmpty(this.defaults?.orderBy)) {

@@ -40,7 +40,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
     return this.optimizedBaseFind(options, (query) => {
       if (spent !== undefined && spent !== null) {
         query = query.leftJoin(
-          InputEntity,
+          "box.spentBy",
           "input",
           "input.boxId = box.boxId AND input.mainChain = true"
         );
@@ -52,12 +52,12 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
 
       if (tokenId) {
         query = query
-          .leftJoinAndMapOne("one-to-one", AssetEntity, "asset", "asset.boxId = box.boxId")
+          .leftJoin("box.assets", "asset", "asset.boxId = box.boxId")
           .andWhere("asset.tokenId = :tokenId", { tokenId });
       }
 
       if (registers && !isEmpty(registers)) {
-        query = query.leftJoin(BoxRegisterEntity, "rx", "box.boxId = rx.boxId");
+        query = query.leftJoin("box.registers", "rx", "box.boxId = rx.boxId");
         for (const key in registers) {
           const value = registers[key as keyof Registers];
           if (!value) {
