@@ -38,6 +38,11 @@ type Asset implements IAsset {
   tokenId: String!
 }
 
+input AssetInput {
+  amount: Int!
+  tokenId: String!
+}
+
 scalar BigInt
 
 type Block {
@@ -108,6 +113,14 @@ type Epochs {
   outputCost: Int!
   storageFeeFactor: Int!
   tokenAccessCost: Int!
+}
+
+input ErgoTransactionInput {
+  dataInputs: [TransactionDataInput!]!
+  id: String!
+  inputs: [TransactionInput!]!
+  outputs: [TransactionOutput!]!
+  size: Int!
 }
 
 type Extension {
@@ -195,6 +208,11 @@ type Mempool {
   transactionsCount: Int!
 }
 
+type Mutation {
+  checkTransaction(ErgoTransaction: ErgoTransactionInput!): String!
+  submitTransaction(ErgoTransaction: ErgoTransactionInput!): String!
+}
+
 type Query {
   addresses(addresses: [String!]!, atHeight: Int): [Address!]!
   blockHeaders(headerId: String, height: Int, parentId: String, skip: Int = 0, take: Int = 10): [Header!]!
@@ -215,6 +233,11 @@ input Registers {
   R7: String
   R8: String
   R9: String
+}
+
+input SpendingProofInput {
+  extension: JSON!
+  proofBytes: String!
 }
 
 type Token {
@@ -244,6 +267,26 @@ type Transaction implements ITransaction {
   size: Int!
   timestamp: BigInt!
   transactionId: String!
+}
+
+input TransactionDataInput {
+  boxId: String!
+}
+
+input TransactionInput {
+  boxId: String!
+  spendingProof: SpendingProofInput!
+}
+
+input TransactionOutput {
+  additionalRegisters: JSON!
+  assets: AssetInput!
+  boxId: String!
+  creationHeight: Int!
+  ergoTree: String!
+  index: Int!
+  transactionId: String!
+  value: Int!
 }
 
 type UnconfirmedAsset implements IAsset {
