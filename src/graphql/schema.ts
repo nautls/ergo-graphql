@@ -11,7 +11,8 @@ import {
   AddressResolver,
   MempoolResolver,
   BlockResolver,
-  EpochsResolver
+  EpochsResolver,
+  ErgoTransactionResolver
 } from "./resolvers";
 
 export async function generateSchema() {
@@ -28,7 +29,8 @@ export async function generateSchema() {
       AddressResolver,
       MempoolResolver,
       BlockResolver,
-      EpochsResolver
+      EpochsResolver,
+      ErgoTransactionResolver
     ],
     scalarsMap: [
       { type: Number, scalar: Int },
