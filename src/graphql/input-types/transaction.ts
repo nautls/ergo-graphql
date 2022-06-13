@@ -3,8 +3,8 @@ import { TransactionInput } from "./transaction-input";
 import { TransactionDataInput } from "./transaction-data-input";
 import { TransactionOutput } from "./transaction-output";
 
-@InputType("ErgoTransactionInput")
-export class ErgoTransactionInput {
+@InputType("SignedTransaction")
+export class SignedTransactionInput {
   @Field(() => String)
   id?: string;
 

@@ -115,14 +115,6 @@ type Epochs {
   tokenAccessCost: Int!
 }
 
-input ErgoTransactionInput {
-  dataInputs: [TransactionDataInput!]!
-  id: String!
-  inputs: [TransactionInput!]!
-  outputs: [TransactionOutput!]!
-  size: Int!
-}
-
 type Extension {
   digest: String!
   fields: JSON!
@@ -209,8 +201,8 @@ type Mempool {
 }
 
 type Mutation {
-  checkTransaction(ErgoTransaction: ErgoTransactionInput!): String!
-  submitTransaction(ErgoTransaction: ErgoTransactionInput!): String!
+  checkTransaction(signedTransaction: SignedTransaction!): String!
+  submitTransaction(signedTransaction: SignedTransaction!): String!
 }
 
 type Query {
@@ -233,6 +225,14 @@ input Registers {
   R7: String
   R8: String
   R9: String
+}
+
+input SignedTransaction {
+  dataInputs: [TransactionDataInput!]!
+  id: String!
+  inputs: [TransactionInput!]!
+  outputs: [TransactionOutput!]!
+  size: Int!
 }
 
 input SpendingProofInput {
