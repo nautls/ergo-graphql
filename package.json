@@ -42,6 +42,7 @@
     "apollo-server": "^3.7.0",
     "apollo-server-cache-redis": "^3.3.1",
     "apollo-server-plugin-response-cache": "^3.6.0",
+    "axios": "^0.27.2",
     "class-validator": "^0.13.2",
     "dotenv": "^16.0.1",
     "graphql": "15.8.0",

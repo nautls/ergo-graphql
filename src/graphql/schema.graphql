@@ -232,7 +232,7 @@ input SignedTransaction {
   id: String!
   inputs: [TransactionInput!]!
   outputs: [TransactionOutput!]!
-  size: Int!
+  size: Int
 }
 
 input SpendingProofInput {
@@ -280,12 +280,12 @@ input TransactionInput {
 
 input TransactionOutput {
   additionalRegisters: JSON!
-  assets: AssetInput!
-  boxId: String!
+  assets: [AssetInput!]
+  boxId: String
   creationHeight: Int!
   ergoTree: String!
-  index: Int!
-  transactionId: String!
+  index: Int
+  transactionId: String
   value: Int!
 }
 

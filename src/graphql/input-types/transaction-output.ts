@@ -13,7 +13,7 @@ export class AssetInput {
 
 @InputType("TransactionOutput")
 export class TransactionOutput {
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   boxId?: string;
 
   @Field(() => Int)
@@ -25,15 +25,15 @@ export class TransactionOutput {
   @Field(() => Int)
   creationHeight!: number;
 
-  @Field(() => AssetInput)
-  assets?: AssetInput;
+  @Field(() => [AssetInput], { nullable: true })
+  assets?: [AssetInput];
 
   @Field(() => JSONScalar)
   additionalRegisters!: Registers;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   transactionId?: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   index?: number;
 }

@@ -17,6 +17,6 @@ export class SignedTransactionInput {
   @Field(() => [TransactionOutput])
   outputs!: TransactionOutput[];
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   size?: number;
 }

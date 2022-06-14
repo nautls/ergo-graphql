@@ -16,6 +16,7 @@ import { GraphQLContext } from "../context-type";
 import { SignedTransactionInput } from "../input-types";
 import { Mempool } from "../objects";
 import { PaginationArguments } from "./pagination-arguments";
+import axios from "axios";
 
 @ArgsType()
 class UnconfirmedTransactionArguments {
@@ -88,6 +89,7 @@ export class MempoolResolver {
 
   @Mutation(() => String)
   async checkTransaction(@Arg("signedTransaction") signedTransaction: SignedTransactionInput) {
+    console.log(signedTransaction);
     return "2ab9da11fc216660e974842cc3b7705e62ebb9e0bf5ff78e53f9cd40abadd117";
   }
 
