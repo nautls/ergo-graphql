@@ -16,7 +16,6 @@ import { GraphQLContext } from "../context-type";
 import { SignedTransactionInput } from "../input-types";
 import { Mempool } from "../objects";
 import { PaginationArguments } from "./pagination-arguments";
-import axios from "axios";
 
 @ArgsType()
 class UnconfirmedTransactionArguments {

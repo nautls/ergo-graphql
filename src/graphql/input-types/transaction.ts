@@ -1,4 +1,4 @@
-import { Field, InputType, Int } from "type-graphql";
+import { Field, InputType } from "type-graphql";
 import { TransactionInput } from "./transaction-input";
 import { TransactionDataInput } from "./transaction-data-input";
 import { TransactionOutput } from "./transaction-output";
@@ -17,6 +17,6 @@ export class SignedTransactionInput {
   @Field(() => [TransactionOutput])
   outputs!: TransactionOutput[];
 
-  @Field(() => Int, { nullable: true })
+  @Field({ nullable: true })
   size?: number;
 }

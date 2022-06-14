@@ -3,7 +3,7 @@ import { JSONScalar } from "../scalars";
 
 @InputType()
 class SpendingProofInput {
-  @Field(() => String)
+  @Field()
   proofBytes!: string;
 
   @Field(() => JSONScalar)
@@ -12,7 +12,7 @@ class SpendingProofInput {
 
 @InputType("TransactionInput")
 export class TransactionInput {
-  @Field(() => String)
+  @Field()
   boxId!: string;
 
   @Field(() => SpendingProofInput)

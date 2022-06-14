@@ -39,7 +39,7 @@ type Asset implements IAsset {
 }
 
 input AssetInput {
-  amount: Int!
+  amount: Float!
   tokenId: String!
 }
 
@@ -286,7 +286,7 @@ input TransactionOutput {
   ergoTree: String!
   index: Int
   transactionId: String
-  value: Int!
+  value: Float!
 }
 
 type UnconfirmedAsset implements IAsset {

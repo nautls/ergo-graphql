@@ -1,28 +1,28 @@
-import { Field, InputType, Int } from "type-graphql";
+import { Field, Float, InputType } from "type-graphql";
 import { Registers } from "../../entities";
 import { JSONScalar } from "../scalars";
 
 @InputType()
 export class AssetInput {
-  @Field(() => String)
+  @Field()
   tokenId!: string;
 
-  @Field(() => Int)
+  @Field(() => Float)
   amount!: number;
 }
 
 @InputType("TransactionOutput")
 export class TransactionOutput {
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   boxId?: string;
 
-  @Field(() => Int)
+  @Field(() => Float)
   value!: number;
 
-  @Field(() => String)
+  @Field()
   ergoTree!: string;
 
-  @Field(() => Int)
+  @Field()
   creationHeight!: number;
 
   @Field(() => [AssetInput], { nullable: true })
@@ -31,9 +31,9 @@ export class TransactionOutput {
   @Field(() => JSONScalar)
   additionalRegisters!: Registers;
 
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   transactionId?: string;
 
-  @Field(() => Int, { nullable: true })
+  @Field({ nullable: true })
   index?: number;
 }

@@ -14,10 +14,13 @@ export const JSONScalar = new GraphQLScalarType({
     return value;
   },
   parseLiteral(node) {
-    if (node.kind !== Kind.STRING) {
-      throw new UserInputError("Invalid type.");
+    if(node.kind === Kind.OBJECT) {
+      return {};
     }
 
+    if (node.kind !== Kind.STRING ) {
+      throw new UserInputError("Invalid type.");
+    }
     return JSON.parse(node.value);
   }
 });
