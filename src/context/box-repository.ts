@@ -89,9 +89,9 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
     let baseQuery = this.repository
       .createQueryBuilder("box")
       .select("box.address", "address")
-      .leftJoin(InputEntity, "input", "box.boxId = input.boxId and input.mainChain = true")
+      .leftJoin(InputEntity, "input", "box.boxId = input.boxId AND input.mainChain = true")
       .where("box.mainChain = true")
-      .andWhere("box.address in (:...addresses)")
+      .andWhere("box.address IN (:...addresses)")
       .andWhere("input.boxId IS NULL")
       .groupBy("box.address")
       .setParameters(
