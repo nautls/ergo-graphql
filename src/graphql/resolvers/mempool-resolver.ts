@@ -98,12 +98,13 @@ export class MempoolResolver {
     try {
       const response = await this.nodeservice.checkTransaction(signedTransaction);
       return response.data;
-    } catch (e: any) {
-      const error = e.response.data;
-      if(error.error === 400)
-        throw new GraphQLError(error.detail);
-      else
-        throw new GraphQLError("Unknown error");
+    } catch (e) {
+      if(e instanceof AxiosError){
+        const error = e.response?.data;
+        if(error.error === 400)
+          throw new GraphQLError(error.detail);
+      }
+      throw new GraphQLError("Unknown error");
     }
   }
 
@@ -112,12 +113,13 @@ export class MempoolResolver {
     try {
       const response = await this.nodeservice.submitTransaction(signedTransaction);
       return response.data;
-    } catch (e: any) {
-      const error = e.response.data;
-      if(error.error === 400)
-        throw new GraphQLError(error.detail);
-      else
-        throw new GraphQLError("Unknown error");
+    } catch (e) {
+      if(e instanceof AxiosError){
+        const error = e.response?.data;
+        if(error.error === 400)
+          throw new GraphQLError(error.detail);
+      }
+      throw new GraphQLError("Unknown error");
     }
   }
 }
