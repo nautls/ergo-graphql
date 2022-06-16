@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { orderBy } from "lodash";
 import { Arg, Field, ObjectType } from "type-graphql";
 import { ITransaction } from "../interfaces/transaction-interface";
 import { Box } from "./box";
@@ -28,22 +29,27 @@ export class Transaction extends ITransaction {
   @Field()
   mainChain!: boolean;
 
-  @Field(() => [Input])
   inputs!: Input[];
+  @Field(() => [Input], { name: "inputs" })
+  inputsResolver() {
+    return orderBy(this.inputs, (input) => input.index);
+  }
 
-  @Field(() => [DataInput])
   dataInputs!: DataInput[];
+  @Field(() => [DataInput], { name: "dataInputs" })
+  dataInputsResolver() {
+    return orderBy(this.dataInputs, (dataInput) => dataInput.index);
+  }
 
+  outputs!: Box[];
   @Field(() => [Box], { name: "outputs" })
-  assetsResolver(
+  outputsResolver(
     @Arg("onlyRelevant", () => Boolean, {
       nullable: true,
       description: "Only includes outputs owned by `address` and the miner fee output"
     })
     onlyRelevant?: boolean
   ): Box[] {
-    return this.outputs;
+    return orderBy(this.outputs, (output) => output.index);
   }
-
-  outputs!: Box[];
 }

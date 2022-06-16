@@ -1,3 +1,4 @@
+import { ConfigureLoader } from "@mando75/typeorm-graphql-loader";
 import { BaseEntity, Column, PrimaryColumn } from "typeorm";
 
 export abstract class DataInputEntityBase extends BaseEntity {
@@ -8,5 +9,6 @@ export abstract class DataInputEntityBase extends BaseEntity {
   transactionId!: string;
 
   @Column({ name: "index" })
+  @ConfigureLoader({ required: true })
   index!: number;
 }

@@ -30,5 +30,4 @@ export abstract class IBox {
 
   @Field(() => JSONScalar)
   additionalRegisters!: Registers;
-  
 }

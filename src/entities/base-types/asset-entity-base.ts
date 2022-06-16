@@ -1,3 +1,4 @@
+import { ConfigureLoader } from "@mando75/typeorm-graphql-loader";
 import { BaseEntity, Column, PrimaryColumn } from "typeorm";
 
 export abstract class AssetEntityBase extends BaseEntity {
@@ -8,6 +9,7 @@ export abstract class AssetEntityBase extends BaseEntity {
   boxId!: string;
 
   @Column({ name: "index" })
+  @ConfigureLoader({ required: true })
   index!: number;
 
   @Column({ name: "value", type: "bigint" })
