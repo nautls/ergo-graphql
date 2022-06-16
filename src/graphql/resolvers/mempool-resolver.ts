@@ -1,4 +1,5 @@
-import { GraphQLResolveInfo } from "graphql";
+import { AxiosError } from "axios";
+import { GraphQLError, GraphQLResolveInfo } from "graphql";
 import {
   Arg,
   Args,
@@ -11,6 +12,7 @@ import {
   Query,
   Resolver
 } from "type-graphql";
+import { nodeService } from '../../services';
 import { removeUndefined } from "../../utils";
 import { GraphQLContext } from "../context-type";
 import { SignedTransactionInput } from "../input-types";
@@ -40,6 +42,11 @@ class UnconfirmedBoxArguments {
 
 @Resolver(Mempool)
 export class MempoolResolver {
+  private nodeservice: nodeService;
+  constructor() {
+    this.nodeservice = new nodeService();
+  }
+
   @Query(() => Mempool)
   async mempool(@Info() info: GraphQLResolveInfo) {
     info.cacheControl.setCacheHint({ maxAge: 0 });
@@ -88,12 +95,29 @@ export class MempoolResolver {
 
   @Mutation(() => String)
   async checkTransaction(@Arg("signedTransaction") signedTransaction: SignedTransactionInput) {
-    console.log(signedTransaction);
-    return "2ab9da11fc216660e974842cc3b7705e62ebb9e0bf5ff78e53f9cd40abadd117";
+    try {
+      const response = await this.nodeservice.checkTransaction(signedTransaction);
+      return response.data;
+    } catch (e: any) {
+      const error = e.response.data;
+      if(error.error === 400)
+        throw new GraphQLError(error.detail);
+      else
+        throw new GraphQLError("Unknown error");
+    }
   }
 
   @Mutation(() => String)
   async submitTransaction(@Arg("signedTransaction") signedTransaction: SignedTransactionInput) {
-    return "2ab9da11fc216660e974842cc3b7705e62ebb9e0bf5ff78e53f9cd40abadd117";
+    try {
+      const response = await this.nodeservice.submitTransaction(signedTransaction);
+      return response.data;
+    } catch (e: any) {
+      const error = e.response.data;
+      if(error.error === 400)
+        throw new GraphQLError(error.detail);
+      else
+        throw new GraphQLError("Unknown error");
+    }
   }
 }
