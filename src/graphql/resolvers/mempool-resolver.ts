@@ -96,7 +96,7 @@ export class MempoolResolver {
     });
   }
 
-  @Query(() => [Address])
+  @FieldResolver()
   async addresses(
     @Args({ validate: true }) { addresses }: AddressesQueryArgs,
     @Ctx() context: GraphQLContext,
