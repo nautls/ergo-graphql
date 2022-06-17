@@ -38,6 +38,9 @@ class UnconfirmedBoxArguments {
 
   @Field(() => String, { nullable: true })
   ergoTreeTemplateHash?: string;
+
+  @Field(() => String, { nullable: true })
+  tokenId?: string;
 }
 
 @ArgsType()
@@ -82,7 +85,8 @@ export class MempoolResolver {
 
   @FieldResolver()
   async boxes(
-    @Args() { boxId, transactionId, address, ergoTreeTemplateHash }: UnconfirmedBoxArguments,
+    @Args()
+    { boxId, transactionId, address, ergoTreeTemplateHash, tokenId }: UnconfirmedBoxArguments,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
@@ -90,6 +94,7 @@ export class MempoolResolver {
     return context.repository.unconfirmedBoxes.find({
       resolverInfo: info,
       where: removeUndefined({ boxId, transactionId, address, ergoTreeTemplateHash }),
+      tokenId,
       skip,
       take
     });

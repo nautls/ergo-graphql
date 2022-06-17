@@ -6,11 +6,11 @@ import {
   UnconfirmedInputEntity
 } from "../entities";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
-// import { FindManyParams } from "./repository-interface";
+import { FindManyParams } from "./repository-interface";
 
-// type UnconfirmedBoxFindOptions = FindManyParams<UnconfirmedBoxEntity> & {
-//   tokenId?: string;
-// };
+type UnconfirmedBoxFindOptions = FindManyParams<UnconfirmedBoxEntity> & {
+  tokenId?: string;
+};
 
 export class UnconfirmedBoxRepository extends BaseRepository<UnconfirmedBoxEntity> {
   constructor(context: RepositoryDataContext) {
@@ -20,19 +20,19 @@ export class UnconfirmedBoxRepository extends BaseRepository<UnconfirmedBoxEntit
     });
   }
 
-  // public override find(options: UnconfirmedBoxFindOptions): Promise<UnconfirmedBoxEntity[]> {
-  //   const { tokenId } = options;
+  public override find(options: UnconfirmedBoxFindOptions): Promise<UnconfirmedBoxEntity[]> {
+    const { tokenId } = options;
 
-  //   return this.findBase(options, (query) => {
-  //     if (tokenId) {
-  //       query = query
-  //         .leftJoin("box.assets", "asset", "asset.boxId = box.boxId")
-  //         .andWhere("asset.tokenId = :tokenId", { tokenId });
-  //     }
+    return this.findBase(options, (query) => {
+      if (tokenId) {
+        query = query
+          .leftJoin("box.assets", "asset", "asset.boxId = box.boxId")
+          .andWhere("asset.tokenId = :tokenId", { tokenId });
+      }
 
-  //     return query;
-  //   });
-  // }
+      return query;
+    });
+  }
 
   public async sum(options: {
     where: { addresses: string[] };
