@@ -14,10 +14,7 @@ type UnconfirmedBoxFindOptions = FindManyParams<UnconfirmedBoxEntity> & {
 
 export class UnconfirmedBoxRepository extends BaseRepository<UnconfirmedBoxEntity> {
   constructor(context: RepositoryDataContext) {
-    super(UnconfirmedBoxEntity, "box", {
-      context,
-      defaults: { orderBy: { transactionId: "ASC" } }
-    });
+    super(UnconfirmedBoxEntity, "box", { context });
   }
 
   public override find(options: UnconfirmedBoxFindOptions): Promise<UnconfirmedBoxEntity[]> {
