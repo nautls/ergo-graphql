@@ -1,4 +1,5 @@
 import { Field, ObjectType } from "type-graphql";
+import { Address } from "./address";
 import { UnconfirmedBox } from "./unconfirmed-box";
 import { UnconfirmedTransaction } from "./unconfirmed-transaction";
 
@@ -15,4 +16,7 @@ export class Mempool {
 
   @Field(() => [UnconfirmedBox])
   boxes!: UnconfirmedBox[];
+
+  @Field(() => [Address])
+  addresses!: Address[];
 }
