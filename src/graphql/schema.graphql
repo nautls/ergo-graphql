@@ -194,7 +194,7 @@ type Input implements IInput {
 scalar JSON
 
 type Mempool {
-  addresses(addresses: [String!]!): [Address!]!
+  addresses(addresses: [String!]!): [UnconfirmedAddress!]!
   boxes(address: String, boxId: String, ergoTreeTemplateHash: String, skip: Int = 0, take: Int = 50, transactionId: String): [UnconfirmedBox!]!
   size: Int!
   transactions(skip: Int = 0, take: Int = 50, transactionId: String): [UnconfirmedTransaction!]!
@@ -288,6 +288,11 @@ input TransactionOutput {
   index: Int!
   transactionId: String!
   value: Int!
+}
+
+type UnconfirmedAddress {
+  address: String!
+  balance: AddressBalance!
 }
 
 type UnconfirmedAsset implements IAsset {
