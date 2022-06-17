@@ -16,7 +16,6 @@ import { removeUndefined } from "../../utils";
 import { GraphQLContext } from "../context-type";
 import { SignedTransactionInput } from "../input-types";
 import { Mempool } from "../objects";
-import { Address } from "../objects/address";
 import { PaginationArguments } from "./pagination-arguments";
 import { isFieldSelected } from "./utils";
 

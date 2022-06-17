@@ -6,8 +6,7 @@ import {
   HeaderEntity,
   InputEntity,
   TokenEntity,
-  EpochsParameterEntity,
-  UnconfirmedBoxEntity
+  EpochsParameterEntity
 } from "../entities";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { BoxRepository } from "./box-repository";

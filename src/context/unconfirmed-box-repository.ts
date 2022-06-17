@@ -3,10 +3,8 @@ import {
   TokenEntity,
   UnconfirmedAssetEntity,
   UnconfirmedBoxEntity,
-  UnconfirmedInputEntity,
-  UnconfirmedTransactionEntity
+  UnconfirmedInputEntity
 } from "../entities";
-import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 // import { FindManyParams } from "./repository-interface";
 
