@@ -1,3 +1,4 @@
+import { ArrayMaxSize } from "class-validator";
 import { GraphQLResolveInfo } from "graphql";
 import {
   Arg,
@@ -15,7 +16,9 @@ import { removeUndefined } from "../../utils";
 import { GraphQLContext } from "../context-type";
 import { SignedTransactionInput } from "../input-types";
 import { Mempool } from "../objects";
+import { Address } from "../objects/address";
 import { PaginationArguments } from "./pagination-arguments";
+import { isFieldSelected } from "./utils";
 
 @ArgsType()
 class UnconfirmedTransactionArguments {
@@ -36,6 +39,13 @@ class UnconfirmedBoxArguments {
 
   @Field(() => String, { nullable: true })
   ergoTreeTemplateHash?: string;
+}
+
+@ArgsType()
+class AddressesQueryArgs {
+  @Field(() => [String], { nullable: false })
+  @ArrayMaxSize(20)
+  addresses!: string[];
 }
 
 @Resolver(Mempool)
@@ -83,6 +93,30 @@ export class MempoolResolver {
       where: removeUndefined({ boxId, transactionId, address, ergoTreeTemplateHash }),
       skip,
       take
+    });
+  }
+
+  @Query(() => [Address])
+  async addresses(
+    @Args({ validate: true }) { addresses }: AddressesQueryArgs,
+    @Ctx() context: GraphQLContext,
+    @Info() info: GraphQLResolveInfo
+  ) {
+    const balances = isFieldSelected(info, "balance")
+      ? await context.repository.unconfirmedBoxes.sum({
+          where: { addresses },
+          include: {
+            nanoErgs: isFieldSelected(info, "balance.nanoErgs"),
+            assets: isFieldSelected(info, "balance.assets")
+          }
+        })
+      : [];
+
+    return addresses.map((address) => {
+      return {
+        address,
+        balance: balances.find((b) => b.address === address) || { nanoErgs: 0, assets: [] }
+      };
     });
   }
 

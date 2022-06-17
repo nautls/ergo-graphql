@@ -123,7 +123,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
           .addGroupBy("asset.tokenId")
           .addGroupBy("token.name")
           .addGroupBy("token.decimals")
-          .addSelect("sum(asset.value)", "amount")
+          .addSelect("SUM(asset.value)", "amount")
           .addSelect("asset.tokenId", "tokenId")
           .addSelect("token.name", "name")
           .addSelect("token.decimals", "decimals")
