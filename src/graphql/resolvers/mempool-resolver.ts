@@ -1,5 +1,6 @@
+import { AxiosError } from "axios";
+import { GraphQLError, GraphQLResolveInfo } from "graphql";
 import { ArrayMaxSize } from "class-validator";
-import { GraphQLResolveInfo } from "graphql";
 import {
   Arg,
   Args,
@@ -12,6 +13,7 @@ import {
   Query,
   Resolver
 } from "type-graphql";
+import { NodeService } from "../../services";
 import { removeUndefined } from "../../utils";
 import { GraphQLContext } from "../context-type";
 import { SignedTransactionInput } from "../input-types";
@@ -55,6 +57,11 @@ class AddressesQueryArgs {
 
 @Resolver(Mempool)
 export class MempoolResolver {
+  private nodeService: NodeService;
+  constructor() {
+    this.nodeService = new NodeService();
+  }
+
   @Query(() => Mempool)
   async mempool(@Info() info: GraphQLResolveInfo) {
     info.cacheControl.setCacheHint({ maxAge: 0 });
@@ -130,11 +137,31 @@ export class MempoolResolver {
 
   @Mutation(() => String)
   async checkTransaction(@Arg("signedTransaction") signedTransaction: SignedTransactionInput) {
-    return "2ab9da11fc216660e974842cc3b7705e62ebb9e0bf5ff78e53f9cd40abadd117";
+    try {
+      const response = await this.nodeService.checkTransaction(signedTransaction);
+      return response.data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError) {
+        const error = e.response?.data;
+        if (error.error === 400) throw new GraphQLError(error.detail);
+      }
+      throw new GraphQLError("Unknown error");
+    }
   }
 
   @Mutation(() => String)
   async submitTransaction(@Arg("signedTransaction") signedTransaction: SignedTransactionInput) {
-    return "2ab9da11fc216660e974842cc3b7705e62ebb9e0bf5ff78e53f9cd40abadd117";
+    try {
+      const response = await this.nodeService.submitTransaction(signedTransaction);
+      return response.data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError) {
+        const error = e.response?.data;
+        if (error.error === 400) throw new GraphQLError(error.detail);
+      }
+      throw new GraphQLError("Unknown error");
+    }
   }
 }

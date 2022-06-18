@@ -1,6 +1,6 @@
 import { Field, InterfaceType } from "type-graphql";
+import { GraphQLJSONObject } from "graphql-type-json";
 import { Box } from "../objects";
-import { JSONScalar } from "../scalars";
 
 @InterfaceType()
 export abstract class IInput {
@@ -16,7 +16,7 @@ export abstract class IInput {
   @Field({ nullable: true })
   proofBytes?: string;
 
-  @Field(() => JSONScalar)
+  @Field(() => GraphQLJSONObject)
   extension!: object;
 
   @Field()

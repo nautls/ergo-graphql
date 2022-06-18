@@ -16,6 +16,8 @@ declare global {
       MAX_QUERY_DEPTH?: string;
 
       TS_NODE_DEV: string;
+
+      ERGO_NODE_ADDRESS: string;
     }
   }
 }

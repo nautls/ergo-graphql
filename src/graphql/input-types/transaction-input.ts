@@ -1,18 +1,18 @@
 import { Field, InputType } from "type-graphql";
-import { JSONScalar } from "../scalars";
+import { GraphQLJSONObject } from "graphql-type-json";
 
 @InputType()
 class SpendingProofInput {
-  @Field(() => String)
+  @Field()
   proofBytes!: string;
 
-  @Field(() => JSONScalar)
+  @Field(() => GraphQLJSONObject)
   extension!: object;
 }
 
 @InputType("TransactionInput")
 export class TransactionInput {
-  @Field(() => String)
+  @Field()
   boxId!: string;
 
   @Field(() => SpendingProofInput)

@@ -1,39 +1,39 @@
-import { Field, InputType, Int } from "type-graphql";
+import { Field, Float, InputType } from "type-graphql";
 import { Registers } from "../../entities";
-import { JSONScalar } from "../scalars";
+import { GraphQLJSONObject } from "graphql-type-json";
 
 @InputType()
 export class AssetInput {
-  @Field(() => String)
+  @Field()
   tokenId!: string;
 
-  @Field(() => Int)
+  @Field(() => Float)
   amount!: number;
 }
 
 @InputType("TransactionOutput")
 export class TransactionOutput {
-  @Field(() => String)
+  @Field({ nullable: true })
   boxId?: string;
 
-  @Field(() => Int)
+  @Field(() => Float)
   value!: number;
 
-  @Field(() => String)
+  @Field()
   ergoTree!: string;
 
-  @Field(() => Int)
+  @Field()
   creationHeight!: number;
 
-  @Field(() => AssetInput)
-  assets?: AssetInput;
+  @Field(() => [AssetInput], { nullable: true })
+  assets?: [AssetInput];
 
-  @Field(() => JSONScalar)
+  @Field(() => GraphQLJSONObject)
   additionalRegisters!: Registers;
 
-  @Field(() => String)
+  @Field({ nullable: true })
   transactionId?: string;
 
-  @Field(() => Int)
+  @Field({ nullable: true })
   index?: number;
 }

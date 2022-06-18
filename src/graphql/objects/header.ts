@@ -1,8 +1,8 @@
 import { Field, ObjectType } from "type-graphql";
-import { JSONScalar } from "../scalars";
 import { AdProof } from "./ad-proof";
 import { Extension } from "./extension";
 import { Block } from "./block";
+import { GraphQLJSONObject } from "graphql-type-json";
 
 @ObjectType({ simpleResolvers: true })
 export class Header {
@@ -39,7 +39,7 @@ export class Header {
   @Field()
   extensionHash!: string;
 
-  @Field(() => JSONScalar)
+  @Field(() => GraphQLJSONObject)
   powSolutions() {
     return { pk: this.minerPk, w: this.w, n: this.n, d: this.d };
   }
