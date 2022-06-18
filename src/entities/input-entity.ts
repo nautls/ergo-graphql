@@ -1,5 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
-import { BoxEntity } from "./box-entity";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { TransactionEntity } from "./transaction-entity";
 import { InputEntityBase } from "./base-types/input-entity-base";
 
@@ -23,10 +22,6 @@ export class InputEntity extends InputEntityBase {
 
   @Column({ name: "main_chain" })
   mainChain!: boolean;
-
-  @OneToOne(() => BoxEntity)
-  @JoinColumn({ name: "box_id" })
-  box!: BoxEntity;
 
   @ManyToOne(() => TransactionEntity, (tx) => tx.inputs)
   @JoinColumn({ name: "tx_id" })

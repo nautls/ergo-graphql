@@ -167,6 +167,7 @@ interface IDataInput {
 }
 
 interface IInput {
+  box: Box!
   boxId: String!
   extension: JSON!
   index: Int!
@@ -197,7 +198,7 @@ type Mempool {
   addresses(addresses: [String!]!): [UnconfirmedAddress!]!
   boxes(address: String, boxId: String, ergoTreeTemplateHash: String, skip: Int = 0, take: Int = 50, tokenId: String, transactionId: String): [UnconfirmedBox!]!
   size: Int!
-  transactions(skip: Int = 0, take: Int = 50, transactionId: String): [UnconfirmedTransaction!]!
+  transactions(address: String, skip: Int = 0, take: Int = 50, transactionId: String): [UnconfirmedTransaction!]!
   transactionsCount: Int!
 }
 
@@ -325,6 +326,7 @@ type UnconfirmedDataInput implements IDataInput {
 }
 
 type UnconfirmedInput implements IInput {
+  box: Box!
   boxId: String!
   extension: JSON!
   index: Int!
