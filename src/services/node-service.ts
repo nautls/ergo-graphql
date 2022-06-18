@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SignedTransactionInput } from '../graphql/input-types';
 
-export class nodeService {
+export class NodeService {
   private nodeAddress: string;
   constructor(nodeAddress?: string) {
     this.nodeAddress = nodeAddress || process.env.ERGO_NODE_ADDRESS;

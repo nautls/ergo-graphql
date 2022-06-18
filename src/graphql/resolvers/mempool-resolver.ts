@@ -12,7 +12,7 @@ import {
   Query,
   Resolver
 } from "type-graphql";
-import { nodeService } from '../../services';
+import { NodeService } from '../../services';
 import { removeUndefined } from "../../utils";
 import { GraphQLContext } from "../context-type";
 import { SignedTransactionInput } from "../input-types";
@@ -42,9 +42,9 @@ class UnconfirmedBoxArguments {
 
 @Resolver(Mempool)
 export class MempoolResolver {
-  private nodeservice: nodeService;
+  private nodeService: NodeService;
   constructor() {
-    this.nodeservice = new nodeService();
+    this.nodeService = new NodeService();
   }
 
   @Query(() => Mempool)
@@ -96,9 +96,10 @@ export class MempoolResolver {
   @Mutation(() => String)
   async checkTransaction(@Arg("signedTransaction") signedTransaction: SignedTransactionInput) {
     try {
-      const response = await this.nodeservice.checkTransaction(signedTransaction);
+      const response = await this.nodeService.checkTransaction(signedTransaction);
       return response.data;
     } catch (e) {
+      console.error(e);
       if(e instanceof AxiosError){
         const error = e.response?.data;
         if(error.error === 400)
@@ -111,9 +112,10 @@ export class MempoolResolver {
   @Mutation(() => String)
   async submitTransaction(@Arg("signedTransaction") signedTransaction: SignedTransactionInput) {
     try {
-      const response = await this.nodeservice.submitTransaction(signedTransaction);
+      const response = await this.nodeService.submitTransaction(signedTransaction);
       return response.data;
     } catch (e) {
+      console.error(e);
       if(e instanceof AxiosError){
         const error = e.response?.data;
         if(error.error === 400)
