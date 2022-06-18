@@ -1,6 +1,6 @@
 import { Field, InterfaceType } from "type-graphql";
 import { Registers } from "../../entities";
-import { JSONScalar } from "../scalars";
+import { GraphQLJSONObject } from "graphql-type-json";
 
 @InterfaceType()
 export abstract class IBox {
@@ -28,7 +28,6 @@ export abstract class IBox {
   @Field()
   address!: string;
 
-  @Field(() => JSONScalar)
+  @Field(() => GraphQLJSONObject)
   additionalRegisters!: Registers;
-  
 }

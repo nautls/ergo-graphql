@@ -12,7 +12,7 @@ import {
   Query,
   Resolver
 } from "type-graphql";
-import { NodeService } from '../../services';
+import { NodeService } from "../../services";
 import { removeUndefined } from "../../utils";
 import { GraphQLContext } from "../context-type";
 import { SignedTransactionInput } from "../input-types";
@@ -100,10 +100,9 @@ export class MempoolResolver {
       return response.data;
     } catch (e) {
       console.error(e);
-      if(e instanceof AxiosError){
+      if (e instanceof AxiosError) {
         const error = e.response?.data;
-        if(error.error === 400)
-          throw new GraphQLError(error.detail);
+        if (error.error === 400) throw new GraphQLError(error.detail);
       }
       throw new GraphQLError("Unknown error");
     }
@@ -116,10 +115,9 @@ export class MempoolResolver {
       return response.data;
     } catch (e) {
       console.error(e);
-      if(e instanceof AxiosError){
+      if (e instanceof AxiosError) {
         const error = e.response?.data;
-        if(error.error === 400)
-          throw new GraphQLError(error.detail);
+        if (error.error === 400) throw new GraphQLError(error.detail);
       }
       throw new GraphQLError("Unknown error");
     }

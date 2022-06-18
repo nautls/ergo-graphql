@@ -1,6 +1,6 @@
 import { Field, Float, InputType } from "type-graphql";
 import { Registers } from "../../entities";
-import { JSONScalar } from "../scalars";
+import { GraphQLJSONObject } from "graphql-type-json";
 
 @InputType()
 export class AssetInput {
@@ -28,7 +28,7 @@ export class TransactionOutput {
   @Field(() => [AssetInput], { nullable: true })
   assets?: [AssetInput];
 
-  @Field(() => JSONScalar)
+  @Field(() => GraphQLJSONObject)
   additionalRegisters!: Registers;
 
   @Field({ nullable: true })

@@ -1,12 +1,12 @@
 import { Field, InputType } from "type-graphql";
-import { JSONScalar } from "../scalars";
+import { GraphQLJSONObject } from "graphql-type-json";
 
 @InputType()
 class SpendingProofInput {
   @Field()
   proofBytes!: string;
 
-  @Field(() => JSONScalar)
+  @Field(() => GraphQLJSONObject)
   extension!: object;
 }
 

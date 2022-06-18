@@ -1,5 +1,5 @@
 import { Field, ObjectType } from "type-graphql";
-import { JSONScalar } from "../scalars";
+import { GraphQLJSONObject } from "graphql-type-json";
 
 @ObjectType({ simpleResolvers: true })
 export class Extension {
@@ -9,6 +9,6 @@ export class Extension {
   @Field()
   digest!: string;
 
-  @Field(() => JSONScalar)
+  @Field(() => GraphQLJSONObject)
   fields!: object;
 }
