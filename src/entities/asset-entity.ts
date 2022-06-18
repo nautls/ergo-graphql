@@ -1,6 +1,5 @@
-import { Entity, Column, OneToOne, JoinColumn, ManyToOne } from "typeorm";
+import { Entity, Column, JoinColumn, ManyToOne } from "typeorm";
 import { BoxEntity } from "./box-entity";
-import { TokenEntity } from "./token-entity";
 import { AssetEntityBase } from "./base-types/asset-entity-base";
 
 /* 
@@ -18,10 +17,6 @@ import { AssetEntityBase } from "./base-types/asset-entity-base";
 export class AssetEntity extends AssetEntityBase {
   @Column({ name: "header_id" })
   headerId!: string;
-
-  @OneToOne(() => TokenEntity)
-  @JoinColumn({ name: "token_id" })
-  token!: TokenEntity;
 
   @ManyToOne(() => BoxEntity, (box) => box.assets)
   @JoinColumn({ name: "box_id" })

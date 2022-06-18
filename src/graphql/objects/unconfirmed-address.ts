@@ -2,13 +2,10 @@ import { Field, ObjectType } from "type-graphql";
 import { AddressBalance } from "./address-balance";
 
 @ObjectType({ simpleResolvers: true })
-export class Address {
+export class UnconfirmedAddress {
   @Field()
   address!: string;
 
   @Field(() => AddressBalance)
   balance!: AddressBalance;
-
-  @Field()
-  transactionsCount!: number;
 }

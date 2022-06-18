@@ -16,16 +16,16 @@ type Address {
   transactionsCount: Int!
 }
 
-type AddressBalance {
-  assets(tokenId: String): [AddressBalanceAssets!]!
-  nanoErgs: BigInt!
-}
-
-type AddressBalanceAssets {
+type AddressAssetBalance {
   amount: BigInt!
   decimals: Int
   name: String
   tokenId: String!
+}
+
+type AddressBalance {
+  assets(tokenId: String): [AddressAssetBalance!]!
+  nanoErgs: BigInt!
 }
 
 type Asset implements IAsset {
@@ -167,6 +167,7 @@ interface IDataInput {
 }
 
 interface IInput {
+  box: Box!
   boxId: String!
   extension: JSONObject!
   index: Int!
@@ -197,9 +198,10 @@ The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](
 scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
 type Mempool {
-  boxes(address: String, boxId: String, ergoTreeTemplateHash: String, skip: Int = 0, take: Int = 50, transactionId: String): [UnconfirmedBox!]!
+  addresses(addresses: [String!]!): [UnconfirmedAddress!]!
+  boxes(address: String, boxId: String, ergoTreeTemplateHash: String, skip: Int = 0, take: Int = 50, tokenId: String, transactionId: String): [UnconfirmedBox!]!
   size: Int!
-  transactions(skip: Int = 0, take: Int = 50, transactionId: String): [UnconfirmedTransaction!]!
+  transactions(address: String, skip: Int = 0, take: Int = 50, transactionId: String): [UnconfirmedTransaction!]!
   transactionsCount: Int!
 }
 
@@ -292,11 +294,16 @@ input TransactionOutput {
   value: Float!
 }
 
+type UnconfirmedAddress {
+  address: String!
+  balance: AddressBalance!
+}
+
 type UnconfirmedAsset implements IAsset {
   amount: BigInt!
-  box: UnconfirmedBox!
   boxId: String!
   index: Int!
+  token: Token!
   tokenId: String!
 }
 
@@ -322,6 +329,7 @@ type UnconfirmedDataInput implements IDataInput {
 }
 
 type UnconfirmedInput implements IInput {
+  box: Box!
   boxId: String!
   extension: JSONObject!
   index: Int!

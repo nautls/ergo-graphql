@@ -1,3 +1,4 @@
+import { ConfigureLoader } from "@mando75/typeorm-graphql-loader";
 import { Column, PrimaryColumn, BaseEntity } from "typeorm";
 
 enum NonMandatoryRegisterKey {
@@ -33,6 +34,7 @@ export abstract class BoxEntityBase extends BaseEntity {
   creationHeight!: number;
 
   @Column({ name: "index" })
+  @ConfigureLoader({ required: true })
   index!: number;
 
   @Column({ name: "ergo_tree" })
