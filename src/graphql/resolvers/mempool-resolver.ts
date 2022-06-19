@@ -49,7 +49,7 @@ class UnconfirmedBoxArguments {
 }
 
 @ArgsType()
-class AddressesQueryArgs {
+class UnconfirmedAddressesQueryArgs {
   @Field(() => [String], { nullable: false })
   @ArrayMaxSize(20)
   addresses!: string[];
@@ -114,7 +114,7 @@ export class MempoolResolver {
 
   @FieldResolver()
   async addresses(
-    @Args({ validate: true }) { addresses }: AddressesQueryArgs,
+    @Args({ validate: true }) { addresses }: UnconfirmedAddressesQueryArgs,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {

@@ -1,5 +1,6 @@
 import { join } from "path";
 import { buildSchema, Int } from "type-graphql";
+import { GraphQLString } from "graphql";
 import {
   BoxResolver,
   TokenResolver,
@@ -12,7 +13,6 @@ import {
   BlockResolver,
   EpochsResolver
 } from "./resolvers";
-import { GraphQLString } from "graphql";
 
 export async function generateSchema() {
   const schema = await buildSchema({
