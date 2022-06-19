@@ -1,4 +1,2 @@
 dist
 node_modules
-
-src/@types/nexus-typegen.ts
