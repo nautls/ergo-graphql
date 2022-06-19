@@ -1,4 +1,4 @@
-import { Field, Float, InputType } from "type-graphql";
+import { Field, InputType } from "type-graphql";
 import { Registers } from "../../entities";
 import { GraphQLJSONObject } from "graphql-type-json";
 
@@ -7,8 +7,8 @@ export class AssetInput {
   @Field()
   tokenId!: string;
 
-  @Field(() => Float)
-  amount!: number;
+  @Field()
+  amount!: string;
 }
 
 @InputType("TransactionOutput")
@@ -16,8 +16,8 @@ export class TransactionOutput {
   @Field({ nullable: true })
   boxId?: string;
 
-  @Field(() => Float)
-  value!: number;
+  @Field()
+  value!: string;
 
   @Field()
   ergoTree!: string;
