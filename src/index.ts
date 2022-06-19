@@ -31,8 +31,13 @@ async function startServer(schema: GraphQLSchema, dataContext: DatabaseContext) 
     introspection: true,
     context: { repository: dataContext },
     plugins: [
-      ApolloServerPluginCacheControl({ defaultMaxAge: MAX_CACHE_AGE, calculateHttpHeaders: true }),
-      responseCachePlugin({ cache: new BaseRedisCache({ client: redisClient }) })
+      ApolloServerPluginCacheControl({
+        defaultMaxAge: MAX_CACHE_AGE,
+        calculateHttpHeaders: true
+      }),
+      responseCachePlugin({
+        cache: new BaseRedisCache({ client: redisClient })
+      })
     ],
     validationRules: [
       depthLimit(
@@ -52,8 +57,7 @@ async function startServer(schema: GraphQLSchema, dataContext: DatabaseContext) 
 }
 
 async function startBlockWatcher(dataContext: DatabaseContext) {
-  blockWatcher.start(dataContext.headers);
-  blockWatcher.onNewBlock(() => redisClient.flushdb());
+  blockWatcher.start(dataContext.headers).onNewBlock(() => redisClient.flushdb());
 
   console.log("🚀 Block watcher started");
 }

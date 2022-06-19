@@ -11,28 +11,30 @@ class BlockWatcher {
     this._lastBlockHeight = 0;
   }
 
-  public onNewBlock(callback: (height: number) => void) {
+  public onNewBlock(callback: (height: number) => void): BlockWatcher {
     if (!callback) {
-      return;
+      return this;
     }
 
     this._callbacks.push(callback);
+    return this;
   }
 
-  public removeOnNewBlockListener(callback: (height: number) => void) {
+  public removeOnNewBlockListener(callback: (height: number) => void): void {
     const index = this._callbacks.indexOf(callback);
     if (index > -1) {
       this._callbacks = this._callbacks.splice(index, 1);
     }
   }
 
-  public start(repository: HeaderRepository, interval = 5) {
+  public start(repository: HeaderRepository, interval = 5): BlockWatcher {
     this._repository = repository;
     if (this._timer) {
       clearInterval(this._timer);
     }
 
     this._timer = setInterval(() => this._startBlockWatcher(this._repository), interval * 1000);
+    return this;
   }
 
   private _notify(height: number) {
