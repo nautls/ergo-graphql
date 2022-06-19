@@ -34,7 +34,7 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
   protected readonly createGraphQLQueryBuilder!: () => GraphQLQueryBuilder<any>;
   protected readonly alias!: string;
 
-  private readonly defaults?: RepositoryDefaults<T>;
+  private readonly _defaults?: RepositoryDefaults<T>;
 
   constructor(entity: EntityTarget<T>, alias: string, options: RepositoryOptions<T>) {
     this.alias = alias;
@@ -42,7 +42,7 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
     this.repository = options.context.dataSource.getRepository(entity);
     this.createGraphQLQueryBuilder = () =>
       options.context.graphQLDataLoader.loadEntity(entity as any, alias);
-    this.defaults = options.defaults;
+    this._defaults = options.defaults;
   }
 
   protected createQueryBuilder(): SelectQueryBuilder<T> {
@@ -57,14 +57,14 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
     return this.firstBase(options);
   }
 
-  private hasJoinWithManyRows(query: SelectQueryBuilder<unknown>) {
+  private _hasJoinWithManyRows(query: SelectQueryBuilder<unknown>) {
     return (
       !isEmpty(query.expressionMap.joinAttributes) &&
       query.expressionMap.joinAttributes.find((j) => !j.relation || !j.relation.isOneToOne)
     );
   }
 
-  private isColumnSelected(query: SelectQueryBuilder<unknown>, columnName: string) {
+  private _isColumnSelected(query: SelectQueryBuilder<unknown>, columnName: string) {
     return (
       query.expressionMap.selects.findIndex(
         (s) => s.selection.endsWith(columnName) || s.aliasName === columnName
@@ -87,11 +87,11 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       baseQuery = filterCallback(baseQuery);
     }
 
-    if (!this.isColumnSelected(baseQuery, primaryCol)) {
+    if (!this._isColumnSelected(baseQuery, primaryCol)) {
       baseQuery = baseQuery.select(`${this.alias}.${primaryCol}`, primaryCol);
     }
     baseQuery = this.addWhere(baseQuery, options.where);
-    baseQuery = this.selectOrderColumns(baseQuery, this.alias);
+    baseQuery = this._selectOrderColumns(baseQuery, this.alias);
 
     const limitQueryAlias = `l_${this.alias}`;
     let limitQuery = this.dataSource
@@ -100,12 +100,12 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       .skip(options.skip)
       .take(options.take);
 
-    if (this.hasJoinWithManyRows(baseQuery)) {
+    if (this._hasJoinWithManyRows(baseQuery)) {
       limitQuery = limitQuery.select(`DISTINCT("${limitQueryAlias}"."${primaryCol}")`, primaryCol);
 
-      if (!isEmpty(this.defaults?.orderBy)) {
-        limitQuery = this.selectOrderColumns(limitQuery, limitQueryAlias, { wrap: true });
-        limitQuery = this.setDefaultOrder(limitQuery, limitQueryAlias, { wrap: true });
+      if (!isEmpty(this._defaults?.orderBy)) {
+        limitQuery = this._selectOrderColumns(limitQuery, limitQueryAlias, { wrap: true });
+        limitQuery = this._setDefaultOrder(limitQuery, limitQueryAlias, { wrap: true });
         limitQuery = this.dataSource
           .createQueryBuilder()
           .select(`"ids"."${primaryCol}"`)
@@ -113,7 +113,7 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       }
     } else {
       limitQuery = limitQuery.select(`"${limitQueryAlias}"."${primaryCol}"`, primaryCol);
-      limitQuery = this.setDefaultOrder(limitQuery, limitQueryAlias, { wrap: true });
+      limitQuery = this._setDefaultOrder(limitQuery, limitQueryAlias, { wrap: true });
     }
 
     return this.createGraphQLQueryBuilder()
@@ -122,7 +122,7 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
         query
           .where(`${this.alias}.${primaryCol} IN (${limitQuery.getQuery()})`)
           .setParameters(baseQuery.getParameters());
-        query = this.setDefaultOrder(query, this.alias) as any;
+        query = this._setDefaultOrder(query, this.alias) as any;
 
         return selectCallback ? selectCallback(query) : query;
       })
@@ -148,7 +148,7 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
   }
 
   private addWhere(query: SelectQueryBuilder<any>, where?: Partial<T>) {
-    const mergedWhere = this.mountWhere(where);
+    const mergedWhere = this._mountWhere(where);
     if (mergedWhere && !isEmpty(mergedWhere)) {
       query = query.andWhere(mergedWhere);
     }
@@ -156,42 +156,42 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
     return query;
   }
 
-  private mountWhere(where?: Partial<T>): Partial<T> | undefined {
-    if (this.defaults?.where) {
-      return { ...where, ...this.defaults.where };
+  private _mountWhere(where?: Partial<T>): Partial<T> | undefined {
+    if (this._defaults?.where) {
+      return { ...where, ...this._defaults.where };
     }
 
     return where;
   }
 
-  private setDefaultOrder(
+  private _setDefaultOrder(
     query: SelectQueryBuilder<T | unknown>,
     alias: string,
     options: { wrap: boolean } = { wrap: false }
   ) {
-    if (!this.defaults?.orderBy) {
+    if (!this._defaults?.orderBy) {
       return query;
     }
 
-    for (const key in this.defaults.orderBy) {
+    for (const key in this._defaults.orderBy) {
       query = query.addOrderBy(
         options.wrap ? `"${alias}"."${key}"` : `${alias}.${key}`,
-        this.defaults.orderBy[key]
+        this._defaults.orderBy[key]
       );
     }
     return query;
   }
 
-  private selectOrderColumns(
+  private _selectOrderColumns(
     query: SelectQueryBuilder<any>,
     alias: string,
     options: { wrap: boolean } = { wrap: false }
   ) {
-    if (!this.defaults?.orderBy) {
+    if (!this._defaults?.orderBy) {
       return query;
     }
 
-    for (const key in this.defaults.orderBy) {
+    for (const key in this._defaults.orderBy) {
       query = query.addSelect(options.wrap ? `"${alias}"."${key}"` : `${alias}.${key}`, key);
     }
     return query;

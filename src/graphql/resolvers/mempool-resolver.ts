@@ -57,9 +57,10 @@ class AddressesQueryArgs {
 
 @Resolver(Mempool)
 export class MempoolResolver {
-  private nodeService: NodeService;
+  private _nodeService: NodeService;
+
   constructor() {
-    this.nodeService = new NodeService();
+    this._nodeService = new NodeService();
   }
 
   @Query(() => Mempool)
@@ -138,7 +139,7 @@ export class MempoolResolver {
   @Mutation(() => String)
   async checkTransaction(@Arg("signedTransaction") signedTransaction: SignedTransactionInput) {
     try {
-      const response = await this.nodeService.checkTransaction(signedTransaction);
+      const response = await this._nodeService.checkTransaction(signedTransaction);
       return response.data;
     } catch (e) {
       if (e instanceof AxiosError) {
@@ -154,7 +155,7 @@ export class MempoolResolver {
   @Mutation(() => String)
   async submitTransaction(@Arg("signedTransaction") signedTransaction: SignedTransactionInput) {
     try {
-      const response = await this.nodeService.submitTransaction(signedTransaction);
+      const response = await this._nodeService.submitTransaction(signedTransaction);
       return response.data;
     } catch (e) {
       if (e instanceof AxiosError) {
