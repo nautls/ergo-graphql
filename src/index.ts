@@ -2,33 +2,34 @@ import "dotenv/config";
 import "reflect-metadata";
 
 import { ApolloServer } from "apollo-server";
-import { initializeDataSource } from "./data-source";
-import { GraphQLSchema } from "graphql";
-import { DataSource } from "typeorm";
-import { generateSchema } from "./graphql/schema";
-import responseCachePlugin from "apollo-server-plugin-response-cache";
 import { BaseRedisCache } from "apollo-server-cache-redis";
-import { redisClient } from "./caching";
-import { blockWatcher } from "./block-watcher";
 import { ApolloServerPluginCacheControl } from "apollo-server-core";
-import { MAX_CACHE_AGE, DEFAULT_MAX_QUERY_DEPTH } from "./consts";
-import { DatabaseContext } from "./context/database-context";
+import responseCachePlugin from "apollo-server-plugin-response-cache";
+import { GraphQLSchema } from "graphql";
 import depthLimit from "graphql-depth-limit";
+import { blockWatcher } from "./block-watcher";
+import { redisClient } from "./caching";
+import { DEFAULT_MAX_QUERY_DEPTH, MAX_CACHE_AGE } from "./consts";
+import { DatabaseContext } from "./context/database-context";
+import { initializeDataSource } from "./data-source";
+import { generateSchema } from "./graphql/schema";
 
 const { TS_NODE_DEV, MAX_QUERY_DEPTH } = process.env;
 
 (async () => {
   const [dataSource, schema] = await Promise.all([initializeDataSource(), generateSchema()]);
-  startBlockWatcher();
-  await startServer(schema, dataSource);
+  const dataContext = new DatabaseContext(dataSource);
+
+  startBlockWatcher(dataContext);
+  await startServer(schema, dataContext);
 })();
 
-async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
+async function startServer(schema: GraphQLSchema, dataContext: DatabaseContext) {
   const server = new ApolloServer({
     csrfPrevention: true,
     schema,
     introspection: true,
-    context: { repository: new DatabaseContext(dataSource) },
+    context: { repository: dataContext },
     plugins: [
       ApolloServerPluginCacheControl({ defaultMaxAge: MAX_CACHE_AGE, calculateHttpHeaders: true }),
       responseCachePlugin({ cache: new BaseRedisCache({ client: redisClient }) })
@@ -36,10 +37,10 @@ async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
     validationRules: [
       depthLimit(
         MAX_QUERY_DEPTH ? parseInt(MAX_QUERY_DEPTH, 10) : DEFAULT_MAX_QUERY_DEPTH,
-        {},
+        undefined,
         (depths) => {
           if (TS_NODE_DEV === "true") {
-            console.log("Query Depths:", depths);
+            console.log("Query depths:", depths);
           }
         }
       )
@@ -50,9 +51,9 @@ async function startServer(schema: GraphQLSchema, dataSource: DataSource) {
   console.log(`🚀 Server ready at ${url}`);
 }
 
-async function startBlockWatcher() {
-  blockWatcher.start();
+async function startBlockWatcher(dataContext: DatabaseContext) {
+  blockWatcher.start(dataContext.headers);
   blockWatcher.onNewBlock(() => redisClient.flushdb());
 
-  console.log(`🚀 Block watcher started`);
+  console.log("🚀 Block watcher started");
 }

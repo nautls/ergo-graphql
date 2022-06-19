@@ -3,13 +3,13 @@ import { DataSource } from "typeorm";
 import {
   BlockInfoEntity,
   DataInputEntity,
-  HeaderEntity,
   InputEntity,
   TokenEntity,
   EpochsParameterEntity
 } from "../entities";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { BoxRepository } from "./box-repository";
+import { HeaderRepository } from "./header-repository";
 import { IRepository } from "./repository-interface";
 import { TransactionRepository } from "./transactions-repository";
 import { UnconfirmedBoxRepository } from "./unconfirmed-box-repository";
@@ -21,7 +21,7 @@ export class DatabaseContext {
   public readonly boxes!: BoxRepository;
   public readonly dataInputs!: IRepository<DataInputEntity>;
   public readonly inputs!: IRepository<InputEntity>;
-  public readonly headers!: IRepository<HeaderEntity>;
+  public readonly headers!: HeaderRepository;
   public readonly tokens!: IRepository<TokenEntity>;
   public readonly epochs!: IRepository<EpochsParameterEntity>;
 
@@ -38,19 +38,14 @@ export class DatabaseContext {
     this.boxes = new BoxRepository(context);
     this.unconfirmedTransactions = new UnconfirmedTransactionRepository(context);
     this.unconfirmedBoxes = new UnconfirmedBoxRepository(context);
+    this.headers = new HeaderRepository(context);
 
     const defaults = { where: { mainChain: true } };
     this.dataInputs = new BaseRepository(DataInputEntity, "dti", { context, defaults });
     this.inputs = new BaseRepository(InputEntity, "input", { context, defaults });
     this.tokens = new BaseRepository(TokenEntity, "token", { context });
     this.epochs = new BaseRepository(EpochsParameterEntity, "epochs", { context });
-
     this.blockInfo = new BaseRepository(BlockInfoEntity, "block", {
-      context,
-      defaults: { ...defaults, orderBy: { height: "DESC" } }
-    });
-
-    this.headers = new BaseRepository(HeaderEntity, "header", {
       context,
       defaults: { ...defaults, orderBy: { height: "DESC" } }
     });

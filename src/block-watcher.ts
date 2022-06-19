@@ -1,21 +1,14 @@
-import { Repository } from "typeorm";
-import { appDataSource } from "./data-source";
-import { HeaderEntity } from "./entities";
+import { HeaderRepository } from "./context/header-repository";
 
 class BlockWatcher {
-  private _repository!: Repository<HeaderEntity>;
+  private _repository!: HeaderRepository;
   private _callbacks!: ((height: number) => void)[];
   private _lastBlockHeight!: number;
   private _timer!: NodeJS.Timeout;
 
   constructor() {
-    this._repository = appDataSource.getRepository(HeaderEntity);
     this._callbacks = [];
     this._lastBlockHeight = 0;
-  }
-
-  private notify(height: number) {
-    this._callbacks.forEach((callback) => callback(height));
   }
 
   public onNewBlock(callback: (height: number) => void) {
@@ -33,7 +26,8 @@ class BlockWatcher {
     }
   }
 
-  public start(interval = 5) {
+  public start(repository: HeaderRepository, interval = 5) {
+    this._repository = repository;
     if (this._timer) {
       clearInterval(this._timer);
     }
@@ -41,20 +35,23 @@ class BlockWatcher {
     this._timer = setInterval(() => this._startBlockWatcher(this._repository), interval * 1000);
   }
 
-  private _startBlockWatcher(repository: Repository<HeaderEntity>) {
-    repository
-      .createQueryBuilder("header")
-      .select("MAX(height)", "height")
-      .getRawOne()
-      .then(({ height }) => {
-        if (this._lastBlockHeight >= height) {
-          return;
-        }
+  private _notify(height: number) {
+    this._callbacks.forEach((callback) => callback(height));
+  }
 
+  private _startBlockWatcher(repository: HeaderRepository) {
+    repository.getMaxHeight().then((height) => {
+      if (!height || this._lastBlockHeight >= height) {
+        return;
+      }
+
+      if (process.env.TS_NODE_DEV === "true") {
         console.log(`New block found: ${height}`);
-        this._lastBlockHeight = height;
-        this.notify(height);
-      });
+      }
+
+      this._lastBlockHeight = height;
+      this._notify(height);
+    });
   }
 }
 
