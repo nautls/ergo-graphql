@@ -17,7 +17,7 @@ type Address {
 }
 
 type AddressAssetBalance {
-  amount: BigInt!
+  amount: String!
   decimals: Int
   name: String
   tokenId: String!
@@ -25,11 +25,11 @@ type AddressAssetBalance {
 
 type AddressBalance {
   assets(tokenId: String): [AddressAssetBalance!]!
-  nanoErgs: BigInt!
+  nanoErgs: String!
 }
 
 type Asset implements IAsset {
-  amount: BigInt!
+  amount: String!
   box: Box!
   boxId: String!
   headerId: String!
@@ -43,31 +43,29 @@ input AssetInput {
   tokenId: String!
 }
 
-scalar BigInt
-
 type Block {
-  blockChainTotalSize: BigInt!
-  blockCoins: BigInt!
-  blockFee: BigInt!
-  blockMiningTime: BigInt!
+  blockChainTotalSize: String!
+  blockCoins: String!
+  blockFee: String!
+  blockMiningTime: String!
   blockSize: Int!
-  difficulty: BigInt!
+  difficulty: String!
   header: Header!
   headerId: String!
   height: Int!
   mainChain: Boolean!
-  maxBoxGix: BigInt!
-  maxTxGix: BigInt!
+  maxBoxGix: String!
+  maxTxGix: String!
   minerAddress: String!
-  minerRevenue: BigInt!
-  minerReward: BigInt!
-  timestamp: BigInt!
-  totalCoinsInTxs: BigInt!
-  totalCoinsIssued: BigInt!
-  totalFees: BigInt!
-  totalMinersReward: BigInt!
-  totalMiningTime: BigInt!
-  totalTxsCount: BigInt!
+  minerRevenue: String!
+  minerReward: String!
+  timestamp: String!
+  totalCoinsInTxs: String!
+  totalCoinsIssued: String!
+  totalFees: String!
+  totalMinersReward: String!
+  totalMiningTime: String!
+  totalTxsCount: String!
   txsCount: Int!
   txsSize: Int!
 }
@@ -80,7 +78,7 @@ type Box implements IBox {
   creationHeight: Int!
   ergoTree: String!
   ergoTreeTemplateHash: String!
-  globalIndex: BigInt!
+  globalIndex: String!
   headerId: String!
   index: Int!
   mainChain: Boolean!
@@ -88,7 +86,7 @@ type Box implements IBox {
   spentBy: Input
   transaction: Transaction!
   transactionId: String!
-  value: BigInt!
+  value: String!
 }
 
 type DataInput implements IDataInput {
@@ -125,24 +123,24 @@ type Header {
   adProof: AdProof!
   adProofsRoot: String!
   blockInfo: Block!
-  difficulty: BigInt!
+  difficulty: String!
   extension: Extension!
   extensionHash: String!
   headerId: String!
   height: Int!
   mainChain: Boolean!
-  nBits: BigInt!
+  nBits: String!
   parentId: String!
   powSolutions: JSONObject!
   stateRoot: String!
-  timestamp: BigInt!
+  timestamp: String!
   transactionsRoot: String!
   version: Int!
   votes: [Int!]!
 }
 
 interface IAsset {
-  amount: BigInt!
+  amount: String!
   boxId: String!
   index: Int!
   tokenId: String!
@@ -157,7 +155,7 @@ interface IBox {
   ergoTreeTemplateHash: String!
   index: Int!
   transactionId: String!
-  value: BigInt!
+  value: String!
 }
 
 interface IDataInput {
@@ -250,7 +248,7 @@ type Token {
   boxId: String!
   decimals: Int
   description: String
-  emissionAmount: BigInt!
+  emissionAmount: String!
   name: String
   tokenId: String!
   type: String
@@ -259,7 +257,7 @@ type Token {
 type Transaction implements ITransaction {
   coinbase: Boolean!
   dataInputs: [DataInput!]!
-  globalIndex: BigInt!
+  globalIndex: String!
   headerId: String!
   inclusionHeight: Int!
   index: Int!
@@ -270,7 +268,7 @@ type Transaction implements ITransaction {
     onlyRelevant: Boolean
   ): [Box!]!
   size: Int!
-  timestamp: BigInt!
+  timestamp: String!
   transactionId: String!
 }
 
@@ -300,7 +298,7 @@ type UnconfirmedAddress {
 }
 
 type UnconfirmedAsset implements IAsset {
-  amount: BigInt!
+  amount: String!
   boxId: String!
   index: Int!
   token: Token!
@@ -318,7 +316,7 @@ type UnconfirmedBox implements IBox {
   index: Int!
   transaction: UnconfirmedTransaction!
   transactionId: String!
-  value: BigInt!
+  value: String!
 }
 
 type UnconfirmedDataInput implements IDataInput {
@@ -343,6 +341,6 @@ type UnconfirmedTransaction implements ITransaction {
   inputs: [UnconfirmedInput!]!
   outputs: [UnconfirmedBox!]!
   size: Int!
-  timestamp: BigInt!
+  timestamp: String!
   transactionId: String!
 }

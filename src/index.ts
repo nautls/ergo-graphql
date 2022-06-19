@@ -1,6 +1,5 @@
 import "dotenv/config";
 import "reflect-metadata";
-import "./prototypes";
 
 import { ApolloServer } from "apollo-server";
 import { initializeDataSource } from "./data-source";

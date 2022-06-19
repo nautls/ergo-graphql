@@ -1,6 +1,5 @@
 import "dotenv/config";
 import "reflect-metadata";
-import "../src/prototypes";
 
 import { ApolloServer } from "apollo-server-express";
 import { GraphQLResponse } from "apollo-server-types";
