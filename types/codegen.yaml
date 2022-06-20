@@ -1,0 +1,10 @@
+schema: "../src/graphql/schema.graphql"
+generates:
+  ./src/index.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+    config:
+      defaultScalarType: unknown
+      scalars:
+        JSONObject: object
