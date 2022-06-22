@@ -2,10 +2,23 @@
   "name": "@ergo-graphql/ts-types",
   "version": "0.1.0",
   "description": "A type package for ergo-graphql server",
-  "main": "src/index.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": "capt-nemo429",
+  "license": "MIT",
+  "files": [
+    "lib",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/capt-nemo429/ergo-graphql/packages/ts-types"
+    "url": "https://github.com/capt-nemo429/ergo-graphql/packages/ts-types"
+  },
+  "bugs": {
+    "url": "https://github.com/capt-nemo429/ergo-graphql/issues"
   },
   "scripts": {
     "gen": "graphql-codegen",
@@ -16,8 +29,6 @@
     "GraphQL",
     "TypeScript"
   ],
-  "author": "capt-nemo429",
-  "license": "MIT",
   "devDependencies": {
     "@graphql-codegen/cli": "^2.6.2",
     "@graphql-codegen/typescript": "^2.5.1",
