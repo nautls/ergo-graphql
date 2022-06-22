@@ -2,6 +2,8 @@
 
 Ergo GraphQL server on top of [Ergo Platform's explorer database schema](https://github.com/ergoplatform/explorer-backend/blob/master/modules/explorer-core/src/main/resources/db/V9__Schema.sql).
 
+This repository also includes a [TypeScript package for client-side static typing](/packages/ts-types/).
+
 ## Project setup
 
 ```
