@@ -1,6 +1,6 @@
 {
   "name": "@ergo-graphql/ts-types",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A type package for ergo-graphql server",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/capt-nemo429/ergo-graphql/packages/ts-types"
+    "url": "https://github.com/capt-nemo429/ergo-graphql"
   },
   "bugs": {
     "url": "https://github.com/capt-nemo429/ergo-graphql/issues"
