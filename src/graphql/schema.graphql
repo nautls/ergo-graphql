@@ -178,6 +178,10 @@ interface ITransaction {
   transactionId: String!
 }
 
+type Info {
+  version: String!
+}
+
 type Input implements IInput {
   box: Box!
   boxId: String!
@@ -209,6 +213,7 @@ type Mutation {
 }
 
 type Query {
+  Info: Info!
   addresses(addresses: [String!]!, atHeight: Int): [Address!]!
   blockHeaders(headerId: String, height: Int, parentId: String, skip: Int = 0, take: Int = 10): [Header!]!
   blocks(headerId: String, height: Int, skip: Int = 0, take: Int = 10): [Block!]!
