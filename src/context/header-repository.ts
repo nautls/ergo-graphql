@@ -19,4 +19,15 @@ export class HeaderRepository extends BaseRepository<HeaderEntity> {
       .getRawOne();
     return height;
   }
+
+  public async getLastBlockId(): Promise<number | undefined> {
+    const { headerId } = await this.repository
+      .createQueryBuilder("header")
+      .select("id", "headerId")
+      .orderBy("height", "DESC")
+      .limit(1)
+      .getRawOne();
+
+    return headerId;
+  }
 }

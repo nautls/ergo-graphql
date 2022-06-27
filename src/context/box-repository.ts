@@ -149,4 +149,13 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
         };
       });
   }
+
+  public async getMaxBoxIndex(): Promise<number | undefined> {
+    const { index } = await this.repository
+      .createQueryBuilder("box")
+      .select("MAX(index)", "index")
+      .getRawOne();
+
+    return index;
+  }
 }

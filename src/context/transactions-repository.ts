@@ -100,6 +100,15 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
     return count;
   }
 
+  public async getMaxTransactionIndex(): Promise<number | undefined> {
+    const { index } = await this.repository
+      .createQueryBuilder("trx")
+      .select("MAX(index)", "index")
+      .getRawOne();
+
+    return index;
+  }
+
   private createOutputQuery(height?: number) {
     let query = this.dataSource
       .getRepository(BoxEntity)

@@ -13,3 +13,4 @@ export * from "./unconfirmed-box";
 export * from "./unconfirmed-asset";
 export * from "./epochs";
 export * from "./info";
+export * from "./state";

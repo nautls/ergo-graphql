@@ -222,6 +222,7 @@ type Query {
   epochs(height: Int, id: Int, skip: Int = 0, take: Int = 50): [Epochs!]!
   inputs(boxId: String, headerId: String, skip: Int = 0, take: Int = 50, transactionId: String): [Input!]!
   mempool: Mempool!
+  state: State!
   tokens(boxId: String, name: String, skip: Int = 0, take: Int = 50, tokenId: String): [Token!]!
   transactions(address: String, headerId: String, inclusionHeight: Int, maxHeight: Int, minHeight: Int, skip: Int = 0, take: Int = 50, transactionId: String): [Transaction!]!
 }
@@ -246,6 +247,14 @@ input SignedTransaction {
 input SpendingProofInput {
   extension: JSONObject!
   proofBytes: String!
+}
+
+type State {
+  blockId: String!
+  height: Int!
+  maxBoxGlobalIndex: Int!
+  maxTransactionGlobalIndex: Int!
+  params: Epochs!
 }
 
 type Token {
