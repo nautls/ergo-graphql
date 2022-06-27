@@ -1,4 +1,5 @@
-import { Resolver, FieldResolver, Ctx, Query } from "type-graphql";
+import { Resolver, FieldResolver, Ctx, Query, Info } from "type-graphql";
+import { GraphQLResolveInfo } from "graphql";
 import { State } from "../objects";
 import { GraphQLContext } from "../context-type";
 
@@ -30,7 +31,7 @@ export class StateResolver {
   }
 
   @FieldResolver()
-  async params(@Ctx() context: GraphQLContext) {
-    return null;
+  async params(@Ctx() context: GraphQLContext, @Info() info: GraphQLResolveInfo) {
+    return await context.repository.epochs.getLast(info);
   }
 }
