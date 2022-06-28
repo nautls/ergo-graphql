@@ -103,7 +103,6 @@ type Epochs {
   blockVersion: Int!
   dataInputCost: Int!
   height: Int!
-  id: Int!
   inputCost: Int!
   maxBlockCost: Int!
   maxBlockSize: Int!
