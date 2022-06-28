@@ -128,7 +128,6 @@ export type Epochs = {
   blockVersion: Scalars['Int'];
   dataInputCost: Scalars['Int'];
   height: Scalars['Int'];
-  id: Scalars['Int'];
   inputCost: Scalars['Int'];
   maxBlockCost: Scalars['Int'];
   maxBlockSize: Scalars['Int'];
@@ -205,6 +204,11 @@ export type ITransaction = {
   transactionId: Scalars['String'];
 };
 
+export type Info = {
+  __typename?: 'Info';
+  version: Scalars['String'];
+};
+
 export type Input = IInput & {
   __typename?: 'Input';
   box: Box;
@@ -274,9 +278,10 @@ export type Query = {
   blocks: Array<Block>;
   boxes: Array<Box>;
   dataInputs: Array<DataInput>;
-  epochs: Array<Epochs>;
+  info: Info;
   inputs: Array<Input>;
   mempool: Mempool;
+  state: State;
   tokens: Array<Token>;
   transactions: Array<Transaction>;
 };
@@ -329,14 +334,6 @@ export type QueryDataInputsArgs = {
 };
 
 
-export type QueryEpochsArgs = {
-  height?: InputMaybe<Scalars['Int']>;
-  id?: InputMaybe<Scalars['Int']>;
-  skip?: InputMaybe<Scalars['Int']>;
-  take?: InputMaybe<Scalars['Int']>;
-};
-
-
 export type QueryInputsArgs = {
   boxId?: InputMaybe<Scalars['String']>;
   headerId?: InputMaybe<Scalars['String']>;
@@ -386,6 +383,15 @@ export type SignedTransaction = {
 export type SpendingProofInput = {
   extension: Scalars['JSONObject'];
   proofBytes: Scalars['String'];
+};
+
+export type State = {
+  __typename?: 'State';
+  blockId: Scalars['String'];
+  boxGlobalIndex: Scalars['String'];
+  height: Scalars['Int'];
+  params: Epochs;
+  transactionGlobalIndex: Scalars['String'];
 };
 
 export type Token = {
