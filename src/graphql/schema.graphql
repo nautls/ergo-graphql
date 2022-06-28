@@ -277,7 +277,7 @@ type Transaction implements ITransaction {
   mainChain: Boolean!
   outputs(
     """Only includes outputs owned by `address` and the miner fee output"""
-    onlyRelevant: Boolean
+    relevantOnly: Boolean
   ): [Box!]!
   size: Int!
   timestamp: String!

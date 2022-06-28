@@ -53,7 +53,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
         return filterQuery;
       },
       (selectQuery) => {
-        if (address && getArgumentValue(options.resolverInfo, "outputs", "onlyRelevant") === true) {
+        if (address && getArgumentValue(options.resolverInfo, "outputs", "relevantOnly") === true) {
           const outputsJoin = selectQuery.expressionMap.joinAttributes.find(
             (x) => x.relation?.propertyName === "outputs"
           );

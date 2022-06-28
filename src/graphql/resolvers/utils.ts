@@ -12,8 +12,12 @@ export function getArgumentValue(
     return;
   }
 
-  return (node.arguments?.find((arg) => arg.name.value === argumentName)?.value as StringValueNode)
-    ?.value;
+  const arg = node.arguments?.find((arg) => arg.name.value === argumentName);
+  if (arg?.value.kind === "Variable") {
+    return info.variableValues[arg.value.name.value];
+  } else {
+    return (arg?.value as StringValueNode)?.value;
+  }
 }
 
 export function isFieldSelected(info: GraphQLResolveInfo, field: string): boolean {

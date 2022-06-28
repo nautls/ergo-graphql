@@ -44,11 +44,11 @@ export class Transaction extends ITransaction {
   outputs!: Box[];
   @Field(() => [Box], { name: "outputs" })
   outputsResolver(
-    @Arg("onlyRelevant", () => Boolean, {
+    @Arg("relevantOnly", () => Boolean, {
       nullable: true,
       description: "Only includes outputs owned by `address` and the miner fee output"
     })
-    onlyRelevant?: boolean
+    relevantOnly?: boolean
   ): Box[] {
     return orderBy(this.outputs, (output) => output.index);
   }
