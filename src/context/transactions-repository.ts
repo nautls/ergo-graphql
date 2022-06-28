@@ -100,7 +100,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
     return count;
   }
 
-  public async getMaxTransactionIndex(): Promise<number | undefined> {
+  public async getMaxGlobalIndex(): Promise<number | undefined> {
     const { globalIndex } = await this.repository
       .createQueryBuilder("trx")
       .select("MAX(global_index)", "globalIndex")

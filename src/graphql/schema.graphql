@@ -249,10 +249,10 @@ input SpendingProofInput {
 
 type State {
   blockId: String!
+  boxGlobalIndex: String!
   height: Int!
-  maxBoxGlobalIndex: String!
-  maxTransactionGlobalIndex: String!
   params: Epochs!
+  transactionGlobalIndex: String!
 }
 
 type Token {

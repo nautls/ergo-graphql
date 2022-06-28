@@ -21,13 +21,13 @@ export class StateResolver {
   }
 
   @FieldResolver()
-  async maxBoxGlobalIndex(@Ctx() context: GraphQLContext) {
-    return await context.repository.boxes.getMaxBoxIndex();
+  async boxGlobalIndex(@Ctx() context: GraphQLContext) {
+    return await context.repository.boxes.getMaxGlobalIndex();
   }
 
   @FieldResolver()
-  async maxTransactionGlobalIndex(@Ctx() context: GraphQLContext) {
-    return await context.repository.transactions.getMaxTransactionIndex();
+  async transactionGlobalIndex(@Ctx() context: GraphQLContext) {
+    return await context.repository.transactions.getMaxGlobalIndex();
   }
 
   @FieldResolver()
