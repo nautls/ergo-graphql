@@ -17,7 +17,7 @@ type Register = {
 };
 
 export type Registers = {
-  [key in NonMandatoryRegisterKey]: Register;
+  [key in NonMandatoryRegisterKey]?: Register;
 };
 
 export abstract class BoxEntityBase extends BaseEntity {
