@@ -28,6 +28,19 @@ export abstract class IBox {
   @Field()
   address!: string;
 
-  @Field(() => GraphQLJSONObject)
+  @Field(() => GraphQLJSONObject, { name: "additionalRegisters" })
+  additionalRegistersResolver(): Registers {
+    const keys = Object.keys(this.additionalRegisters);
+    if (keys.length <= 1) {
+      return this.additionalRegisters;
+    }
+
+    const orderedRegisters: Registers = {};
+    for (const key of keys.sort()) {
+      orderedRegisters[key as keyof Registers] = this.additionalRegisters[key as keyof Registers];
+    }
+    return orderedRegisters;
+  }
+
   additionalRegisters!: Registers;
 }
