@@ -424,7 +424,7 @@ export type Transaction = ITransaction & {
 
 
 export type TransactionOutputsArgs = {
-  onlyRelevant?: InputMaybe<Scalars['Boolean']>;
+  relevantOnly?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type TransactionDataInput = {
