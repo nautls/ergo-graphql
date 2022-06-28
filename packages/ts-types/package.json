@@ -1,6 +1,6 @@
 {
   "name": "@ergo-graphql/ts-types",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A type package for ergo-graphql server",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
