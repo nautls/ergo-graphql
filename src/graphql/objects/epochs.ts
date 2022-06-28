@@ -3,14 +3,11 @@ import { Field, ObjectType } from "type-graphql";
 @ObjectType({ simpleResolvers: true })
 export class Epochs {
   @Field()
-  id!: number;
-
-  @Field()
   height!: number;
 
   @Field()
   storageFeeFactor!: number;
-  
+
   @Field()
   minValuePerByte!: number;
 

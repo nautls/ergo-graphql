@@ -103,7 +103,6 @@ type Epochs {
   blockVersion: Int!
   dataInputCost: Int!
   height: Int!
-  id: Int!
   inputCost: Int!
   maxBlockCost: Int!
   maxBlockSize: Int!
@@ -178,6 +177,10 @@ interface ITransaction {
   transactionId: String!
 }
 
+type Info {
+  version: String!
+}
+
 type Input implements IInput {
   box: Box!
   boxId: String!
@@ -214,9 +217,10 @@ type Query {
   blocks(headerId: String, height: Int, skip: Int = 0, take: Int = 10): [Block!]!
   boxes(address: String, boxId: String, ergoTree: String, ergoTreeTemplateHash: String, headerId: String, registers: Registers, skip: Int = 0, spent: Boolean, take: Int = 50, tokenId: String, transactionId: String): [Box!]!
   dataInputs(boxId: String, headerId: String, skip: Int = 0, take: Int = 50, transactionId: String): [DataInput!]!
-  epochs(height: Int, id: Int, skip: Int = 0, take: Int = 50): [Epochs!]!
+  info: Info!
   inputs(boxId: String, headerId: String, skip: Int = 0, take: Int = 50, transactionId: String): [Input!]!
   mempool: Mempool!
+  state: State!
   tokens(boxId: String, name: String, skip: Int = 0, take: Int = 50, tokenId: String): [Token!]!
   transactions(address: String, headerId: String, inclusionHeight: Int, maxHeight: Int, minHeight: Int, skip: Int = 0, take: Int = 50, transactionId: String): [Transaction!]!
 }
@@ -241,6 +245,14 @@ input SignedTransaction {
 input SpendingProofInput {
   extension: JSONObject!
   proofBytes: String!
+}
+
+type State {
+  blockId: String!
+  boxGlobalIndex: String!
+  height: Int!
+  params: Epochs!
+  transactionGlobalIndex: String!
 }
 
 type Token {
