@@ -4,7 +4,7 @@ import { Info } from "../objects";
 @Resolver()
 export class InfoResolver {
   @Query(() => Info)
-  async Info() {
+  async info() {
     return { version: process.env.npm_package_version };
   }
 }

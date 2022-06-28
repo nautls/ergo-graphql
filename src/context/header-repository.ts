@@ -20,7 +20,7 @@ export class HeaderRepository extends BaseRepository<HeaderEntity> {
     return height;
   }
 
-  public async getLastBlockId(): Promise<number | undefined> {
+  public async getLastHeaderId(): Promise<number | undefined> {
     const { headerId } = await this.repository
       .createQueryBuilder("header")
       .select("id", "headerId")

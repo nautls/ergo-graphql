@@ -10,10 +10,10 @@ export class State {
   height?: number;
 
   @Field()
-  maxBoxGlobalIndex?: number;
+  maxBoxGlobalIndex?: bigint;
 
   @Field()
-  maxTransactionGlobalIndex?: number;
+  maxTransactionGlobalIndex?: bigint;
 
   @Field(() => Epochs)
   params?: Epochs;

@@ -12,7 +12,7 @@ export class StateResolver {
 
   @FieldResolver()
   async blockId(@Ctx() context: GraphQLContext) {
-    return await context.repository.headers.getLastBlockId();
+    return await context.repository.headers.getLastHeaderId();
   }
 
   @FieldResolver()

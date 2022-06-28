@@ -101,12 +101,12 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
   }
 
   public async getMaxTransactionIndex(): Promise<number | undefined> {
-    const { index } = await this.repository
+    const { globalIndex } = await this.repository
       .createQueryBuilder("trx")
-      .select("MAX(index)", "index")
+      .select("MAX(global_index)", "globalIndex")
       .getRawOne();
 
-    return index;
+    return globalIndex;
   }
 
   private createOutputQuery(height?: number) {
