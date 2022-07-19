@@ -4,6 +4,7 @@ import { Box } from "../objects";
 import { removeUndefined } from "../../utils";
 import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
+import { ValidateIf, IsEmpty, isDefined } from "class-validator";
 
 @InputType()
 class Registers {
@@ -34,6 +35,24 @@ class BoxesQueryArgs {
   @Field(() => String, { nullable: true })
   boxId?: string;
 
+  @ValidateIf((o: BoxesQueryArgs) => {
+    if (!isDefined(o.spent)) return true;
+
+    const indexFields = [
+      o.boxId,
+      o.transactionId,
+      o.headerId,
+      o.address,
+      o.ergoTree,
+      o.ergoTreeTemplateHash
+    ];
+    const definedCount = indexFields.filter((el) => isDefined(el)).length;
+    return !(definedCount > 0);
+  })
+  @IsEmpty({
+    message:
+      "Registers filter should be used with spent:true and at least one of boxId, transactionId, headerId, address, ergoTree, ergoTreeTemplateHash."
+  })
   @Field(() => Registers, { nullable: true })
   registers?: Registers;
 
@@ -60,7 +79,7 @@ class BoxesQueryArgs {
 export class BoxResolver {
   @Query(() => [Box])
   async boxes(
-    @Args()
+    @Args({ validate: true })
     {
       address,
       boxId,
