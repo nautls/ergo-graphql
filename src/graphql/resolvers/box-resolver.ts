@@ -36,6 +36,8 @@ class BoxesQueryArgs {
   boxId?: string;
 
   @ValidateIf((o: BoxesQueryArgs) => {
+    if (o.spent === true) return true;
+
     const indexFields = [
       o.boxId,
       o.transactionId,
@@ -45,9 +47,12 @@ class BoxesQueryArgs {
       o.ergoTreeTemplateHash
     ];
     const definedCount = indexFields.filter((el) => isDefined(el)).length;
-    return !(o.spent === true && definedCount > 0);
+    return !(definedCount > 0);
   })
-  @IsEmpty({ message: "Registers filter should be used with spent:true and at least one index." })
+  @IsEmpty({
+    message:
+      "Registers filter should be used with spent:true and at least one of boxId, transactionId, headerId, address, ergoTree, ergoTreeTemplateHash."
+  })
   @Field(() => Registers, { nullable: true })
   registers?: Registers;
 
