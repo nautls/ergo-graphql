@@ -36,7 +36,7 @@ class BoxesQueryArgs {
   boxId?: string;
 
   @ValidateIf((o: BoxesQueryArgs) => {
-    if (o.spent === true) return true;
+    if (!isDefined(o.spent)) return true;
 
     const indexFields = [
       o.boxId,
