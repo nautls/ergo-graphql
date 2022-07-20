@@ -51,7 +51,7 @@ class BoxesQueryArgs {
   })
   @IsEmpty({
     message:
-      "Registers filter should be used with spent:true and at least one of boxId, transactionId, headerId, address, ergoTree, ergoTreeTemplateHash."
+      "'registers' filter should be used in combination with 'spent' and at least one of 'boxId', 'transactionId', 'headerId', 'address', 'ergoTree' or 'ergoTreeTemplateHash' fields."
   })
   @Field(() => Registers, { nullable: true })
   registers?: Registers;
