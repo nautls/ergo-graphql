@@ -148,12 +148,15 @@ export class MempoolResolver {
   @FieldResolver()
   async inputs(
     @Args({ validate: true }) { boxId, transactionId }: UnconfirmedInputsQueryArgs,
+    @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
     return context.repository.unconfirmedInputs.find({
       resolverInfo: info,
-      where: removeUndefined({ boxId, transactionId })
+      where: removeUndefined({ boxId, transactionId }),
+      skip,
+      take
     });
   }
 
