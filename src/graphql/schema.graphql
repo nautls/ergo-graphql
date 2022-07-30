@@ -74,6 +74,7 @@ type Box implements IBox {
   additionalRegisters: JSONObject!
   address: String!
   assets: [Asset!]!
+  beingSpent: Boolean!
   boxId: String!
   creationHeight: Int!
   ergoTree: String!

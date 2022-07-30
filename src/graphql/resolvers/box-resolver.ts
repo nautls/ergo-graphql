@@ -2,6 +2,7 @@ import { GraphQLResolveInfo } from "graphql";
 import { Args, ArgsType, Ctx, Field, Info, InputType, Query, Resolver } from "type-graphql";
 import { Box } from "../objects";
 import { removeUndefined } from "../../utils";
+import { isFieldSelected } from "./utils";
 import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
 import { ValidateIf, IsEmpty, isDefined } from "class-validator";
@@ -95,7 +96,11 @@ export class BoxResolver {
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
-    return context.repository.boxes.find({
+    const unconfirmedInputBoxIds = isFieldSelected(info, "beingSpent")
+      ? await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds()
+      : [];
+
+    const boxes = await context.repository.boxes.find({
       resolverInfo: info,
       where: removeUndefined({
         address,
@@ -110,6 +115,13 @@ export class BoxResolver {
       registers,
       skip,
       take
+    });
+
+    return boxes.map((box) => {
+      return {
+        ...box,
+        beingSpent: unconfirmedInputBoxIds.indexOf(box.boxId) > -1
+      };
     });
   }
 }
