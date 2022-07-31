@@ -1,6 +1,12 @@
 import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
 import { DataSource } from "typeorm";
-import { BlockInfoEntity, DataInputEntity, InputEntity, TokenEntity } from "../entities";
+import {
+  BlockInfoEntity,
+  DataInputEntity,
+  InputEntity,
+  TokenEntity,
+  UnconfirmedInputEntity
+} from "../entities";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { BoxRepository } from "./box-repository";
 import { HeaderRepository } from "./header-repository";
@@ -23,6 +29,8 @@ export class DatabaseContext {
   public readonly unconfirmedBoxes: UnconfirmedBoxRepository;
   public readonly unconfirmedTransactions!: UnconfirmedTransactionRepository;
 
+  public readonly unconfirmedInputs!: IRepository<UnconfirmedInputEntity>;
+
   constructor(dataSource: DataSource) {
     const context: RepositoryDataContext = {
       dataSource,
@@ -44,5 +52,6 @@ export class DatabaseContext {
       context,
       defaults: { ...defaults, orderBy: { height: "DESC" } }
     });
+    this.unconfirmedInputs = new BaseRepository(UnconfirmedInputEntity, "uinput", { context });
   }
 }

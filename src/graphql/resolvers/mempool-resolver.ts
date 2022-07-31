@@ -55,6 +55,15 @@ class UnconfirmedAddressesQueryArgs {
   addresses!: string[];
 }
 
+@ArgsType()
+class UnconfirmedInputsQueryArgs {
+  @Field(() => String, { nullable: true })
+  boxId?: string;
+
+  @Field(() => String, { nullable: true })
+  transactionId?: string;
+}
+
 @Resolver(Mempool)
 export class MempoolResolver {
   private _nodeService: NodeService;
@@ -133,6 +142,21 @@ export class MempoolResolver {
         address,
         balance: balances.find((b) => b.address === address) || { nanoErgs: 0, assets: [] }
       };
+    });
+  }
+
+  @FieldResolver()
+  async inputs(
+    @Args() { boxId, transactionId }: UnconfirmedInputsQueryArgs,
+    @Args({ validate: true }) { skip, take }: PaginationArguments,
+    @Ctx() context: GraphQLContext,
+    @Info() info: GraphQLResolveInfo
+  ) {
+    return context.repository.unconfirmedInputs.find({
+      resolverInfo: info,
+      where: removeUndefined({ boxId, transactionId }),
+      skip,
+      take
     });
   }
 
