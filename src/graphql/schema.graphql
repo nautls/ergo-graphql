@@ -165,7 +165,6 @@ interface IDataInput {
 }
 
 interface IInput {
-  box: Box!
   boxId: String!
   extension: JSONObject!
   index: Int!
@@ -183,7 +182,7 @@ type Info {
 }
 
 type Input implements IInput {
-  box: Box!
+  box: Box
   boxId: String!
   extension: JSONObject!
   headerId: String!
@@ -341,7 +340,6 @@ type UnconfirmedDataInput implements IDataInput {
 }
 
 type UnconfirmedInput implements IInput {
-  box: Box!
   boxId: String!
   extension: JSONObject!
   index: Int!

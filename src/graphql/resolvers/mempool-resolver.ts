@@ -147,7 +147,7 @@ export class MempoolResolver {
 
   @FieldResolver()
   async inputs(
-    @Args({ validate: true }) { boxId, transactionId }: UnconfirmedInputsQueryArgs,
+    @Args() { boxId, transactionId }: UnconfirmedInputsQueryArgs,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
