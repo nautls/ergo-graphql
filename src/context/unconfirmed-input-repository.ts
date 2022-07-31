@@ -9,11 +9,9 @@ export class UnconfirmedInputRepository extends BaseRepository<UnconfirmedInputE
   public async getUnconfirmedInputBoxIds(): Promise<string[]> {
     const boxIds = await this.repository
       .createQueryBuilder("uinput")
-      .select("uinput.boxId")
+      .select("uinput.boxId", "boxId")
       .getRawMany();
 
-    return boxIds.map((item): string => {
-      return item["uinput_box_id"];
-    });
+    return boxIds.map((item) => item.boxId);
   }
 }
