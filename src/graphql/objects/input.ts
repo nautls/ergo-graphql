@@ -5,8 +5,8 @@ import { Box } from "../objects";
 
 @ObjectType({ implements: IInput, simpleResolvers: true })
 export class Input extends IInput {
-  @Field(() => Box)
-  box!: Box;
+  @Field(() => Box, { nullable: true })
+  box?: Box;
 
   @Field(() => Transaction)
   transaction!: Transaction;

@@ -181,7 +181,7 @@ type Info {
 }
 
 type Input implements IInput {
-  box: Box!
+  box: Box
   boxId: String!
   extension: JSONObject!
   headerId: String!
