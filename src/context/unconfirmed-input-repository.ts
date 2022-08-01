@@ -6,10 +6,11 @@ export class UnconfirmedInputRepository extends BaseRepository<UnconfirmedInputE
     super(UnconfirmedInputEntity, "uinput", { context });
   }
 
-  public async getUnconfirmedInputBoxIds(): Promise<string[]> {
+  public async getUnconfirmedInputBoxIds(filteredBoxIds: string[]): Promise<string[]> {
     const boxIds = await this.repository
       .createQueryBuilder("uinput")
       .select("uinput.boxId", "boxId")
+      .where("uinput.boxId IN (:...filteredBoxIds)", { filteredBoxIds })
       .getRawMany();
 
     return boxIds.map((item) => item.boxId);

@@ -96,10 +96,6 @@ export class BoxResolver {
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
-    const unconfirmedInputBoxIds = isFieldSelected(info, "beingSpent")
-      ? await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds()
-      : [];
-
     const boxes = await context.repository.boxes.find({
       resolverInfo: info,
       where: removeUndefined({
@@ -116,6 +112,14 @@ export class BoxResolver {
       skip,
       take
     });
+
+    const boxIds = boxes.map((box) => box.boxId);
+
+    const unconfirmedInputBoxIds = isFieldSelected(info, "beingSpent")
+      ? await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds(boxIds)
+      : [];
+
+    if (unconfirmedInputBoxIds.length < 1) return boxes;
 
     return boxes.map((box) => {
       return {
