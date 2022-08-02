@@ -29,7 +29,7 @@ export class TransactionOutput {
   assets?: [AssetInput];
 
   @Field(() => GraphQLJSONObject)
-  additionalRegisters!: Registers;
+  additionalRegisters!: Registers<string>;
 
   @Field({ nullable: true })
   transactionId?: string;
