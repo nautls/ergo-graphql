@@ -5,8 +5,8 @@ import { ConfigureLoader } from "@mando75/typeorm-graphql-loader";
 
 @InterfaceType()
 export abstract class IBox {
-  @ConfigureLoader({ required: true })
   @Field()
+  @ConfigureLoader({ required: true })
   boxId!: string;
 
   @Field()

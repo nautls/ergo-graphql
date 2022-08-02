@@ -119,7 +119,9 @@ export class BoxResolver {
       ? await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds(boxIds)
       : [];
 
-    if (unconfirmedInputBoxIds.length < 1) return boxes;
+    if (unconfirmedInputBoxIds.length < 1) {
+      return boxes;
+    }
 
     return boxes.map((box) => {
       return {

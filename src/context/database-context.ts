@@ -23,7 +23,6 @@ export class DatabaseContext {
 
   public readonly unconfirmedBoxes: UnconfirmedBoxRepository;
   public readonly unconfirmedTransactions!: UnconfirmedTransactionRepository;
-
   public readonly unconfirmedInputs!: UnconfirmedInputRepository;
 
   constructor(dataSource: DataSource) {
@@ -34,10 +33,11 @@ export class DatabaseContext {
 
     this.transactions = new TransactionRepository(context);
     this.boxes = new BoxRepository(context);
-    this.unconfirmedTransactions = new UnconfirmedTransactionRepository(context);
-    this.unconfirmedBoxes = new UnconfirmedBoxRepository(context);
     this.headers = new HeaderRepository(context);
     this.epochs = new EpochsRepository(context);
+
+    this.unconfirmedTransactions = new UnconfirmedTransactionRepository(context);
+    this.unconfirmedBoxes = new UnconfirmedBoxRepository(context);
     this.unconfirmedInputs = new UnconfirmedInputRepository(context);
 
     const defaults = { where: { mainChain: true } };
