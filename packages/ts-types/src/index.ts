@@ -97,6 +97,7 @@ export type Box = IBox & {
   additionalRegisters: Scalars['JSONObject'];
   address: Scalars['String'];
   assets: Array<Asset>;
+  beingSpent: Scalars['Boolean'];
   boxId: Scalars['String'];
   creationHeight: Scalars['Int'];
   ergoTree: Scalars['String'];
@@ -191,7 +192,6 @@ export type IDataInput = {
 };
 
 export type IInput = {
-  box: Box;
   boxId: Scalars['String'];
   extension: Scalars['JSONObject'];
   index: Scalars['Int'];
@@ -211,7 +211,7 @@ export type Info = {
 
 export type Input = IInput & {
   __typename?: 'Input';
-  box: Box;
+  box?: Maybe<Box>;
   boxId: Scalars['String'];
   extension: Scalars['JSONObject'];
   headerId: Scalars['String'];
@@ -226,6 +226,7 @@ export type Mempool = {
   __typename?: 'Mempool';
   addresses: Array<UnconfirmedAddress>;
   boxes: Array<UnconfirmedBox>;
+  inputs: Array<UnconfirmedInput>;
   size: Scalars['Int'];
   transactions: Array<UnconfirmedTransaction>;
   transactionsCount: Scalars['Int'];
@@ -244,6 +245,14 @@ export type MempoolBoxesArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
   tokenId?: InputMaybe<Scalars['String']>;
+  transactionId?: InputMaybe<Scalars['String']>;
+};
+
+
+export type MempoolInputsArgs = {
+  boxId?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
   transactionId?: InputMaybe<Scalars['String']>;
 };
 
@@ -487,7 +496,6 @@ export type UnconfirmedDataInput = IDataInput & {
 
 export type UnconfirmedInput = IInput & {
   __typename?: 'UnconfirmedInput';
-  box: Box;
   boxId: Scalars['String'];
   extension: Scalars['JSONObject'];
   index: Scalars['Int'];
