@@ -10,14 +10,14 @@ enum NonMandatoryRegisterKey {
   R9 = "R9"
 }
 
-type Register = {
+export type Register = {
   serializedValue: string;
   sigmaType?: string;
   renderedValue?: string;
 };
 
-export type Registers = {
-  [key in NonMandatoryRegisterKey]?: Register;
+export type Registers<T> = {
+  [key in NonMandatoryRegisterKey]?: T;
 };
 
 export abstract class BoxEntityBase extends BaseEntity {
@@ -47,5 +47,5 @@ export abstract class BoxEntityBase extends BaseEntity {
   address!: string;
 
   @Column({ name: "additional_registers", type: "json" })
-  additionalRegisters!: Registers;
+  additionalRegisters!: Registers<Register>;
 }

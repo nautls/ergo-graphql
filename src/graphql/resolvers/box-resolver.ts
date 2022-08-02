@@ -119,7 +119,7 @@ export class BoxResolver {
       ? await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds(boxIds)
       : [];
 
-    if (unconfirmedInputBoxIds.length < 1) {
+    if (!isFieldSelected(info, "beingSpent")) {
       return boxes;
     }
 

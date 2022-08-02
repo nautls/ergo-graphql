@@ -2,6 +2,7 @@ import { Field, InterfaceType } from "type-graphql";
 import { Registers } from "../../entities";
 import { GraphQLJSONObject } from "graphql-type-json";
 import { ConfigureLoader } from "@mando75/typeorm-graphql-loader";
+import { Register } from "../../entities/base-types/box-entity-base";
 
 @InterfaceType()
 export abstract class IBox {
@@ -31,18 +32,19 @@ export abstract class IBox {
   address!: string;
 
   @Field(() => GraphQLJSONObject, { name: "additionalRegisters" })
-  additionalRegistersResolver(): Registers {
+  additionalRegistersResolver(): Registers<string> {
     const keys = Object.keys(this.additionalRegisters);
-    if (keys.length <= 1) {
-      return this.additionalRegisters;
+    if (keys.length < 1) {
+      return {};
     }
 
-    const orderedRegisters: Registers = {};
+    const orderedRegisters: Registers<string> = {};
     for (const key of keys.sort()) {
-      orderedRegisters[key as keyof Registers] = this.additionalRegisters[key as keyof Registers];
+      orderedRegisters[key as keyof Registers<string>] =
+        this.additionalRegisters[key as keyof Registers<Register>]?.serializedValue;
     }
     return orderedRegisters;
   }
 
-  additionalRegisters!: Registers;
+  additionalRegisters!: Registers<Register>;
 }
