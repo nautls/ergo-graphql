@@ -1,12 +1,6 @@
 import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
 import { DataSource } from "typeorm";
-import {
-  BlockInfoEntity,
-  DataInputEntity,
-  InputEntity,
-  TokenEntity,
-  UnconfirmedInputEntity
-} from "../entities";
+import { BlockInfoEntity, DataInputEntity, InputEntity, TokenEntity } from "../entities";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { BoxRepository } from "./box-repository";
 import { HeaderRepository } from "./header-repository";
@@ -14,6 +8,7 @@ import { IRepository } from "./repository-interface";
 import { TransactionRepository } from "./transactions-repository";
 import { UnconfirmedBoxRepository } from "./unconfirmed-box-repository";
 import { UnconfirmedTransactionRepository } from "./unconfirmed-transactions-repository";
+import { UnconfirmedInputRepository } from "./unconfirmed-input-repository";
 import { EpochsRepository } from "./epochs-repository";
 
 export class DatabaseContext {
@@ -29,7 +24,7 @@ export class DatabaseContext {
   public readonly unconfirmedBoxes: UnconfirmedBoxRepository;
   public readonly unconfirmedTransactions!: UnconfirmedTransactionRepository;
 
-  public readonly unconfirmedInputs!: IRepository<UnconfirmedInputEntity>;
+  public readonly unconfirmedInputs!: UnconfirmedInputRepository;
 
   constructor(dataSource: DataSource) {
     const context: RepositoryDataContext = {
@@ -43,6 +38,7 @@ export class DatabaseContext {
     this.unconfirmedBoxes = new UnconfirmedBoxRepository(context);
     this.headers = new HeaderRepository(context);
     this.epochs = new EpochsRepository(context);
+    this.unconfirmedInputs = new UnconfirmedInputRepository(context);
 
     const defaults = { where: { mainChain: true } };
     this.dataInputs = new BaseRepository(DataInputEntity, "dti", { context, defaults });
@@ -52,6 +48,5 @@ export class DatabaseContext {
       context,
       defaults: { ...defaults, orderBy: { height: "DESC" } }
     });
-    this.unconfirmedInputs = new BaseRepository(UnconfirmedInputEntity, "uinput", { context });
   }
 }

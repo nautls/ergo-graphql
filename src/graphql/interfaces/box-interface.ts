@@ -1,9 +1,11 @@
 import { Field, InterfaceType } from "type-graphql";
 import { Registers } from "../../entities";
 import { GraphQLJSONObject } from "graphql-type-json";
+import { ConfigureLoader } from "@mando75/typeorm-graphql-loader";
 
 @InterfaceType()
 export abstract class IBox {
+  @ConfigureLoader({ required: true })
   @Field()
   boxId!: string;
 
