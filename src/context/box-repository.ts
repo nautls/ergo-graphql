@@ -158,4 +158,13 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
 
     return globalIndex;
   }
+
+  public async isAddressUsed(address: string): Promise<boolean> {
+    const record = await this.repository
+      .createQueryBuilder("box")
+      .where("address = :address", { address })
+      .andWhere("box.mainChain = true")
+      .getOne();
+    return record ? true : false;
+  }
 }

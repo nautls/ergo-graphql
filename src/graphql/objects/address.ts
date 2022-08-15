@@ -11,4 +11,7 @@ export class Address {
 
   @Field()
   transactionsCount!: number;
+
+  @Field()
+  used!: boolean;
 }

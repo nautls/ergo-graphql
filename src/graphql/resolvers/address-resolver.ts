@@ -70,4 +70,9 @@ export class AddressResolver {
       }
     });
   }
+
+  @FieldResolver()
+  async used(@Root() root: Address, @Ctx() context: GraphQLContextWithArgs<ContextArgs>) {
+    return await context.repository.boxes.isAddressUsed(root.address);
+  }
 }

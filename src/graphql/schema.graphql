@@ -14,6 +14,7 @@ type Address {
   address: String!
   balance: AddressBalance!
   transactionsCount: Int!
+  used: Boolean!
 }
 
 type AddressAssetBalance {
