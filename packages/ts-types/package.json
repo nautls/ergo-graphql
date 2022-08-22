@@ -33,6 +33,7 @@
     "@graphql-codegen/cli": "^2.11.3",
     "@graphql-codegen/typescript": "^2.7.2",
     "@graphql-codegen/typescript-operations": "^2.5.2",
+    "@graphql-codegen/typed-document-node": "^2.3.3",
     "graphql": "^16.5.0",
     "rollup": "^2.77.2",
     "rollup-plugin-typescript2": "^0.32.1",
