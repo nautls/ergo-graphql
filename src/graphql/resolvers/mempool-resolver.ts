@@ -168,6 +168,7 @@ export class MempoolResolver {
     } catch (e) {
       if (e instanceof AxiosError) {
         const error = e.response?.data;
+        console.log(e);
         if (error.error === 400) throw new GraphQLError(error.detail);
       }
 

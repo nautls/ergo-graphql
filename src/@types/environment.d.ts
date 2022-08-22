@@ -8,6 +8,7 @@ declare global {
       DB_USER_PWD: string;
 
       ERGO_NODE_ADDRESS: string;
+      ERGO_NODE_HOST: string;
       NETWORK?: "MAINNET" | "TESTNET";
 
       REDIS_HOST?: string;
