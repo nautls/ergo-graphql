@@ -6,6 +6,7 @@ declare global {
       DB_NAME: string;
       DB_USER_NAME: string;
       DB_USER_PWD: string;
+      DB_SSL?: string;
 
       ERGO_NODE_ADDRESS: string;
       ERGO_NODE_HOST: string;
