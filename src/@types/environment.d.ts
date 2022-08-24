@@ -10,7 +10,6 @@ declare global {
 
       ERGO_NODE_ADDRESS: string;
       ERGO_NODE_HOST: string;
-      NETWORK?: "MAINNET" | "TESTNET";
 
       REDIS_HOST?: string;
       REDIS_PORT?: string;
