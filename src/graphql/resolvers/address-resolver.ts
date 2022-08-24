@@ -73,6 +73,11 @@ export class AddressResolver {
 
   @FieldResolver()
   async used(@Root() root: Address, @Ctx() context: GraphQLContextWithArgs<ContextArgs>) {
-    return await context.repository.boxes.isAddressUsed(root.address);
+    return await context.repository.boxes.getAddressBoxCount(root.address) > 0;
+  }
+
+  @FieldResolver()
+  async boxesCount(@Root() root: Address, @Ctx() context: GraphQLContextWithArgs<ContextArgs>) {
+    return await context.repository.boxes.getAddressBoxCount(root.address);
   }
 }

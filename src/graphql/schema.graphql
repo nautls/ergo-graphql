@@ -13,6 +13,7 @@ type AdProof {
 type Address {
   address: String!
   balance: AddressBalance!
+  boxesCount: Int!
   transactionsCount: Int!
   used: Boolean!
 }

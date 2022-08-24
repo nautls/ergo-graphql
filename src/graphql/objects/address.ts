@@ -14,4 +14,7 @@ export class Address {
 
   @Field()
   used!: boolean;
+
+  @Field()
+  boxesCount!: number;
 }
