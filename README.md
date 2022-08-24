@@ -22,7 +22,6 @@ DB_USER_NAME =            # database user name
 DB_USER_PWD =             # database user password
 
 ERGO_NODE_HOST =       # ergo node address and port
-NETWORK = MAINNET         # optional: MAINNET or TESTNET
 
 REDIS_HOST = localhost    # optional: redis host address
 REDIS_PORT = 6379         # optional: redis host port
