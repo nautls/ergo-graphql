@@ -167,7 +167,7 @@ export class MempoolResolver {
       return response.data;
     } catch (e) {
       if (e instanceof AxiosError) {
-        if (e.code === "400") {
+        if (e.response?.data?.error === 400) {
           throw new GraphQLError(e.response?.data?.detail);
         }
       }
@@ -184,7 +184,7 @@ export class MempoolResolver {
       return response.data;
     } catch (e) {
       if (e instanceof AxiosError) {
-        if (e.code === "400") {
+        if (e.response?.data?.error === 400) {
           throw new GraphQLError(e.response?.data?.detail);
         }
       }
