@@ -23,13 +23,11 @@ function getSslParam(): boolean | undefined {
   }
 
   const normalized = DB_SSL.toLowerCase();
-  if (normalized === "true") {
-    return true;
-  } else if (normalized === "false") {
+  if (normalized == "false") {
     return false;
   }
 
-  return undefined;
+  return true;
 }
 
 export async function initializeDataSource() {
