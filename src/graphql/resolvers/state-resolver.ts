@@ -42,7 +42,6 @@ export class StateResolver {
         throw new GraphQLError("Unknown error");
       }
     }
-    console.log(stateObject);
     return stateObject;
   }
 
