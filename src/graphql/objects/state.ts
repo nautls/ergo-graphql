@@ -19,8 +19,8 @@ export class State {
   params?: Epochs;
 
   @Field()
-  network?: string;
+  network!: string;
 
   @Field()
-  difficulty!: bigint;
+  difficulty?: bigint;
 }

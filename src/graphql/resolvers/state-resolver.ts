@@ -4,6 +4,7 @@ import { State } from "../objects";
 import { GraphQLContext } from "../context-type";
 import { NodeService } from "../../services";
 import { AxiosError } from "axios";
+import { isFieldSelected } from "./utils";
 
 @Resolver(State)
 export class StateResolver {
@@ -14,8 +15,35 @@ export class StateResolver {
   }
 
   @Query(() => State)
-  async state() {
-    return {};
+  async state(@Info() info: GraphQLResolveInfo) {
+    const networkSelected = isFieldSelected(info, "network");
+    const difficultySelected = isFieldSelected(info, "difficulty");
+    const stateObject: {
+      network?: string;
+      difficulty?: number;
+    } = {};
+    if (networkSelected || difficultySelected) {
+      try {
+        const response = await this._nodeService.getNodeInfo();
+        if (networkSelected) {
+          stateObject["network"] = response.data.network;
+        }
+        if (difficultySelected) {
+          stateObject["difficulty"] = response.data.difficulty;
+        }
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          if (e.response?.data?.error === 400) {
+            throw new GraphQLError(e.response?.data?.detail);
+          }
+        }
+
+        console.error(e);
+        throw new GraphQLError("Unknown error");
+      }
+    }
+    console.log(stateObject);
+    return stateObject;
   }
 
   @FieldResolver()
@@ -41,39 +69,5 @@ export class StateResolver {
   @FieldResolver()
   async params(@Ctx() context: GraphQLContext, @Info() info: GraphQLResolveInfo) {
     return await context.repository.epochs.getLast(info);
-  }
-
-  @FieldResolver()
-  async network() {
-    try {
-      const response = await this._nodeService.getNodeInfo();
-      return response.data["network"];
-    } catch (e) {
-      if (e instanceof AxiosError) {
-        if (e.response?.data?.error === 400) {
-          throw new GraphQLError(e.response?.data?.detail);
-        }
-      }
-
-      console.error(e);
-      throw new GraphQLError("Unknown error");
-    }
-  }
-
-  @FieldResolver()
-  async difficulty() {
-    try {
-      const response = await this._nodeService.getNodeInfo();
-      return response.data["difficulty"];
-    } catch (e) {
-      if (e instanceof AxiosError) {
-        if (e.response?.data?.error === 400) {
-          throw new GraphQLError(e.response?.data?.detail);
-        }
-      }
-
-      console.error(e);
-      throw new GraphQLError("Unknown error");
-    }
   }
 }
