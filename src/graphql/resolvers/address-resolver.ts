@@ -50,10 +50,21 @@ export class AddressResolver {
         })
       : [];
 
+    const usedSelected = isFieldSelected(info, "used");
+    const boxesCountSelected = isFieldSelected(info, "boxesCount");
+    const boxesCount =
+      usedSelected || boxesCountSelected
+        ? await context.repository.boxes.getAddressesBoxCount({
+            where: { addresses, maxHeight: atHeight }
+          })
+        : [];
+
     return addresses.map((address) => {
       return {
         address,
-        balance: balances.find((b) => b.address === address) || { nanoErgs: 0, assets: [] }
+        balance: balances.find((b) => b.address === address) || { nanoErgs: 0, assets: [] },
+        used: boxesCount.find((b) => b.address === address) ? true : false,
+        boxesCount: boxesCount.find((b) => b.address === address)?.boxesCount || 0
       };
     });
   }
@@ -69,15 +80,5 @@ export class AddressResolver {
         maxHeight: context.args.height
       }
     });
-  }
-
-  @FieldResolver()
-  async used(@Root() root: Address, @Ctx() context: GraphQLContextWithArgs<ContextArgs>) {
-    return await context.repository.boxes.getAddressBoxCount(root.address) > 0;
-  }
-
-  @FieldResolver()
-  async boxesCount(@Root() root: Address, @Ctx() context: GraphQLContextWithArgs<ContextArgs>) {
-    return await context.repository.boxes.getAddressBoxCount(root.address);
   }
 }

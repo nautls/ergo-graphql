@@ -159,10 +159,30 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
     return globalIndex;
   }
 
-  public async getAddressBoxCount(address: string): Promise<number> {
-    return this.repository
+  public async getAddressesBoxCount(options: {
+    where: { addresses: string[]; maxHeight?: number };
+  }) {
+    let baseQuery = this.repository
       .createQueryBuilder("box")
-      .where("box.address = :address", { address })
-      .getCount();
+      .select("COUNT(*)", "boxesCount")
+      .addSelect("box.address", "address")
+      .where("box.address IN (:...addresses)")
+      .groupBy("box.address")
+      .setParameters(
+        removeUndefined({
+          addresses: options.where.addresses,
+          height: options.where.maxHeight
+        })
+      );
+    if (options.where.maxHeight) {
+      baseQuery = baseQuery
+        .innerJoin(
+          TransactionEntity,
+          "tx",
+          "tx.transactionId = box.transaction and tx.inclusionHeight <= :height"
+        )
+        .andWhere("box.creationHeight <= :height");
+    }
+    return baseQuery.getRawMany();
   }
 }
