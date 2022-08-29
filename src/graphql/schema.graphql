@@ -252,7 +252,9 @@ input SpendingProofInput {
 type State {
   blockId: String!
   boxGlobalIndex: String!
+  difficulty: String!
   height: Int!
+  network: String!
   params: Epochs!
   transactionGlobalIndex: String!
 }

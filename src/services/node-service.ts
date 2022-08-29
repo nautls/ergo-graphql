@@ -18,4 +18,8 @@ export class NodeService {
   public submitTransaction(transaction: SignedTransactionInput) {
     return axios.post(this.nodeAddress + "/transactions", transaction);
   }
+
+  public getNodeInfo() {
+    return axios.get(this.nodeAddress + "/info");
+  }
 }
