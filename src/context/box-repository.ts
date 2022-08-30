@@ -167,22 +167,19 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       .select("COUNT(*)", "boxesCount")
       .addSelect("box.address", "address")
       .where("box.address IN (:...addresses)")
-      .groupBy("box.address")
+      .groupBy("box.address");
+
+    if (options.where.maxHeight) {
+      baseQuery = baseQuery.andWhere("box.creationHeight <= :height");
+    }
+
+    return baseQuery
       .setParameters(
         removeUndefined({
           addresses: options.where.addresses,
           height: options.where.maxHeight
         })
-      );
-    if (options.where.maxHeight) {
-      baseQuery = baseQuery
-        .innerJoin(
-          TransactionEntity,
-          "tx",
-          "tx.transactionId = box.transaction and tx.inclusionHeight <= :height"
-        )
-        .andWhere("box.creationHeight <= :height");
-    }
-    return baseQuery.getRawMany();
+      )
+      .getRawMany();
   }
 }
