@@ -167,6 +167,7 @@ interface IDataInput {
 }
 
 interface IInput {
+  box: Box
   boxId: String!
   extension: JSONObject!
   index: Int!
@@ -253,7 +254,9 @@ input SpendingProofInput {
 type State {
   blockId: String!
   boxGlobalIndex: String!
+  difficulty: String!
   height: Int!
+  network: String!
   params: Epochs!
   transactionGlobalIndex: String!
 }
@@ -342,6 +345,7 @@ type UnconfirmedDataInput implements IDataInput {
 }
 
 type UnconfirmedInput implements IInput {
+  box: Box
   boxId: String!
   extension: JSONObject!
   index: Int!

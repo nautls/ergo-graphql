@@ -6,9 +6,10 @@ declare global {
       DB_NAME: string;
       DB_USER_NAME: string;
       DB_USER_PWD: string;
+      DB_SSL?: string;
 
       ERGO_NODE_ADDRESS: string;
-      NETWORK?: "MAINNET" | "TESTNET";
+      ERGO_NODE_HOST: string;
 
       REDIS_HOST?: string;
       REDIS_PORT?: string;

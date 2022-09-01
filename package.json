@@ -1,13 +1,13 @@
 {
   "name": "@ergo-graphql/server",
-  "version": "0.3.0",
+  "version": "0.3.5",
   "description": "Ergo GraphQL server",
   "main": "src/index.ts",
   "scripts": {
     "dev": "ts-node-dev --transpile-only --no-notify --exit-child src/index.ts",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js"
   },
   "repository": {

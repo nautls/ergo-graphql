@@ -192,6 +192,7 @@ export type IDataInput = {
 };
 
 export type IInput = {
+  box?: Maybe<Box>;
   boxId: Scalars['String'];
   extension: Scalars['JSONObject'];
   index: Scalars['Int'];
@@ -496,6 +497,7 @@ export type UnconfirmedDataInput = IDataInput & {
 
 export type UnconfirmedInput = IInput & {
   __typename?: 'UnconfirmedInput';
+  box?: Maybe<Box>;
   boxId: Scalars['String'];
   extension: Scalars['JSONObject'];
   index: Scalars['Int'];

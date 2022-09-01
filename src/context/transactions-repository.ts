@@ -1,4 +1,4 @@
-import { MAINNET, MAINNET_MINER_FEE_ERGO_TREE, TESTNET_MINER_FEE_ERGO_TREE } from "../consts";
+import { MINER_FEE_ERGO_TREE } from "../consts";
 import { BoxEntity, InputEntity, TransactionEntity } from "../entities";
 import { getArgumentValue } from "../graphql/resolvers/utils";
 import { removeUndefined } from "../utils";
@@ -59,17 +59,13 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
           );
 
           if (outputsJoin) {
-            const treeCondition = MAINNET
-              ? `${outputsJoin.alias.name}.ergoTree = :minerTree`
-              : `${outputsJoin.alias.name}.ergoTree IN (:...minerTree)`;
+            const treeCondition = `${outputsJoin.alias.name}.ergoTree = :minerTree`;
             const relevantCondition = `${outputsJoin.alias.name}.address = :address OR ${treeCondition}`;
             outputsJoin.condition = outputsJoin.condition
               ? `${outputsJoin.condition} AND (${relevantCondition})`
               : relevantCondition;
             selectQuery = selectQuery.setParameters({
-              minerTree: MAINNET
-                ? MAINNET_MINER_FEE_ERGO_TREE
-                : [MAINNET_MINER_FEE_ERGO_TREE, TESTNET_MINER_FEE_ERGO_TREE]
+              minerTree: MINER_FEE_ERGO_TREE
             });
           }
         }
@@ -117,7 +113,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       .where("box.mainChain = true AND box.address = :address");
 
     if (height) {
-      query = query.andWhere("box.creationHeight <= :height");
+      query = query.andWhere("box.settlementHeight <= :height");
     }
 
     return query;
@@ -132,7 +128,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       .where("box.mainChain = true AND box.address = :address");
 
     if (height) {
-      query = query.andWhere("box.creationHeight <= :height");
+      query = query.andWhere("box.settlementHeight <= :height");
     }
 
     return query;
