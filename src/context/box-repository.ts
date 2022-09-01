@@ -102,13 +102,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       );
 
     if (options.where.maxHeight) {
-      baseQuery = baseQuery
-        .leftJoin(
-          TransactionEntity,
-          "tx",
-          "tx.transactionId = input.transactionId and tx.inclusionHeight <= :height"
-        )
-        .andWhere("box.creationHeight <= :height");
+      baseQuery = baseQuery.andWhere("box.settlementHeight <= :height");
     }
 
     const nanoErgs = options.include.nanoErgs

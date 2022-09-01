@@ -113,7 +113,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       .where("box.mainChain = true AND box.address = :address");
 
     if (height) {
-      query = query.andWhere("box.creationHeight <= :height");
+      query = query.andWhere("box.settlementHeight <= :height");
     }
 
     return query;
@@ -128,7 +128,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       .where("box.mainChain = true AND box.address = :address");
 
     if (height) {
-      query = query.andWhere("box.creationHeight <= :height");
+      query = query.andWhere("box.settlementHeight <= :height");
     }
 
     return query;
