@@ -1,5 +1,5 @@
 import { isEmpty, unionBy } from "lodash";
-import { AssetEntity, BoxEntity, InputEntity, TokenEntity, TransactionEntity } from "../entities";
+import { AssetEntity, BoxEntity, InputEntity, TokenEntity } from "../entities";
 import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
@@ -164,7 +164,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       .groupBy("box.address");
 
     if (options.where.maxHeight) {
-      baseQuery = baseQuery.andWhere("box.creationHeight <= :height");
+      baseQuery = baseQuery.andWhere("box.settlementHeight <= :height");
     }
 
     return baseQuery
