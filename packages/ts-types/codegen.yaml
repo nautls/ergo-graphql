@@ -9,4 +9,4 @@ generates:
     config:
       defaultScalarType: unknown
       scalars:
-        JSONObject: object
+        JSONObject: unknown

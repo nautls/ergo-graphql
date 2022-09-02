@@ -11,7 +11,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
-  JSONObject: object;
+  JSONObject: unknown;
 };
 
 export type AdProof = {
@@ -26,7 +26,9 @@ export type Address = {
   __typename?: 'Address';
   address: Scalars['String'];
   balance: AddressBalance;
+  boxesCount: Scalars['Int'];
   transactionsCount: Scalars['Int'];
+  used: Scalars['Boolean'];
 };
 
 export type AddressAssetBalance = {
@@ -399,7 +401,9 @@ export type State = {
   __typename?: 'State';
   blockId: Scalars['String'];
   boxGlobalIndex: Scalars['String'];
+  difficulty: Scalars['String'];
   height: Scalars['Int'];
+  network: Scalars['String'];
   params: Epochs;
   transactionGlobalIndex: Scalars['String'];
 };
