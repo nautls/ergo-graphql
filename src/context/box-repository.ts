@@ -1,5 +1,5 @@
 import { isEmpty, unionBy } from "lodash";
-import { AssetEntity, BoxEntity, InputEntity, TokenEntity, TransactionEntity } from "../entities";
+import { AssetEntity, BoxEntity, InputEntity, TokenEntity } from "../entities";
 import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
@@ -151,5 +151,29 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       .getRawOne();
 
     return globalIndex;
+  }
+
+  public async getAddressesBoxCount(options: {
+    where: { addresses: string[]; maxHeight?: number };
+  }) {
+    let baseQuery = this.repository
+      .createQueryBuilder("box")
+      .select("COUNT(*)", "boxesCount")
+      .addSelect("box.address", "address")
+      .where("box.address IN (:...addresses)")
+      .groupBy("box.address");
+
+    if (options.where.maxHeight) {
+      baseQuery = baseQuery.andWhere("box.settlementHeight <= :height");
+    }
+
+    return baseQuery
+      .setParameters(
+        removeUndefined({
+          addresses: options.where.addresses,
+          height: options.where.maxHeight
+        })
+      )
+      .getRawMany();
   }
 }
