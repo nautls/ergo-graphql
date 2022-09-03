@@ -22,7 +22,7 @@ DB_USER_NAME =            # database user name
 DB_USER_PWD =             # database user password
 DB_SSL =                  # optional: true or false
 
-ERGO_NODE_HOST =          # ergo node address and port
+ERGO_NODE_ADDRESS =       # http ergo node address
 
 REDIS_HOST = localhost    # optional: redis host address
 REDIS_PORT = 6379         # optional: redis host port
