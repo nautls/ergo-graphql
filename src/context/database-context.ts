@@ -1,6 +1,6 @@
 import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
 import { DataSource } from "typeorm";
-import { BlockInfoEntity, DataInputEntity, InputEntity, TokenEntity } from "../entities";
+import { DataInputEntity, InputEntity, TokenEntity } from "../entities";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { BoxRepository } from "./box-repository";
 import { HeaderRepository } from "./header-repository";
