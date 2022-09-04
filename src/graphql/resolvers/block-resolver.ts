@@ -11,7 +11,10 @@ class BlockQueryArgs extends PaginationArguments {
   headerId?: string;
 
   @Field(() => Int, { nullable: true })
-  height?: number;
+  minHeight?: number;
+
+  @Field(() => Int, { nullable: true })
+  maxHeight?: number;
 
   @Field(() => Int, { defaultValue: 10 })
   take = 10;
@@ -21,13 +24,15 @@ class BlockQueryArgs extends PaginationArguments {
 export class BlockResolver {
   @Query(() => [Block])
   async blocks(
-    @Args({ validate: true }) { headerId, height, skip, take }: BlockQueryArgs,
+    @Args({ validate: true }) { headerId, minHeight, maxHeight, skip, take }: BlockQueryArgs,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
     return context.repository.blockInfo.find({
       resolverInfo: info,
-      where: removeUndefined({ headerId, height }),
+      where: removeUndefined({ headerId }),
+      minHeight,
+      maxHeight,
       take,
       skip
     });
