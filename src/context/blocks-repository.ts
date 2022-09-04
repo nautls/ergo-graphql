@@ -27,7 +27,7 @@ export class BlocksRepository extends BaseRepository<BlockInfoEntity> {
       if (maxHeight) {
         filterQuery = filterQuery.andWhere(`${this.alias}.height <= :maxHeight`, { maxHeight });
       }
-      return filterQuery.setParameters({ minHeight, maxHeight });
+      return filterQuery;
     });
   }
 }
