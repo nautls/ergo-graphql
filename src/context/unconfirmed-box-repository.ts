@@ -1,3 +1,4 @@
+import { Address } from "@nautilus-js/fleet";
 import { unionBy } from "lodash";
 import {
   TokenEntity,
@@ -19,6 +20,10 @@ export class UnconfirmedBoxRepository extends BaseRepository<UnconfirmedBoxEntit
 
   public override find(options: UnconfirmedBoxFindOptions): Promise<UnconfirmedBoxEntity[]> {
     const { tokenId } = options;
+    if (options.where?.address) {
+      options.where.ergoTree = Address.fromBase58(options.where.address).ergoTree;
+      delete options.where.address;
+    }
 
     return this.findBase(options, (query) => {
       if (tokenId) {
@@ -39,11 +44,11 @@ export class UnconfirmedBoxRepository extends BaseRepository<UnconfirmedBoxEntit
       .createQueryBuilder("box")
       .select("box.address", "address")
       .leftJoin(UnconfirmedInputEntity, "input", "box.boxId = input.boxId")
-      .andWhere("box.address IN (:...addresses)")
+      .andWhere("box.ergoTree IN (:...ergoTrees)")
       .andWhere("input.boxId IS NULL")
       .groupBy("box.address")
       .setParameters({
-        addresses: options.where.addresses
+        ergoTrees: options.where.addresses.map((address) => Address.fromBase58(address).ergoTree)
       });
 
     const nanoErgs = options.include.nanoErgs
