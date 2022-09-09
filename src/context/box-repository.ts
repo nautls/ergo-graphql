@@ -1,3 +1,4 @@
+import { Address } from "@nautilus-js/fleet";
 import { isEmpty, unionBy } from "lodash";
 import { AssetEntity, BoxEntity, InputEntity, TokenEntity } from "../entities";
 import { removeUndefined } from "../utils";
@@ -29,6 +30,10 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
 
   public override find(options: BoxFindOptions): Promise<BoxEntity[]> {
     const { spent, tokenId, registers } = options;
+    if (options.where?.address) {
+      options.where.ergoTree = Address.fromBase58(options.where.address).ergoTree;
+      delete options.where.address;
+    }
 
     return this.findBase(options, (query) => {
       if (spent !== undefined && spent !== null) {
@@ -91,12 +96,12 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       .select("box.address", "address")
       .leftJoin(InputEntity, "input", "box.boxId = input.boxId AND input.mainChain = true")
       .where("box.mainChain = true")
-      .andWhere("box.address IN (:...addresses)")
+      .andWhere("box.ergoTree IN (:...ergoTrees)")
       .andWhere("input.boxId IS NULL")
       .groupBy("box.address")
       .setParameters(
         removeUndefined({
-          addresses: options.where.addresses,
+          ergoTrees: options.where.addresses.map((address) => Address.fromBase58(address).ergoTree),
           height: options.where.maxHeight
         })
       );
@@ -160,7 +165,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       .createQueryBuilder("box")
       .select("COUNT(*)", "boxesCount")
       .addSelect("box.address", "address")
-      .where("box.address IN (:...addresses)")
+      .where("box.ergoTree IN (:...ergoTrees)")
       .groupBy("box.address");
 
     if (options.where.maxHeight) {
@@ -170,7 +175,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
     return baseQuery
       .setParameters(
         removeUndefined({
-          addresses: options.where.addresses,
+          ergoTrees: options.where.addresses.map((address) => Address.fromBase58(address).ergoTree),
           height: options.where.maxHeight
         })
       )
