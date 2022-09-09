@@ -24,7 +24,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
   constructor(context: RepositoryDataContext) {
     super(BoxEntity, "box", {
       context,
-      defaults: { where: { mainChain: true }, orderBy: { globalIndex: "ASC" } }
+      defaults: { where: { mainChain: true }, orderBy: { globalIndex: "DESC" } }
     });
   }
 
