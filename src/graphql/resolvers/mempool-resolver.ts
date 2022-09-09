@@ -42,6 +42,9 @@ class UnconfirmedBoxArguments {
   address?: string;
 
   @Field(() => String, { nullable: true })
+  ergoTree?: string;
+
+  @Field(() => String, { nullable: true })
   ergoTreeTemplateHash?: string;
 
   @Field(() => String, { nullable: true })
