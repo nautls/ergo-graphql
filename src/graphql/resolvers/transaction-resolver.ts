@@ -7,8 +7,8 @@ import { PaginationArguments } from "./pagination-arguments";
 
 @ArgsType()
 class TransactionArguments {
-  @Field(() => String, { nullable: true })
-  transactionId?: string;
+  @Field(() => [String], { nullable: true })
+  transactionIds?: [string];
 
   @Field(() => String, { nullable: true })
   headerId?: string;
@@ -32,7 +32,7 @@ export class TransactionResolver {
   async transactions(
     @Args()
     {
-      transactionId,
+      transactionIds,
       headerId,
       inclusionHeight,
       address,
@@ -46,10 +46,10 @@ export class TransactionResolver {
     return await context.repository.transactions.find({
       resolverInfo: info,
       where: removeUndefined({
-        transactionId,
         headerId,
         inclusionHeight
       }),
+      transactionIds,
       address,
       minHeight,
       maxHeight,
