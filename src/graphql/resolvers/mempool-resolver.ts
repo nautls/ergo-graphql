@@ -23,8 +23,8 @@ import { isFieldSelected } from "./utils";
 
 @ArgsType()
 class UnconfirmedTransactionArguments {
-  @Field(() => String, { nullable: true })
-  transactionId?: string;
+  @Field(() => [String], { nullable: true })
+  transactionIds?: [string];
 
   @Field(() => String, { nullable: true })
   address?: string;
@@ -91,14 +91,14 @@ export class MempoolResolver {
   @FieldResolver()
   async transactions(
     @Args({ validate: true }) { skip, take }: PaginationArguments,
-    @Args() { transactionId, address }: UnconfirmedTransactionArguments,
+    @Args() { transactionIds, address }: UnconfirmedTransactionArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
     return context.repository.unconfirmedTransactions.find({
       resolverInfo: info,
-      where: removeUndefined({ transactionId }),
       address,
+      transactionIds,
       skip,
       take
     });

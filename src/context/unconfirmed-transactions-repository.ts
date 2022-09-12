@@ -9,6 +9,7 @@ import { FindManyParams } from "./repository-interface";
 
 type TransactionFindOptions = FindManyParams<UnconfirmedTransactionEntity> & {
   address?: string;
+  transactionIds?: string[];
 };
 
 export class UnconfirmedTransactionRepository extends BaseRepository<UnconfirmedTransactionEntity> {
@@ -19,7 +20,7 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
   public override async find(
     options: TransactionFindOptions
   ): Promise<UnconfirmedTransactionEntity[]> {
-    const { address } = options;
+    const { address, transactionIds } = options;
     return this.findBase(options, (filterQuery) => {
       if (address) {
         const inputQuery = this.dataSource
@@ -42,7 +43,11 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
         );
       }
 
-      filterQuery = filterQuery.setParameters(removeUndefined({ address }));
+      if (transactionIds) {
+        filterQuery = filterQuery.andWhere(`${this.alias}.transactionId IN (:...transactionIds)`);
+      }
+
+      filterQuery = filterQuery.setParameters(removeUndefined({ address, transactionIds }));
 
       return filterQuery;
     });
