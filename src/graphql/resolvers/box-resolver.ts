@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from "graphql";
-import { Args, ArgsType, Ctx, Field, Info, InputType, Query, Resolver } from "type-graphql";
+import { Args, ArgsType, Ctx, Field, Info, InputType, Query, Resolver, Int } from "type-graphql";
 import { Box } from "../objects";
 import { removeUndefined } from "../../utils";
 import { isFieldSelected } from "./utils";
@@ -81,6 +81,12 @@ class BoxesQueryArgs {
 
   @Field(() => String, { nullable: true })
   ergoTreeTemplateHash?: string;
+
+  @Field(() => Int, { nullable: true })
+  minHeight?: number;
+
+  @Field(() => Int, { nullable: true })
+  maxHeight?: number;
 }
 
 @Resolver(Box)
@@ -97,7 +103,9 @@ export class BoxResolver {
       ergoTreeTemplateHash,
       tokenId,
       spent,
-      registers
+      registers,
+      minHeight,
+      maxHeight
     }: BoxesQueryArgs,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
@@ -116,6 +124,8 @@ export class BoxResolver {
       spent,
       tokenId,
       registers,
+      minHeight,
+      maxHeight,
       skip,
       take
     });
