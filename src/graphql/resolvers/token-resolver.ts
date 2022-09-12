@@ -7,8 +7,8 @@ import { GraphQLContext } from "../context-type";
 
 @ArgsType()
 class TokensQueryArgs {
-  @Field(() => String, { nullable: true })
-  tokenId?: string;
+  @Field(() => [String], { nullable: true })
+  tokenIds?: [string];
 
   @Field(() => String, { nullable: true })
   boxId?: string;
@@ -21,14 +21,15 @@ class TokensQueryArgs {
 export class TokenResolver {
   @Query(() => [Token])
   async tokens(
-    @Args() { tokenId, boxId, name }: TokensQueryArgs,
+    @Args() { tokenIds, boxId, name }: TokensQueryArgs,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
     return context.repository.tokens.find({
       resolverInfo: info,
-      where: removeUndefined({ tokenId, boxId, name }),
+      where: removeUndefined({ boxId, name }),
+      tokenIds,
       skip,
       take
     });

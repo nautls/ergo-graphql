@@ -10,6 +10,7 @@ import { UnconfirmedBoxRepository } from "./unconfirmed-box-repository";
 import { UnconfirmedTransactionRepository } from "./unconfirmed-transactions-repository";
 import { UnconfirmedInputRepository } from "./unconfirmed-input-repository";
 import { EpochsRepository } from "./epochs-repository";
+import { TokenRepository } from "./token-repository";
 
 export class DatabaseContext {
   public readonly transactions!: TransactionRepository;
@@ -18,7 +19,7 @@ export class DatabaseContext {
   public readonly dataInputs!: IRepository<DataInputEntity>;
   public readonly inputs!: IRepository<InputEntity>;
   public readonly headers!: HeaderRepository;
-  public readonly tokens!: IRepository<TokenEntity>;
+  public readonly tokens!: TokenRepository;
   public readonly epochs!: EpochsRepository;
 
   public readonly unconfirmedBoxes: UnconfirmedBoxRepository;
@@ -39,11 +40,11 @@ export class DatabaseContext {
     this.unconfirmedTransactions = new UnconfirmedTransactionRepository(context);
     this.unconfirmedBoxes = new UnconfirmedBoxRepository(context);
     this.unconfirmedInputs = new UnconfirmedInputRepository(context);
+    this.tokens = new TokenRepository(context);
 
     const defaults = { where: { mainChain: true } };
     this.dataInputs = new BaseRepository(DataInputEntity, "dti", { context, defaults });
     this.inputs = new BaseRepository(InputEntity, "input", { context, defaults });
-    this.tokens = new BaseRepository(TokenEntity, "token", { context });
     this.blockInfo = new BaseRepository(BlockInfoEntity, "block", {
       context,
       defaults: { ...defaults, orderBy: { height: "DESC" } }
