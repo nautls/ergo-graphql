@@ -27,7 +27,7 @@ class TokensQueryArgs {
 export class TokenResolver {
   @Query(() => [Token])
   async tokens(
-    @Args() { tokenId, tokenIds, boxId, name }: TokensQueryArgs,
+    @Args({ validate: true }) { tokenId, tokenIds, boxId, name }: TokensQueryArgs,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
