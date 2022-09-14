@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { GraphQLError, GraphQLResolveInfo } from "graphql";
-import { ArrayMaxSize } from "class-validator";
+import { ArrayMaxSize, isDefined, IsEmpty, ValidateIf } from "class-validator";
 import {
   Arg,
   Args,
@@ -20,6 +20,7 @@ import { SignedTransactionInput } from "../input-types";
 import { Mempool } from "../objects";
 import { PaginationArguments } from "./pagination-arguments";
 import { isFieldSelected } from "./utils";
+import { REDUNDANT_QUERY_MESSAGE } from "./box-resolver";
 
 @ArgsType()
 class UnconfirmedTransactionArguments {
@@ -38,8 +39,15 @@ class UnconfirmedBoxArguments {
   @Field(() => String, { nullable: true })
   transactionId?: string;
 
+  @ValidateIf((o: UnconfirmedBoxArguments) => isDefined(o.ergoTree))
+  @IsEmpty({ message: REDUNDANT_QUERY_MESSAGE })
   @Field(() => String, { nullable: true })
   address?: string;
+
+  @ValidateIf((o: UnconfirmedBoxArguments) => isDefined(o.address))
+  @IsEmpty({ message: REDUNDANT_QUERY_MESSAGE })
+  @Field(() => String, { nullable: true })
+  ergoTree?: string;
 
   @Field(() => String, { nullable: true })
   ergoTreeTemplateHash?: string;
@@ -106,15 +114,22 @@ export class MempoolResolver {
 
   @FieldResolver()
   async boxes(
-    @Args()
-    { boxId, transactionId, address, ergoTreeTemplateHash, tokenId }: UnconfirmedBoxArguments,
+    @Args({ validate: true })
+    {
+      boxId,
+      transactionId,
+      address,
+      ergoTree,
+      ergoTreeTemplateHash,
+      tokenId
+    }: UnconfirmedBoxArguments,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
     return context.repository.unconfirmedBoxes.find({
       resolverInfo: info,
-      where: removeUndefined({ boxId, transactionId, address, ergoTreeTemplateHash }),
+      where: removeUndefined({ boxId, transactionId, address, ergoTree, ergoTreeTemplateHash }),
       tokenId,
       skip,
       take

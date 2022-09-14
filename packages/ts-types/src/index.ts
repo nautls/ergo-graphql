@@ -244,6 +244,7 @@ export type MempoolAddressesArgs = {
 export type MempoolBoxesArgs = {
   address?: InputMaybe<Scalars['String']>;
   boxId?: InputMaybe<Scalars['String']>;
+  ergoTree?: InputMaybe<Scalars['String']>;
   ergoTreeTemplateHash?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
@@ -317,6 +318,8 @@ export type QueryBlockHeadersArgs = {
 export type QueryBlocksArgs = {
   headerId?: InputMaybe<Scalars['String']>;
   height?: InputMaybe<Scalars['Int']>;
+  maxHeight?: InputMaybe<Scalars['Int']>;
+  minHeight?: InputMaybe<Scalars['Int']>;
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
 };
@@ -328,6 +331,8 @@ export type QueryBoxesArgs = {
   ergoTree?: InputMaybe<Scalars['String']>;
   ergoTreeTemplateHash?: InputMaybe<Scalars['String']>;
   headerId?: InputMaybe<Scalars['String']>;
+  maxHeight?: InputMaybe<Scalars['Int']>;
+  minHeight?: InputMaybe<Scalars['Int']>;
   registers?: InputMaybe<Registers>;
   skip?: InputMaybe<Scalars['Int']>;
   spent?: InputMaybe<Scalars['Boolean']>;

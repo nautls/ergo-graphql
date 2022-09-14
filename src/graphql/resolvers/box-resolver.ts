@@ -1,11 +1,14 @@
 import { GraphQLResolveInfo } from "graphql";
-import { Args, ArgsType, Ctx, Field, Info, InputType, Query, Resolver } from "type-graphql";
+import { Args, ArgsType, Ctx, Field, Info, InputType, Query, Resolver, Int } from "type-graphql";
 import { Box } from "../objects";
 import { removeUndefined } from "../../utils";
 import { isFieldSelected } from "./utils";
 import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
 import { ValidateIf, IsEmpty, isDefined } from "class-validator";
+
+export const REDUNDANT_QUERY_MESSAGE =
+  "Redundant query param: address and ergoTree params can't be used together in the same query.";
 
 @InputType()
 class Registers {
@@ -30,9 +33,6 @@ class Registers {
 
 @ArgsType()
 class BoxesQueryArgs {
-  @Field(() => String, { nullable: true })
-  address?: string;
-
   @Field(() => String, { nullable: true })
   boxId?: string;
 
@@ -69,11 +69,24 @@ class BoxesQueryArgs {
   @Field(() => String, { nullable: true })
   tokenId?: string;
 
+  @ValidateIf((o: BoxesQueryArgs) => isDefined(o.ergoTree))
+  @IsEmpty({ message: REDUNDANT_QUERY_MESSAGE })
+  @Field(() => String, { nullable: true })
+  address?: string;
+
+  @ValidateIf((o: BoxesQueryArgs) => isDefined(o.address))
+  @IsEmpty({ message: REDUNDANT_QUERY_MESSAGE })
   @Field(() => String, { nullable: true })
   ergoTree?: string;
 
   @Field(() => String, { nullable: true })
   ergoTreeTemplateHash?: string;
+
+  @Field(() => Int, { nullable: true })
+  minHeight?: number;
+
+  @Field(() => Int, { nullable: true })
+  maxHeight?: number;
 }
 
 @Resolver(Box)
@@ -90,7 +103,9 @@ export class BoxResolver {
       ergoTreeTemplateHash,
       tokenId,
       spent,
-      registers
+      registers,
+      minHeight,
+      maxHeight
     }: BoxesQueryArgs,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
@@ -109,6 +124,8 @@ export class BoxResolver {
       spent,
       tokenId,
       registers,
+      minHeight,
+      maxHeight,
       skip,
       take
     });
