@@ -3,13 +3,13 @@ import { BaseEntity, Column, JoinColumn, OneToOne, PrimaryColumn } from "typeorm
 import { TokenEntity } from "../token-entity";
 
 export abstract class AssetEntityBase extends BaseEntity {
-  @PrimaryColumn({ name: "token_id" })
+  @PrimaryColumn({ name: "token_id", unique: false })
   tokenId!: string;
 
-  @Column({ name: "box_id" })
+  @Column({ name: "box_id", primary: true })
   boxId!: string;
 
-  @Column({ name: "index" })
+  @Column({ name: "index", primary: true })
   @ConfigureLoader({ required: true })
   index!: number;
 
