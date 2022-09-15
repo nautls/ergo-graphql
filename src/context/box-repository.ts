@@ -20,6 +20,7 @@ type BoxFindOptions = FindManyParams<BoxEntity> & {
   registers?: Registers;
   minHeight?: number;
   maxHeight?: number;
+  boxIds?: string[];
 };
 
 export class BoxRepository extends BaseRepository<BoxEntity> {
@@ -31,7 +32,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
   }
 
   public override find(options: BoxFindOptions): Promise<BoxEntity[]> {
-    const { spent, tokenId, registers, minHeight, maxHeight } = options;
+    const { spent, tokenId, registers, minHeight, maxHeight, boxIds } = options;
     if (options.where?.address) {
       options.where.ergoTree = Address.fromBase58(options.where.address).ergoTree;
       delete options.where.address;
@@ -91,6 +92,15 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
 
       if (maxHeight) {
         query = query.andWhere(`${this.alias}.settlement_height <= :maxHeight`, { maxHeight });
+      }
+
+      if (options.where?.boxId && boxIds) {
+        boxIds.push(options.where.boxId);
+        delete options.where.boxId;
+      }
+
+      if (boxIds) {
+        query = query.andWhere(`${this.alias}.box_id IN (:...boxIds)`, { boxIds });
       }
 
       return query;
