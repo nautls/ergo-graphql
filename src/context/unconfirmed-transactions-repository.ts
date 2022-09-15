@@ -43,6 +43,11 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
         );
       }
 
+      if (options.where?.transactionId && transactionIds) {
+        transactionIds.push(options.where.transactionId);
+        delete options.where.transactionId;
+      }
+
       if (transactionIds) {
         filterQuery = filterQuery.andWhere(`${this.alias}.transactionId IN (:...transactionIds)`);
       }

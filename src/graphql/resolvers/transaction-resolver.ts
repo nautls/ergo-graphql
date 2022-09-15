@@ -4,10 +4,16 @@ import { Transaction } from "../objects/transaction";
 import { removeUndefined } from "../../utils";
 import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
+import { ArrayMaxSize } from "class-validator";
 
 @ArgsType()
 class TransactionArguments {
+  /** @deprecated */
+  @Field(() => String, { nullable: true })
+  transactionId?: string;
+
   @Field(() => [String], { nullable: true })
+  @ArrayMaxSize(20)
   transactionIds?: [string];
 
   @Field(() => String, { nullable: true })
@@ -30,8 +36,9 @@ class TransactionArguments {
 export class TransactionResolver {
   @Query(() => [Transaction])
   async transactions(
-    @Args()
+    @Args({ validate: true })
     {
+      transactionId,
       transactionIds,
       headerId,
       inclusionHeight,
@@ -46,6 +53,7 @@ export class TransactionResolver {
     return await context.repository.transactions.find({
       resolverInfo: info,
       where: removeUndefined({
+        transactionId,
         headerId,
         inclusionHeight
       }),
