@@ -1,9 +1,9 @@
+import { Address } from "@nautilus-js/fleet";
 import {
   UnconfirmedBoxEntity,
   UnconfirmedInputEntity,
   UnconfirmedTransactionEntity
 } from "../entities";
-import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
 
@@ -23,24 +23,28 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
     const { address, transactionIds } = options;
     return this.findBase(options, (filterQuery) => {
       if (address) {
+        const ergoTree = Address.fromBase58(address).ergoTree;
+
         const inputQuery = this.dataSource
           .getRepository(UnconfirmedBoxEntity)
           .createQueryBuilder("box")
           .select("input.transactionId", "transactionId")
           .leftJoin(UnconfirmedInputEntity, "input", "box.boxId = input.boxId")
-          .where("box.address = :address");
+          .where("box.ergoTree = :ergoTree");
 
         const outputQuery = this.dataSource
           .getRepository(UnconfirmedBoxEntity)
           .createQueryBuilder("box")
           .select("box.transactionId", "transactionId")
-          .where("box.address = :address");
+          .where("box.ergoTree = :ergoTree");
 
         filterQuery = filterQuery.innerJoin(
           `(${inputQuery.getQuery()} UNION ${outputQuery.getQuery()})`,
           "boxes",
           `"boxes"."transactionId" = ${this.alias}.transactionId`
         );
+
+        filterQuery = filterQuery.setParameters({ ergoTree });
       }
 
       if (options.where?.transactionId && transactionIds) {
@@ -49,10 +53,11 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
       }
 
       if (transactionIds) {
-        filterQuery = filterQuery.andWhere(`${this.alias}.transactionId IN (:...transactionIds)`);
+        filterQuery = filterQuery.andWhere(
+          `${this.alias}.transactionId IN (:...transactionIds)`,
+          transactionIds
+        );
       }
-
-      filterQuery = filterQuery.setParameters(removeUndefined({ address, transactionIds }));
 
       return filterQuery;
     });

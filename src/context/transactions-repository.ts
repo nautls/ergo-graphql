@@ -1,3 +1,4 @@
+import { Address } from "@nautilus-js/fleet";
 import { MINER_FEE_ERGO_TREE } from "../consts";
 import { BoxEntity, InputEntity, TransactionEntity } from "../entities";
 import { getArgumentValue } from "../graphql/resolvers/utils";
@@ -57,7 +58,13 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
         }
 
         filterQuery = filterQuery.setParameters(
-          removeUndefined({ height: maxHeight, maxHeight, minHeight, address, transactionIds })
+          removeUndefined({
+            height: maxHeight,
+            maxHeight,
+            minHeight,
+            ergoTree: address ? Address.fromBase58(address).ergoTree : undefined,
+            transactionIds
+          })
         );
 
         return filterQuery;
@@ -69,8 +76,8 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
           );
 
           if (outputsJoin) {
-            const treeCondition = `${outputsJoin.alias.name}.ergoTree = :minerTree`;
-            const relevantCondition = `${outputsJoin.alias.name}.address = :address OR ${treeCondition}`;
+            const minerTreeCondition = `${outputsJoin.alias.name}.ergoTree = :minerTree`;
+            const relevantCondition = `${outputsJoin.alias.name}.ergoTree = :ergoTree OR ${minerTreeCondition}`;
             outputsJoin.condition = outputsJoin.condition
               ? `${outputsJoin.condition} AND (${relevantCondition})`
               : relevantCondition;
@@ -99,7 +106,10 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       )
       .where(`${this.alias}.mainChain = true`)
       .setParameters(
-        removeUndefined({ address: options.where.address, height: options.where.maxHeight })
+        removeUndefined({
+          ergoTree: Address.fromBase58(options.where.address).ergoTree,
+          height: options.where.maxHeight
+        })
       )
       .getRawOne();
 
@@ -120,7 +130,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       .getRepository(BoxEntity)
       .createQueryBuilder("box")
       .select("box.transactionId", "transactionId")
-      .where("box.mainChain = true AND box.address = :address");
+      .where("box.mainChain = true AND box.ergoTree = :ergoTree");
 
     if (height) {
       query = query.andWhere("box.settlementHeight <= :height");
@@ -135,7 +145,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       .createQueryBuilder("box")
       .select("input.transactionId", "transactionId")
       .leftJoin(InputEntity, "input", "box.boxId = input.boxId AND input.mainChain = true")
-      .where("box.mainChain = true AND box.address = :address");
+      .where("box.mainChain = true AND box.ergoTree = :ergoTree");
 
     if (height) {
       query = query.andWhere("box.settlementHeight <= :height");

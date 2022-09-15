@@ -1,6 +1,6 @@
 {
   "name": "@ergo-graphql/server",
-  "version": "0.3.6",
+  "version": "0.3.8",
   "description": "Ergo GraphQL server",
   "main": "src/index.ts",
   "scripts": {
@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@mando75/typeorm-graphql-loader": "^1.7.5",
+    "@nautilus-js/fleet": "^0.0.5",
     "apollo-server": "^3.9.0",
     "apollo-server-cache-redis": "^3.3.1",
     "apollo-server-plugin-response-cache": "^3.6.1",
