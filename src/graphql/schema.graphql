@@ -219,7 +219,7 @@ type Query {
   addresses(addresses: [String!]!, atHeight: Int): [Address!]!
   blockHeaders(headerId: String, height: Int, parentId: String, skip: Int = 0, take: Int = 10): [Header!]!
   blocks(headerId: String, height: Int, maxHeight: Int, minHeight: Int, skip: Int = 0, take: Int = 10): [Block!]!
-  boxes(address: String, boxId: String, ergoTree: String, ergoTreeTemplateHash: String, headerId: String, maxHeight: Int, minHeight: Int, registers: Registers, skip: Int = 0, spent: Boolean, take: Int = 50, tokenId: String, transactionId: String): [Box!]!
+  boxes(address: String, addresses: [String!], boxId: String, ergoTree: String, ergoTreeTemplateHash: String, ergoTrees: [String!], headerId: String, maxHeight: Int, minHeight: Int, registers: Registers, skip: Int = 0, spent: Boolean, take: Int = 50, tokenId: String, transactionId: String): [Box!]!
   dataInputs(boxId: String, headerId: String, skip: Int = 0, take: Int = 50, transactionId: String): [DataInput!]!
   info: Info!
   inputs(boxId: String, headerId: String, skip: Int = 0, take: Int = 50, transactionId: String): [Input!]!
