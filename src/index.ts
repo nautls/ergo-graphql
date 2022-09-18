@@ -13,6 +13,7 @@ import { DEFAULT_MAX_QUERY_DEPTH, MAX_CACHE_AGE } from "./consts";
 import { DatabaseContext } from "./context/database-context";
 import { initializeDataSource } from "./data-source";
 import { generateSchema } from "./graphql/schema";
+import { checkNodeUrl } from "./services";
 
 const { TS_NODE_DEV, MAX_QUERY_DEPTH } = process.env;
 
@@ -20,6 +21,7 @@ const { TS_NODE_DEV, MAX_QUERY_DEPTH } = process.env;
   const [dataSource, schema] = await Promise.all([initializeDataSource(), generateSchema()]);
   const dataContext = new DatabaseContext(dataSource);
 
+  checkNodeUrl();
   startBlockWatcher(dataContext);
   await startServer(schema, dataContext);
 })();
