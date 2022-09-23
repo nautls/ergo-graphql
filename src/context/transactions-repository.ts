@@ -10,7 +10,7 @@ type TransactionFindOptions = FindManyParams<TransactionEntity> & {
   minHeight?: number;
   maxHeight?: number;
   address?: string;
-  transactionIds?: [string];
+  transactionIds?: string[];
 };
 
 export class TransactionRepository extends BaseRepository<TransactionEntity> {
