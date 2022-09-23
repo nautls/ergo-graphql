@@ -18,6 +18,8 @@ declare global {
 
       MAX_QUERY_DEPTH?: string;
 
+      DISABLE_STUDIO?: string;
+
       TS_NODE_DEV: string;
     }
   }
