@@ -99,7 +99,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
         delete options.where.boxId;
       }
 
-      if (boxIds) {
+      if (boxIds && boxIds.length > 0) {
         query = query.andWhere(`${this.alias}.box_id IN (:...boxIds)`, { boxIds });
       }
 
