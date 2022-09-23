@@ -4,6 +4,7 @@ import { FindManyParams } from "./repository-interface";
 
 type TokenFindOptions = FindManyParams<TokenEntity> & {
   tokenIds?: string[];
+  name?: string;
 };
 
 export class TokenRepository extends BaseRepository<TokenEntity> {
@@ -14,7 +15,7 @@ export class TokenRepository extends BaseRepository<TokenEntity> {
   }
 
   public override async find(options: TokenFindOptions): Promise<TokenEntity[]> {
-    const { tokenIds } = options;
+    const { tokenIds, name } = options;
     return this.findBase(options, (filterQuery) => {
       if (options.where?.tokenId && tokenIds) {
         tokenIds.push(options.where.tokenId);
@@ -26,6 +27,12 @@ export class TokenRepository extends BaseRepository<TokenEntity> {
           tokenIds
         });
       }
+
+      if (name) {
+        const nameLike = name.replace(/\*/g, "%");
+        filterQuery = filterQuery.andWhere(`${this.alias}.name LIKE :nameLike`, { nameLike });
+      }
+
       return filterQuery;
     });
   }

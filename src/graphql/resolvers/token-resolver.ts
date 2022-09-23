@@ -4,7 +4,7 @@ import { Token } from "../objects";
 import { removeUndefined } from "../../utils";
 import { PaginationArguments } from "./pagination-arguments";
 import { GraphQLContext } from "../context-type";
-import { ArrayMaxSize } from "class-validator";
+import { ValidateIf, IsEmpty, ArrayMaxSize } from "class-validator";
 
 @ArgsType()
 class TokensQueryArgs {
@@ -19,6 +19,15 @@ class TokensQueryArgs {
   @Field(() => String, { nullable: true })
   boxId?: string;
 
+  @ValidateIf((o: TokensQueryArgs) => {
+    if (o.name) {
+      const starCount = (o.name.match(/\*/g) || []).length;
+      return starCount > 2;
+    }
+
+    return false;
+  })
+  @IsEmpty({ message: "Number of stars in wildcard can't exceed 2." })
   @Field(() => String, { nullable: true })
   name?: string;
 }
@@ -34,8 +43,9 @@ export class TokenResolver {
   ) {
     return context.repository.tokens.find({
       resolverInfo: info,
-      where: removeUndefined({ boxId, name, tokenId }),
+      where: removeUndefined({ boxId, tokenId }),
       tokenIds,
+      name,
       skip,
       take
     });
