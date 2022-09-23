@@ -21,7 +21,7 @@ export class TokenRepository extends BaseRepository<TokenEntity> {
         delete options.where.tokenId;
       }
 
-      if (tokenIds) {
+      if (tokenIds && tokenIds.length > 0) {
         filterQuery = filterQuery.andWhere(`${this.alias}.tokenId IN (:...tokenIds)`, {
           tokenIds
         });
