@@ -7,9 +7,6 @@ import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
 import { ValidateIf, IsEmpty, isDefined, ArrayMaxSize } from "class-validator";
 
-export const REDUNDANT_QUERY_MESSAGE =
-  "Redundant query param: addresses and ergoTrees params can't be used together in the same query.";
-
 @InputType()
 class Registers {
   @Field(() => String, { nullable: true })
@@ -70,8 +67,6 @@ class BoxesQueryArgs {
   tokenId?: string;
 
   /** @deprecated */
-  @ValidateIf((o: BoxesQueryArgs) => isDefined(o.ergoTree))
-  @IsEmpty({ message: REDUNDANT_QUERY_MESSAGE })
   @Field(() => String, { nullable: true })
   address?: string;
 
@@ -80,8 +75,6 @@ class BoxesQueryArgs {
   addresses?: string[];
 
   /** @deprecated */
-  @ValidateIf((o: BoxesQueryArgs) => isDefined(o.address))
-  @IsEmpty({ message: REDUNDANT_QUERY_MESSAGE })
   @Field(() => String, { nullable: true })
   ergoTree?: string;
 
