@@ -9,6 +9,7 @@ import { FindManyParams } from "./repository-interface";
 
 type TransactionFindOptions = FindManyParams<UnconfirmedTransactionEntity> & {
   address?: string;
+  addresses?: string[];
   transactionIds?: string[];
 };
 
@@ -20,23 +21,28 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
   public override async find(
     options: TransactionFindOptions
   ): Promise<UnconfirmedTransactionEntity[]> {
-    const { address, transactionIds } = options;
+    const { address, addresses, transactionIds } = options;
+    const ergoTrees = addresses
+      ? addresses.map((address) => Address.fromBase58(address).ergoTree)
+      : [];
     return this.findBase(options, (filterQuery) => {
       if (address) {
-        const ergoTree = Address.fromBase58(address).ergoTree;
+        ergoTrees.push(Address.fromBase58(address).ergoTree);
+      }
 
+      if (ergoTrees.length > 0) {
         const inputQuery = this.dataSource
           .getRepository(UnconfirmedBoxEntity)
           .createQueryBuilder("box")
           .select("input.transactionId", "transactionId")
           .leftJoin(UnconfirmedInputEntity, "input", "box.boxId = input.boxId")
-          .where("box.ergoTree = :ergoTree");
+          .where("box.ergoTree IN (:...ergoTrees)");
 
         const outputQuery = this.dataSource
           .getRepository(UnconfirmedBoxEntity)
           .createQueryBuilder("box")
           .select("box.transactionId", "transactionId")
-          .where("box.ergoTree = :ergoTree");
+          .where("box.ergoTree IN (:...ergoTrees)");
 
         filterQuery = filterQuery.innerJoin(
           `(${inputQuery.getQuery()} UNION ${outputQuery.getQuery()})`,
@@ -44,7 +50,7 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
           `"boxes"."transactionId" = ${this.alias}.transactionId`
         );
 
-        filterQuery = filterQuery.setParameters({ ergoTree });
+        filterQuery = filterQuery.setParameters({ ergoTrees });
       }
 
       if (options.where?.transactionId && transactionIds) {
