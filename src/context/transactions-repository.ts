@@ -53,7 +53,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
           delete options.where.transactionId;
         }
 
-        if (transactionIds) {
+        if (transactionIds && transactionIds.length > 0) {
           filterQuery = filterQuery.andWhere(`${this.alias}.transactionId IN (:...transactionIds)`);
         }
 

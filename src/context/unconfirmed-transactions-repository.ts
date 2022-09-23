@@ -52,7 +52,7 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
         delete options.where.transactionId;
       }
 
-      if (transactionIds) {
+      if (transactionIds && transactionIds.length > 0) {
         filterQuery = filterQuery.andWhere(
           `${this.alias}.transactionId IN (:...transactionIds)`,
           transactionIds
