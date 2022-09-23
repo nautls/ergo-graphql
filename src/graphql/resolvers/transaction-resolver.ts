@@ -22,8 +22,13 @@ class TransactionArguments {
   @Field(() => Int, { nullable: true })
   inclusionHeight?: number;
 
+  /** @deprecated */
   @Field(() => String, { nullable: true })
   address?: string;
+
+  @Field(() => [String], { nullable: true })
+  @ArrayMaxSize(20)
+  addresses?: string[];
 
   @Field(() => Int, { nullable: true })
   minHeight?: number;
@@ -43,6 +48,7 @@ export class TransactionResolver {
       headerId,
       inclusionHeight,
       address,
+      addresses,
       minHeight,
       maxHeight
     }: TransactionArguments,
@@ -59,6 +65,7 @@ export class TransactionResolver {
       }),
       transactionIds,
       address,
+      addresses,
       minHeight,
       maxHeight,
       skip,

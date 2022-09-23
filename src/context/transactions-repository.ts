@@ -10,6 +10,7 @@ type TransactionFindOptions = FindManyParams<TransactionEntity> & {
   minHeight?: number;
   maxHeight?: number;
   address?: string;
+  addresses?: string[];
   transactionIds?: string[];
 };
 
@@ -22,11 +23,18 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
   }
 
   public override async find(options: TransactionFindOptions): Promise<TransactionEntity[]> {
-    const { minHeight, maxHeight, address, transactionIds } = options;
+    const { minHeight, maxHeight, address, addresses, transactionIds } = options;
+    const ergoTrees = addresses
+      ? addresses.map((address) => Address.fromBase58(address).ergoTree)
+      : [];
+
     return this.findBase(
       options,
       (filterQuery) => {
         if (address) {
+          ergoTrees.push(Address.fromBase58(address).ergoTree);
+        }
+        if (ergoTrees.length > 0) {
           const inputQuery = this.createInputQuery(maxHeight);
           const outputQuery = this.createOutputQuery(maxHeight);
 
@@ -62,7 +70,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
             height: maxHeight,
             maxHeight,
             minHeight,
-            ergoTree: address ? Address.fromBase58(address).ergoTree : undefined,
+            ergoTrees,
             transactionIds
           })
         );
@@ -70,14 +78,17 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
         return filterQuery;
       },
       (selectQuery) => {
-        if (address && getArgumentValue(options.resolverInfo, "outputs", "relevantOnly") === true) {
+        if (
+          ergoTrees.length > 0 &&
+          getArgumentValue(options.resolverInfo, "outputs", "relevantOnly") === true
+        ) {
           const outputsJoin = selectQuery.expressionMap.joinAttributes.find(
             (x) => x.relation?.propertyName === "outputs"
           );
 
           if (outputsJoin) {
             const minerTreeCondition = `${outputsJoin.alias.name}.ergoTree = :minerTree`;
-            const relevantCondition = `${outputsJoin.alias.name}.ergoTree = :ergoTree OR ${minerTreeCondition}`;
+            const relevantCondition = `${outputsJoin.alias.name}.ergoTree IN (:...ergoTrees) OR ${minerTreeCondition}`;
             outputsJoin.condition = outputsJoin.condition
               ? `${outputsJoin.condition} AND (${relevantCondition})`
               : relevantCondition;
@@ -130,7 +141,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       .getRepository(BoxEntity)
       .createQueryBuilder("box")
       .select("box.transactionId", "transactionId")
-      .where("box.mainChain = true AND box.ergoTree = :ergoTree");
+      .where("box.mainChain = true AND box.ergoTree IN (:...ergoTrees)");
 
     if (height) {
       query = query.andWhere("box.settlementHeight <= :height");
@@ -145,7 +156,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       .createQueryBuilder("box")
       .select("input.transactionId", "transactionId")
       .leftJoin(InputEntity, "input", "box.boxId = input.boxId AND input.mainChain = true")
-      .where("box.mainChain = true AND box.ergoTree = :ergoTree");
+      .where("box.mainChain = true AND box.ergoTree IN (:...ergoTrees)");
 
     if (height) {
       query = query.andWhere("box.settlementHeight <= :height");
