@@ -2,7 +2,7 @@ import { HeaderRepository } from "./context/header-repository";
 
 class BlockWatcher {
   private _repository!: HeaderRepository;
-  private _callbacks!: ((height: number) => void)[];
+  private _callbacks!: ((height?: number) => void)[];
   private _lastBlockHeight!: number;
   private _timer!: NodeJS.Timeout;
 
@@ -11,7 +11,7 @@ class BlockWatcher {
     this._lastBlockHeight = 0;
   }
 
-  public onNewBlock(callback: (height: number) => void): BlockWatcher {
+  public onNewBlock(callback: (height?: number) => void): BlockWatcher {
     if (!callback) {
       return this;
     }
@@ -20,7 +20,7 @@ class BlockWatcher {
     return this;
   }
 
-  public removeOnNewBlockListener(callback: (height: number) => void): void {
+  public removeOnNewBlockListener(callback: (height?: number) => void): void {
     const index = this._callbacks.indexOf(callback);
     if (index > -1) {
       this._callbacks = this._callbacks.splice(index, 1);
@@ -37,23 +37,29 @@ class BlockWatcher {
     return this;
   }
 
-  private _notify(height: number) {
+  private _notify(height?: number) {
     this._callbacks.forEach((callback) => callback(height));
   }
 
   private _startBlockWatcher(repository: HeaderRepository) {
-    repository.getMaxHeight().then((height) => {
-      if (!height || this._lastBlockHeight >= height) {
-        return;
-      }
+    repository
+      .getMaxHeight()
+      .then((height) => {
+        if (!height || this._lastBlockHeight >= height) {
+          return;
+        }
 
-      if (process.env.TS_NODE_DEV === "true") {
-        console.log(`New block found: ${height}`);
-      }
+        if (process.env.TS_NODE_DEV === "true") {
+          console.log(`New block found: ${height}`);
+        }
 
-      this._lastBlockHeight = height;
-      this._notify(height);
-    });
+        this._lastBlockHeight = height;
+        this._notify(height);
+      })
+      .catch((e) => {
+        this._notify();
+        console.error(e);
+      });
   }
 }
 
