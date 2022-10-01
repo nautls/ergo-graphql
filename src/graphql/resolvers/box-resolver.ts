@@ -5,7 +5,7 @@ import { removeUndefined } from "../../utils";
 import { isFieldSelected } from "./utils";
 import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
-import { ValidateIf, IsEmpty, isDefined } from "class-validator";
+import { ValidateIf, IsEmpty, isDefined, ArrayMaxSize } from "class-validator";
 
 export const REDUNDANT_QUERY_MESSAGE =
   "Redundant query param: address and ergoTree params can't be used together in the same query.";
@@ -33,8 +33,13 @@ class Registers {
 
 @ArgsType()
 class BoxesQueryArgs {
+  /** @deprecated */
   @Field(() => String, { nullable: true })
   boxId?: string;
+
+  @Field(() => [String], { nullable: true })
+  @ArrayMaxSize(20)
+  boxIds?: string[];
 
   @ValidateIf((o: BoxesQueryArgs) => {
     if (!isDefined(o.spent)) return true;
@@ -97,6 +102,7 @@ export class BoxResolver {
     {
       address,
       boxId,
+      boxIds,
       transactionId,
       headerId,
       ergoTree,
@@ -126,14 +132,15 @@ export class BoxResolver {
       registers,
       minHeight,
       maxHeight,
+      boxIds,
       skip,
       take
     });
 
-    const boxIds = boxes.map((box) => box.boxId);
+    const resultBoxIds = boxes.map((box) => box.boxId);
 
     const unconfirmedInputBoxIds = isFieldSelected(info, "beingSpent")
-      ? await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds(boxIds)
+      ? await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds(resultBoxIds)
       : [];
 
     if (!isFieldSelected(info, "beingSpent")) {
