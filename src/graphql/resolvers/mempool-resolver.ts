@@ -26,8 +26,13 @@ const REDUNDANT_QUERY_MESSAGE =
 
 @ArgsType()
 class UnconfirmedTransactionArguments {
+  /** @deprecated */
   @Field(() => String, { nullable: true })
   transactionId?: string;
+
+  @Field(() => [String], { nullable: true })
+  @ArrayMaxSize(20)
+  transactionIds?: [string];
 
   @Field(() => String, { nullable: true })
   address?: string;
@@ -101,7 +106,8 @@ export class MempoolResolver {
   @FieldResolver()
   async transactions(
     @Args({ validate: true }) { skip, take }: PaginationArguments,
-    @Args() { transactionId, address }: UnconfirmedTransactionArguments,
+    @Args({ validate: true })
+    { transactionId, transactionIds, address }: UnconfirmedTransactionArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
@@ -109,6 +115,7 @@ export class MempoolResolver {
       resolverInfo: info,
       where: removeUndefined({ transactionId }),
       address,
+      transactionIds,
       skip,
       take
     });

@@ -30,18 +30,26 @@ class Registers {
 
 @ArgsType()
 class BoxesQueryArgs {
+  /** @deprecated */
   @Field(() => String, { nullable: true })
   boxId?: string;
+
+  @Field(() => [String], { nullable: true })
+  @ArrayMaxSize(20)
+  boxIds?: string[];
 
   @ValidateIf((o: BoxesQueryArgs) => {
     if (!isDefined(o.spent)) return true;
 
     const indexFields = [
       o.boxId,
+      o.boxIds,
       o.transactionId,
       o.headerId,
       o.address,
+      o.addresses,
       o.ergoTree,
+      o.ergoTrees,
       o.ergoTreeTemplateHash
     ];
     const definedCount = indexFields.filter((el) => isDefined(el)).length;
@@ -101,6 +109,7 @@ export class BoxResolver {
       address,
       addresses,
       boxId,
+      boxIds,
       transactionId,
       headerId,
       ergoTree,
@@ -133,14 +142,15 @@ export class BoxResolver {
       registers,
       minHeight,
       maxHeight,
+      boxIds,
       skip,
       take
     });
 
-    const boxIds = boxes.map((box) => box.boxId);
+    const resultBoxIds = boxes.map((box) => box.boxId);
 
     const unconfirmedInputBoxIds = isFieldSelected(info, "beingSpent")
-      ? await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds(boxIds)
+      ? await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds(resultBoxIds)
       : [];
 
     if (!isFieldSelected(info, "beingSpent")) {
