@@ -20,7 +20,9 @@ import { SignedTransactionInput } from "../input-types";
 import { Mempool } from "../objects";
 import { PaginationArguments } from "./pagination-arguments";
 import { isFieldSelected } from "./utils";
-import { REDUNDANT_QUERY_MESSAGE } from "./box-resolver";
+
+const REDUNDANT_QUERY_MESSAGE =
+  "Redundant query param: addresses and ergoTrees params can't be used together in the same query.";
 
 @ArgsType()
 class UnconfirmedTransactionArguments {

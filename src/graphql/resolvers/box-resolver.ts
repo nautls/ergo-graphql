@@ -7,9 +7,6 @@ import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
 import { ValidateIf, IsEmpty, isDefined, ArrayMaxSize } from "class-validator";
 
-export const REDUNDANT_QUERY_MESSAGE =
-  "Redundant query param: address and ergoTree params can't be used together in the same query.";
-
 @InputType()
 class Registers {
   @Field(() => String, { nullable: true })
@@ -46,10 +43,13 @@ class BoxesQueryArgs {
 
     const indexFields = [
       o.boxId,
+      o.boxIds,
       o.transactionId,
       o.headerId,
       o.address,
+      o.addresses,
       o.ergoTree,
+      o.ergoTrees,
       o.ergoTreeTemplateHash
     ];
     const definedCount = indexFields.filter((el) => isDefined(el)).length;
@@ -74,15 +74,21 @@ class BoxesQueryArgs {
   @Field(() => String, { nullable: true })
   tokenId?: string;
 
-  @ValidateIf((o: BoxesQueryArgs) => isDefined(o.ergoTree))
-  @IsEmpty({ message: REDUNDANT_QUERY_MESSAGE })
+  /** @deprecated */
   @Field(() => String, { nullable: true })
   address?: string;
 
-  @ValidateIf((o: BoxesQueryArgs) => isDefined(o.address))
-  @IsEmpty({ message: REDUNDANT_QUERY_MESSAGE })
+  @Field(() => [String], { nullable: true })
+  @ArrayMaxSize(20)
+  addresses?: string[];
+
+  /** @deprecated */
   @Field(() => String, { nullable: true })
   ergoTree?: string;
+
+  @Field(() => [String], { nullable: true })
+  @ArrayMaxSize(20)
+  ergoTrees?: string[];
 
   @Field(() => String, { nullable: true })
   ergoTreeTemplateHash?: string;
@@ -101,11 +107,13 @@ export class BoxResolver {
     @Args({ validate: true })
     {
       address,
+      addresses,
       boxId,
       boxIds,
       transactionId,
       headerId,
       ergoTree,
+      ergoTrees,
       ergoTreeTemplateHash,
       tokenId,
       spent,
@@ -128,6 +136,8 @@ export class BoxResolver {
         ergoTreeTemplateHash
       }),
       spent,
+      addresses,
+      ergoTrees,
       tokenId,
       registers,
       minHeight,
