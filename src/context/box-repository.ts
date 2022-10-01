@@ -15,11 +15,14 @@ type Registers = {
 };
 
 type BoxFindOptions = FindManyParams<BoxEntity> & {
+  addresses?: string[];
+  ergoTrees?: string[];
   spent?: boolean;
   tokenId?: string;
   registers?: Registers;
   minHeight?: number;
   maxHeight?: number;
+  boxIds?: string[];
 };
 
 export class BoxRepository extends BaseRepository<BoxEntity> {
@@ -31,10 +34,24 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
   }
 
   public override find(options: BoxFindOptions): Promise<BoxEntity[]> {
-    const { spent, tokenId, registers, minHeight, maxHeight } = options;
+    const { spent, tokenId, registers, minHeight, maxHeight, addresses, boxIds } = options;
+
+    const ergoTrees: string[] = options.ergoTrees ? options.ergoTrees : [];
+
+    if (options.where?.ergoTree) {
+      ergoTrees.push(options.where.ergoTree);
+      delete options.where.ergoTree;
+    }
+
     if (options.where?.address) {
-      options.where.ergoTree = Address.fromBase58(options.where.address).ergoTree;
+      ergoTrees.push(Address.fromBase58(options.where.address).ergoTree);
       delete options.where.address;
+    }
+
+    if (addresses) {
+      for (const address of addresses) {
+        ergoTrees.push(Address.fromBase58(address).ergoTree);
+      }
     }
 
     return this.findBase(options, (query) => {
@@ -48,6 +65,10 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
         query = spent
           ? query.andWhere("input.boxId IS NOT NULL")
           : query.andWhere("input.boxId IS NULL");
+      }
+
+      if (ergoTrees.length > 0) {
+        query = query.andWhere("box.ergoTree IN (:...ergoTrees)", { ergoTrees });
       }
 
       if (tokenId) {
@@ -91,6 +112,15 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
 
       if (maxHeight) {
         query = query.andWhere(`${this.alias}.settlement_height <= :maxHeight`, { maxHeight });
+      }
+
+      if (options.where?.boxId && boxIds) {
+        boxIds.push(options.where.boxId);
+        delete options.where.boxId;
+      }
+
+      if (boxIds && boxIds.length > 0) {
+        query = query.andWhere(`${this.alias}.box_id IN (:...boxIds)`, { boxIds });
       }
 
       return query;
