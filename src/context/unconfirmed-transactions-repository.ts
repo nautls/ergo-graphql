@@ -59,10 +59,9 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
       }
 
       if (transactionIds && transactionIds.length > 0) {
-        filterQuery = filterQuery.andWhere(
-          `${this.alias}.transactionId IN (:...transactionIds)`,
+        filterQuery = filterQuery.andWhere(`${this.alias}.transactionId IN (:...transactionIds)`, {
           transactionIds
-        );
+        });
       }
 
       return filterQuery;
