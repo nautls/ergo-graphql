@@ -11,14 +11,12 @@ class NodeService {
     this.checkUrl();
   }
 
-  public checkUrl(): boolean {
+  public checkUrl(): void {
     if (!this._baseUrl) {
       throw Error("ERGO_NODE_ADDRESS is undefined.");
     } else if (!HTTP_PREFIX_PATTERN.test(this._baseUrl)) {
       throw Error("ERGO_NODE_ADDRESS should be http:// or https:// prefixed.");
     }
-
-    return true;
   }
 
   public checkTransaction(transaction: SignedTransactionInput) {
