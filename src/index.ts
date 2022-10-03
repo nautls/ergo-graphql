@@ -5,8 +5,7 @@ import { ApolloServer } from "apollo-server";
 import { BaseRedisCache } from "apollo-server-cache-redis";
 import {
   ApolloServerPluginCacheControl,
-  ApolloServerPluginLandingPageLocalDefault,
-  ApolloServerPluginLandingPageDisabled
+  ApolloServerPluginLandingPageGraphQLPlayground
 } from "apollo-server-core";
 import responseCachePlugin from "apollo-server-plugin-response-cache";
 import { GraphQLSchema } from "graphql";
@@ -18,7 +17,7 @@ import { DatabaseContext } from "./context/database-context";
 import { initializeDataSource } from "./data-source";
 import { generateSchema } from "./graphql/schema";
 
-const { TS_NODE_DEV, MAX_QUERY_DEPTH, DISABLE_STUDIO } = process.env;
+const { TS_NODE_DEV, MAX_QUERY_DEPTH } = process.env;
 
 (async () => {
   const [dataSource, schema] = await Promise.all([initializeDataSource(), generateSchema()]);
@@ -42,9 +41,7 @@ async function startServer(schema: GraphQLSchema, dataContext: DatabaseContext) 
       responseCachePlugin({
         cache: new BaseRedisCache({ client: redisClient })
       }),
-      DISABLE_STUDIO?.toLowerCase() == "false"
-        ? ApolloServerPluginLandingPageLocalDefault()
-        : ApolloServerPluginLandingPageDisabled()
+      ApolloServerPluginLandingPageGraphQLPlayground()
     ],
     validationRules: [
       depthLimit(

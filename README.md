@@ -30,7 +30,6 @@ REDIS_USER_NAME =         # optional: redis username
 REDIS_USER_PWD =          # optional: redis user password
 
 MAX_QUERY_DEPTH = 5       # optional: maximum query depth
-DISABLE_STUDIO =          # optional: true or false
 ```
 
 ### Compile and run for development
