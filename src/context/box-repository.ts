@@ -1,6 +1,6 @@
 import { Address } from "@nautilus-js/fleet";
 import { isEmpty, unionBy } from "lodash";
-import { AssetEntity, BoxEntity, InputEntity, TokenEntity } from "../entities";
+import { AssetEntity, BoxEntity, HeaderEntity, InputEntity, TokenEntity } from "../entities";
 import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
@@ -146,12 +146,17 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       );
 
     const nanoErgs = options.include.nanoErgs
-      ? await baseQuery.addSelect("SUM(box.value)", "nanoErgs").getRawMany()
+      ? await baseQuery.clone().addSelect("SUM(box.value)", "nanoErgs").getRawMany()
       : [];
 
     const assets = options.include.assets
       ? await baseQuery
           .leftJoin(AssetEntity, "asset", "box.boxId = asset.boxId")
+          .innerJoin(
+            HeaderEntity,
+            "header",
+            "asset.headerId = header.headerId and header.mainChain = true"
+          )
           .leftJoin(TokenEntity, "token", "asset.tokenId = token.tokenId")
           .andWhere("asset.tokenId IS NOT NULL")
           .addGroupBy("asset.tokenId")
