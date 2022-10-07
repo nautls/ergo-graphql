@@ -3,7 +3,10 @@ import "reflect-metadata";
 
 import { ApolloServer } from "apollo-server";
 import { BaseRedisCache } from "apollo-server-cache-redis";
-import { ApolloServerPluginCacheControl } from "apollo-server-core";
+import {
+  ApolloServerPluginCacheControl,
+  ApolloServerPluginLandingPageGraphQLPlayground
+} from "apollo-server-core";
 import responseCachePlugin from "apollo-server-plugin-response-cache";
 import { GraphQLSchema } from "graphql";
 import depthLimit from "graphql-depth-limit";
@@ -37,7 +40,8 @@ async function startServer(schema: GraphQLSchema, dataContext: DatabaseContext) 
       }),
       responseCachePlugin({
         cache: new BaseRedisCache({ client: redisClient })
-      })
+      }),
+      ApolloServerPluginLandingPageGraphQLPlayground()
     ],
     validationRules: [
       depthLimit(
