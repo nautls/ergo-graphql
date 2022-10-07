@@ -3,27 +3,33 @@ import { SignedTransactionInput } from "../graphql/input-types";
 
 const HTTP_PREFIX_PATTERN = /^http(s?):\/\//;
 
-export class NodeService {
-  private nodeAddress: string;
+class NodeService {
+  private _baseUrl: string;
 
-  constructor(nodeAddress?: string) {
-    this.nodeAddress = nodeAddress || process.env.ERGO_NODE_HOST || process.env.ERGO_NODE_ADDRESS;
-    if (!this.nodeAddress) {
-      throw Error("ERGO_NODE_ADDRESS is undefined in .env file.");
-    } else if (!HTTP_PREFIX_PATTERN.test(this.nodeAddress)) {
+  constructor() {
+    this._baseUrl = process.env.ERGO_NODE_HOST || process.env.ERGO_NODE_ADDRESS;
+    this.checkUrl();
+  }
+
+  public checkUrl(): void {
+    if (!this._baseUrl) {
+      throw Error("ERGO_NODE_ADDRESS is undefined.");
+    } else if (!HTTP_PREFIX_PATTERN.test(this._baseUrl)) {
       throw Error("ERGO_NODE_ADDRESS should be http:// or https:// prefixed.");
     }
   }
 
   public checkTransaction(transaction: SignedTransactionInput) {
-    return axios.post(this.nodeAddress + "/transactions/check", transaction);
+    return axios.post(this._baseUrl + "/transactions/check", transaction);
   }
 
   public submitTransaction(transaction: SignedTransactionInput) {
-    return axios.post(this.nodeAddress + "/transactions", transaction);
+    return axios.post(this._baseUrl + "/transactions", transaction);
   }
 
   public getNodeInfo() {
-    return axios.get(this.nodeAddress + "/info");
+    return axios.get(this._baseUrl + "/info");
   }
 }
+
+export const nodeService = new NodeService();
