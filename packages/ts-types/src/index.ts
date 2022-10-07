@@ -263,9 +263,11 @@ export type MempoolInputsArgs = {
 
 export type MempoolTransactionsArgs = {
   address?: InputMaybe<Scalars['String']>;
+  addresses?: InputMaybe<Array<Scalars['String']>>;
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
   transactionId?: InputMaybe<Scalars['String']>;
+  transactionIds?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type Mutation = {
@@ -302,7 +304,6 @@ export type Query = {
 
 export type QueryAddressesArgs = {
   addresses: Array<Scalars['String']>;
-  atHeight?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -327,9 +328,12 @@ export type QueryBlocksArgs = {
 
 export type QueryBoxesArgs = {
   address?: InputMaybe<Scalars['String']>;
+  addresses?: InputMaybe<Array<Scalars['String']>>;
   boxId?: InputMaybe<Scalars['String']>;
+  boxIds?: InputMaybe<Array<Scalars['String']>>;
   ergoTree?: InputMaybe<Scalars['String']>;
   ergoTreeTemplateHash?: InputMaybe<Scalars['String']>;
+  ergoTrees?: InputMaybe<Array<Scalars['String']>>;
   headerId?: InputMaybe<Scalars['String']>;
   maxHeight?: InputMaybe<Scalars['Int']>;
   minHeight?: InputMaybe<Scalars['Int']>;
@@ -366,11 +370,13 @@ export type QueryTokensArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
   tokenId?: InputMaybe<Scalars['String']>;
+  tokenIds?: InputMaybe<Array<Scalars['String']>>;
 };
 
 
 export type QueryTransactionsArgs = {
   address?: InputMaybe<Scalars['String']>;
+  addresses?: InputMaybe<Array<Scalars['String']>>;
   headerId?: InputMaybe<Scalars['String']>;
   inclusionHeight?: InputMaybe<Scalars['Int']>;
   maxHeight?: InputMaybe<Scalars['Int']>;
@@ -378,6 +384,7 @@ export type QueryTransactionsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
   transactionId?: InputMaybe<Scalars['String']>;
+  transactionIds?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type Registers = {
