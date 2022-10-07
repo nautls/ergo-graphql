@@ -1,6 +1,6 @@
 import { Address } from "@nautilus-js/fleet";
 import { isEmpty, unionBy } from "lodash";
-import { AssetEntity, BoxEntity, InputEntity, TokenEntity } from "../entities";
+import { AssetEntity, BoxEntity, HeaderEntity, InputEntity, TokenEntity } from "../entities";
 import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
@@ -128,10 +128,10 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
   }
 
   public async sum(options: {
-    where: { addresses: string[]; maxHeight?: number };
+    where: { addresses: string[] };
     include: { nanoErgs: boolean; assets: boolean };
   }) {
-    let baseQuery = this.repository
+    const baseQuery = this.repository
       .createQueryBuilder("box")
       .select("box.address", "address")
       .leftJoin(InputEntity, "input", "box.boxId = input.boxId AND input.mainChain = true")
@@ -141,22 +141,22 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       .groupBy("box.address")
       .setParameters(
         removeUndefined({
-          ergoTrees: options.where.addresses.map((address) => Address.fromBase58(address).ergoTree),
-          height: options.where.maxHeight
+          ergoTrees: options.where.addresses.map((address) => Address.fromBase58(address).ergoTree)
         })
       );
 
-    if (options.where.maxHeight) {
-      baseQuery = baseQuery.andWhere("box.settlementHeight <= :height");
-    }
-
     const nanoErgs = options.include.nanoErgs
-      ? await baseQuery.addSelect("SUM(box.value)", "nanoErgs").getRawMany()
+      ? await baseQuery.clone().addSelect("SUM(box.value)", "nanoErgs").getRawMany()
       : [];
 
     const assets = options.include.assets
       ? await baseQuery
           .leftJoin(AssetEntity, "asset", "box.boxId = asset.boxId")
+          .innerJoin(
+            HeaderEntity,
+            "header",
+            "asset.headerId = header.headerId and header.mainChain = true"
+          )
           .leftJoin(TokenEntity, "token", "asset.tokenId = token.tokenId")
           .andWhere("asset.tokenId IS NOT NULL")
           .addGroupBy("asset.tokenId")
@@ -198,25 +198,18 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
     return globalIndex;
   }
 
-  public async getAddressesBoxCount(options: {
-    where: { addresses: string[]; maxHeight?: number };
-  }) {
-    let baseQuery = this.repository
+  public async getAddressesBoxCount(options: { where: { addresses: string[] } }) {
+    const baseQuery = this.repository
       .createQueryBuilder("box")
       .select("COUNT(*)", "boxesCount")
       .addSelect("box.address", "address")
       .where("box.ergoTree IN (:...ergoTrees)")
       .groupBy("box.address");
 
-    if (options.where.maxHeight) {
-      baseQuery = baseQuery.andWhere("box.settlementHeight <= :height");
-    }
-
     return baseQuery
       .setParameters(
         removeUndefined({
-          ergoTrees: options.where.addresses.map((address) => Address.fromBase58(address).ergoTree),
-          height: options.where.maxHeight
+          ergoTrees: options.where.addresses.map((address) => Address.fromBase58(address).ergoTree)
         })
       )
       .getRawMany();

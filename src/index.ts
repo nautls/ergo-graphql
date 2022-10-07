@@ -3,7 +3,10 @@ import "reflect-metadata";
 
 import { ApolloServer } from "apollo-server";
 import { BaseRedisCache } from "apollo-server-cache-redis";
-import { ApolloServerPluginCacheControl } from "apollo-server-core";
+import {
+  ApolloServerPluginCacheControl,
+  ApolloServerPluginLandingPageGraphQLPlayground
+} from "apollo-server-core";
 import responseCachePlugin from "apollo-server-plugin-response-cache";
 import { GraphQLSchema } from "graphql";
 import depthLimit from "graphql-depth-limit";
@@ -13,6 +16,7 @@ import { DEFAULT_MAX_QUERY_DEPTH, MAX_CACHE_AGE } from "./consts";
 import { DatabaseContext } from "./context/database-context";
 import { initializeDataSource } from "./data-source";
 import { generateSchema } from "./graphql/schema";
+import { nodeService } from "./services";
 
 const { TS_NODE_DEV, MAX_QUERY_DEPTH } = process.env;
 
@@ -20,6 +24,7 @@ const { TS_NODE_DEV, MAX_QUERY_DEPTH } = process.env;
   const [dataSource, schema] = await Promise.all([initializeDataSource(), generateSchema()]);
   const dataContext = new DatabaseContext(dataSource);
 
+  nodeService.checkUrl();
   startBlockWatcher(dataContext);
   await startServer(schema, dataContext);
 })();
@@ -37,7 +42,8 @@ async function startServer(schema: GraphQLSchema, dataContext: DatabaseContext) 
       }),
       responseCachePlugin({
         cache: new BaseRedisCache({ client: redisClient })
-      })
+      }),
+      ApolloServerPluginLandingPageGraphQLPlayground()
     ],
     validationRules: [
       depthLimit(

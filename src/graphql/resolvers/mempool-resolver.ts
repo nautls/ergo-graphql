@@ -13,7 +13,7 @@ import {
   Query,
   Resolver
 } from "type-graphql";
-import { NodeService } from "../../services";
+import { nodeService } from "../../services";
 import { removeUndefined } from "../../utils";
 import { GraphQLContext } from "../context-type";
 import { SignedTransactionInput } from "../input-types";
@@ -86,12 +86,6 @@ class UnconfirmedInputsQueryArgs {
 
 @Resolver(Mempool)
 export class MempoolResolver {
-  private _nodeService: NodeService;
-
-  constructor() {
-    this._nodeService = new NodeService();
-  }
-
   @Query(() => Mempool)
   async mempool(@Info() info: GraphQLResolveInfo) {
     info.cacheControl.setCacheHint({ maxAge: 0 });
@@ -193,7 +187,7 @@ export class MempoolResolver {
   @Mutation(() => String)
   async checkTransaction(@Arg("signedTransaction") signedTransaction: SignedTransactionInput) {
     try {
-      const response = await this._nodeService.checkTransaction(signedTransaction);
+      const response = await nodeService.checkTransaction(signedTransaction);
       return response.data;
     } catch (e) {
       if (e instanceof AxiosError) {
@@ -210,7 +204,7 @@ export class MempoolResolver {
   @Mutation(() => String)
   async submitTransaction(@Arg("signedTransaction") signedTransaction: SignedTransactionInput) {
     try {
-      const response = await this._nodeService.submitTransaction(signedTransaction);
+      const response = await nodeService.submitTransaction(signedTransaction);
       return response.data;
     } catch (e) {
       if (e instanceof AxiosError) {

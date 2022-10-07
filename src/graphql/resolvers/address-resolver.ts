@@ -9,7 +9,6 @@ import {
   Field,
   FieldResolver,
   Info,
-  Int,
   Query,
   Resolver,
   Root
@@ -21,9 +20,6 @@ class AddressesQueryArgs {
   @Field(() => [String], { nullable: false })
   @ArrayMaxSize(20)
   addresses!: string[];
-
-  @Field(() => Int, { nullable: true })
-  atHeight?: number;
 }
 
 type ContextArgs = {
@@ -34,15 +30,13 @@ type ContextArgs = {
 export class AddressResolver {
   @Query(() => [Address])
   async addresses(
-    @Args({ validate: true }) { addresses, atHeight }: AddressesQueryArgs,
+    @Args({ validate: true }) { addresses }: AddressesQueryArgs,
     @Ctx() context: GraphQLContextWithArgs<ContextArgs>,
     @Info() info: GraphQLResolveInfo
   ) {
-    context.args = { height: atHeight };
-
     const balances = isFieldSelected(info, "balance")
       ? await context.repository.boxes.sum({
-          where: { addresses, maxHeight: atHeight },
+          where: { addresses },
           include: {
             nanoErgs: isFieldSelected(info, "balance.nanoErgs"),
             assets: isFieldSelected(info, "balance.assets")
@@ -55,7 +49,7 @@ export class AddressResolver {
     const boxesCount =
       usedSelected || boxesCountSelected
         ? await context.repository.boxes.getAddressesBoxCount({
-            where: { addresses, maxHeight: atHeight }
+            where: { addresses }
           })
         : [];
 

@@ -2,18 +2,12 @@ import { Resolver, FieldResolver, Ctx, Query, Info } from "type-graphql";
 import { GraphQLError, GraphQLResolveInfo } from "graphql";
 import { State } from "../objects";
 import { GraphQLContext } from "../context-type";
-import { NodeService } from "../../services";
+import { nodeService } from "../../services";
 import { AxiosError } from "axios";
 import { isFieldSelected } from "./utils";
 
 @Resolver(State)
 export class StateResolver {
-  private _nodeService: NodeService;
-
-  constructor() {
-    this._nodeService = new NodeService();
-  }
-
   @Query(() => State)
   async state(@Info() info: GraphQLResolveInfo) {
     const networkSelected = isFieldSelected(info, "network");
@@ -24,7 +18,7 @@ export class StateResolver {
     } = {};
     if (networkSelected || difficultySelected) {
       try {
-        const response = await this._nodeService.getNodeInfo();
+        const response = await nodeService.getNodeInfo();
         if (networkSelected) {
           stateObject["network"] = response.data.network;
         }
