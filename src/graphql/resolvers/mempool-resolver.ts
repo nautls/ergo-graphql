@@ -34,8 +34,13 @@ class UnconfirmedTransactionArguments {
   @ArrayMaxSize(20)
   transactionIds?: [string];
 
+  /** @deprecated */
   @Field(() => String, { nullable: true })
   address?: string;
+
+  @Field(() => [String], { nullable: true })
+  @ArrayMaxSize(20)
+  addresses?: string[];
 }
 
 @ArgsType()
@@ -101,7 +106,7 @@ export class MempoolResolver {
   async transactions(
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Args({ validate: true })
-    { transactionId, transactionIds, address }: UnconfirmedTransactionArguments,
+    { transactionId, transactionIds, address, addresses }: UnconfirmedTransactionArguments,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
@@ -109,6 +114,7 @@ export class MempoolResolver {
       resolverInfo: info,
       where: removeUndefined({ transactionId }),
       address,
+      addresses,
       transactionIds,
       skip,
       take
