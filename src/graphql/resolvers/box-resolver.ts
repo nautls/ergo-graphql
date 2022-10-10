@@ -145,7 +145,6 @@ export class BoxResolver {
       minHeight,
       maxHeight
     });
-
     const literalArgumentsLength = Object.keys(literalArguments).length;
 
     let definedRegistersLength = 0;
