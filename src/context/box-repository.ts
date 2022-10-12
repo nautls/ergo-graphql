@@ -54,77 +54,83 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       }
     }
 
-    return this.findBase(options, (query) => {
-      if (spent !== undefined && spent !== null) {
-        query = query.leftJoin(
-          "box.spentBy",
-          "input",
-          "input.boxId = box.boxId AND input.mainChain = true"
-        );
-
-        query = spent
-          ? query.andWhere("input.boxId IS NOT NULL")
-          : query.andWhere("input.boxId IS NULL");
-      }
-
-      if (ergoTrees.length > 0) {
-        query = query.andWhere("box.ergoTree IN (:...ergoTrees)", { ergoTrees });
-      }
-
-      if (tokenId) {
-        query = query
-          .leftJoin("box.assets", "asset", "asset.boxId = box.boxId")
-          .andWhere("asset.tokenId = :tokenId", { tokenId });
-      }
-
-      if (registers && !isEmpty(registers)) {
-        query = query.leftJoin("box.registers", "rx", "box.boxId = rx.boxId");
-        for (const key in registers) {
-          const value = registers[key as keyof Registers];
-          if (!value) {
-            continue;
-          }
-
-          query = query.andWhere(
-            `rx.registerId = :${key}_key AND rx.serializedValue = :${key}_value`,
-            removeUndefined({
-              tokenId,
-              R4_key: registers?.R4 ? "R4" : undefined,
-              R4_value: registers?.R4,
-              R5_key: registers?.R5 ? "R5" : undefined,
-              R5_value: registers?.R5,
-              R6_key: registers?.R6 ? "R6" : undefined,
-              R6_value: registers?.R6,
-              R7_key: registers?.R7 ? "R7" : undefined,
-              R7_value: registers?.R7,
-              R8_key: registers?.R8 ? "R8" : undefined,
-              R8_value: registers?.R8,
-              R9_key: registers?.R9 ? "R9" : undefined,
-              R9_value: registers?.R9
-            })
+    return this.findBase(
+      options,
+      (query) => {
+        if (spent !== undefined && spent !== null) {
+          query = query.leftJoin(
+            "box.spentBy",
+            "input",
+            "input.boxId = box.boxId AND input.mainChain = true"
           );
+
+          query = spent
+            ? query.andWhere("input.boxId IS NOT NULL")
+            : query.andWhere("input.boxId IS NULL");
         }
-      }
 
-      if (minHeight) {
-        query = query.andWhere(`${this.alias}.settlement_height >= :minHeight`, { minHeight });
-      }
+        if (ergoTrees.length > 0) {
+          query = query.andWhere("box.ergoTree IN (:...ergoTrees)", { ergoTrees });
+        }
 
-      if (maxHeight) {
-        query = query.andWhere(`${this.alias}.settlement_height <= :maxHeight`, { maxHeight });
-      }
+        if (tokenId) {
+          query = query
+            .leftJoin("box.assets", "asset", "asset.boxId = box.boxId")
+            .andWhere("asset.tokenId = :tokenId", { tokenId });
+        }
 
-      if (options.where?.boxId && boxIds) {
-        boxIds.push(options.where.boxId);
-        delete options.where.boxId;
-      }
+        if (registers && !isEmpty(registers)) {
+          query = query.leftJoin("box.registers", "rx", "box.boxId = rx.boxId");
+          for (const key in registers) {
+            const value = registers[key as keyof Registers];
+            if (!value) {
+              continue;
+            }
 
-      if (boxIds && boxIds.length > 0) {
-        query = query.andWhere(`${this.alias}.box_id IN (:...boxIds)`, { boxIds });
-      }
+            query = query.andWhere(
+              `rx.registerId = :${key}_key AND rx.serializedValue = :${key}_value`,
+              removeUndefined({
+                tokenId,
+                R4_key: registers?.R4 ? "R4" : undefined,
+                R4_value: registers?.R4,
+                R5_key: registers?.R5 ? "R5" : undefined,
+                R5_value: registers?.R5,
+                R6_key: registers?.R6 ? "R6" : undefined,
+                R6_value: registers?.R6,
+                R7_key: registers?.R7 ? "R7" : undefined,
+                R7_value: registers?.R7,
+                R8_key: registers?.R8 ? "R8" : undefined,
+                R8_value: registers?.R8,
+                R9_key: registers?.R9 ? "R9" : undefined,
+                R9_value: registers?.R9
+              })
+            );
+          }
+        }
 
-      return query;
-    });
+        if (minHeight) {
+          query = query.andWhere(`${this.alias}.settlement_height >= :minHeight`, { minHeight });
+        }
+
+        if (maxHeight) {
+          query = query.andWhere(`${this.alias}.settlement_height <= :maxHeight`, { maxHeight });
+        }
+
+        if (options.where?.boxId && boxIds) {
+          boxIds.push(options.where.boxId);
+          delete options.where.boxId;
+        }
+
+        if (boxIds && boxIds.length > 0) {
+          query = query.andWhere(`${this.alias}.box_id IN (:...boxIds)`, { boxIds });
+        }
+
+        return query;
+      },
+      (selectQuery) => {
+        return selectQuery.andWhere(`${this.alias}.mainChain = true`);
+      }
+    );
   }
 
   public async sum(options: {

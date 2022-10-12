@@ -78,6 +78,8 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
         return filterQuery;
       },
       (selectQuery) => {
+        selectQuery.andWhere(`${this.alias}.mainChain = true`);
+
         if (
           ergoTrees.length > 0 &&
           getArgumentValue(options.resolverInfo, "outputs", "relevantOnly") === true
