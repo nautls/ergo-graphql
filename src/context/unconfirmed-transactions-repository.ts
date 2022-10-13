@@ -1,4 +1,4 @@
-import { Address } from "@nautilus-js/fleet";
+import { ErgoAddress } from "@fleet-sdk/core";
 import {
   UnconfirmedBoxEntity,
   UnconfirmedInputEntity,
@@ -23,11 +23,11 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
   ): Promise<UnconfirmedTransactionEntity[]> {
     const { address, addresses, transactionIds } = options;
     const ergoTrees = addresses
-      ? addresses.map((address) => Address.fromBase58(address).ergoTree)
+      ? addresses.map((address) => ErgoAddress.fromBase58(address).ergoTree)
       : [];
     return this.findBase(options, (filterQuery) => {
       if (address) {
-        ergoTrees.push(Address.fromBase58(address).ergoTree);
+        ergoTrees.push(ErgoAddress.fromBase58(address).ergoTree);
       }
 
       if (ergoTrees.length > 0) {

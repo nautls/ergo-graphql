@@ -1,4 +1,4 @@
-import { Address } from "@nautilus-js/fleet";
+import { ErgoAddress } from "@fleet-sdk/core";
 import { isEmpty, unionBy } from "lodash";
 import { AssetEntity, BoxEntity, HeaderEntity, InputEntity, TokenEntity } from "../entities";
 import { removeUndefined } from "../utils";
@@ -44,13 +44,13 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
     }
 
     if (options.where?.address) {
-      ergoTrees.push(Address.fromBase58(options.where.address).ergoTree);
+      ergoTrees.push(ErgoAddress.fromBase58(options.where.address).ergoTree);
       delete options.where.address;
     }
 
     if (addresses) {
       for (const address of addresses) {
-        ergoTrees.push(Address.fromBase58(address).ergoTree);
+        ergoTrees.push(ErgoAddress.fromBase58(address).ergoTree);
       }
     }
 
@@ -147,7 +147,9 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       .groupBy("box.address")
       .setParameters(
         removeUndefined({
-          ergoTrees: options.where.addresses.map((address) => Address.fromBase58(address).ergoTree)
+          ergoTrees: options.where.addresses.map(
+            (address) => ErgoAddress.fromBase58(address).ergoTree
+          )
         })
       );
 
@@ -215,7 +217,9 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
     return baseQuery
       .setParameters(
         removeUndefined({
-          ergoTrees: options.where.addresses.map((address) => Address.fromBase58(address).ergoTree)
+          ergoTrees: options.where.addresses.map(
+            (address) => ErgoAddress.fromBase58(address).ergoTree
+          )
         })
       )
       .getRawMany();
