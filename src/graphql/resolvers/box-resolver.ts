@@ -43,17 +43,21 @@ class BoxesQueryArgs {
 
     const indexFields = [
       o.boxId,
-      o.boxIds,
       o.transactionId,
       o.headerId,
       o.address,
-      o.addresses,
       o.ergoTree,
-      o.ergoTrees,
       o.ergoTreeTemplateHash
     ];
     const definedCount = indexFields.filter((el) => isDefined(el)).length;
-    return !(definedCount > 0);
+    const arrayIndexFields = [o.boxIds, o.addresses, o.ergoTrees];
+    const arraysLength = arrayIndexFields.filter((el) => {
+      if (isDefined(el) && el) {
+        return el.length > 0;
+      }
+      return false;
+    }).length;
+    return !(definedCount > 0 || arraysLength > 0);
   })
   @IsEmpty({
     message:
