@@ -27,7 +27,7 @@ class TokensQueryArgs {
 
     return false;
   })
-  @IsEmpty({ message: "Number of stars in wildcard can't exceed 2." })
+  @IsEmpty({ message: "Number of wildcard chars can't exceed 2." })
   @Field(() => String, { nullable: true })
   name?: string;
 }
