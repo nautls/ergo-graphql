@@ -30,7 +30,11 @@ export class TokenRepository extends BaseRepository<TokenEntity> {
 
       if (name) {
         const nameLike = name.replace(/\*/g, "%");
-        filterQuery = filterQuery.andWhere(`${this.alias}.name LIKE :nameLike`, { nameLike });
+        if (nameLike !== name) {
+          filterQuery = filterQuery.andWhere(`${this.alias}.name LIKE :nameLike`, { nameLike });
+        } else {
+          filterQuery = filterQuery.andWhere(`${this.alias}.name = :name`, { name });
+        }
       }
 
       return filterQuery;
