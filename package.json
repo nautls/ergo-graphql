@@ -38,7 +38,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@fleet-sdk/core": "^0.1.0-alpha.1",
+    "@fleet-sdk/core": "^0.1.0-alpha.11",
     "@mando75/typeorm-graphql-loader": "^1.7.5",
     "apollo-server": "^3.9.0",
     "apollo-server-cache-redis": "^3.3.1",
