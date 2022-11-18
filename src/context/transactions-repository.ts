@@ -1,4 +1,4 @@
-import { Address } from "@nautilus-js/fleet";
+import { ErgoAddress } from "@fleet-sdk/core";
 import { MINER_FEE_ERGO_TREE } from "../consts";
 import { BoxEntity, InputEntity, TransactionEntity } from "../entities";
 import { getArgumentValue } from "../graphql/resolvers/utils";
@@ -25,14 +25,14 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
   public override async find(options: TransactionFindOptions): Promise<TransactionEntity[]> {
     const { minHeight, maxHeight, address, addresses, transactionIds } = options;
     const ergoTrees = addresses
-      ? addresses.map((address) => Address.fromBase58(address).ergoTree)
+      ? addresses.map((address) => ErgoAddress.fromBase58(address).ergoTree)
       : [];
 
     return this.findBase(
       options,
       (filterQuery) => {
         if (address) {
-          ergoTrees.push(Address.fromBase58(address).ergoTree);
+          ergoTrees.push(ErgoAddress.fromBase58(address).ergoTree);
         }
         if (ergoTrees.length > 0) {
           const inputQuery = this.createInputQuery(maxHeight);
@@ -78,6 +78,8 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
         return filterQuery;
       },
       (selectQuery) => {
+        selectQuery.andWhere(`${this.alias}.mainChain = true`);
+
         if (
           ergoTrees.length > 0 &&
           getArgumentValue(options.resolverInfo, "outputs", "relevantOnly") === true
@@ -103,9 +105,9 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
     );
   }
 
-  public async count(options: { where: { address: string; maxHeight?: number } }): Promise<number> {
-    const inputsQuery = this.createInputQuery(options.where.maxHeight);
-    const outputsQuery = this.createOutputQuery(options.where.maxHeight);
+  public async count(options: { where: { address: string } }): Promise<number> {
+    const inputsQuery = this.createInputQuery();
+    const outputsQuery = this.createOutputQuery();
 
     const { count } = await this.repository
       .createQueryBuilder(this.alias)
@@ -118,8 +120,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       .where(`${this.alias}.mainChain = true`)
       .setParameters(
         removeUndefined({
-          ergoTree: Address.fromBase58(options.where.address).ergoTree,
-          height: options.where.maxHeight
+          ergoTrees: [ErgoAddress.fromBase58(options.where.address).ergoTree]
         })
       )
       .getRawOne();
