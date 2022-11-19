@@ -1,5 +1,6 @@
 import { ErgoAddress } from "@fleet-sdk/core";
 import {
+  BoxEntity,
   UnconfirmedBoxEntity,
   UnconfirmedInputEntity,
   UnconfirmedTransactionEntity
@@ -25,7 +26,7 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
     const ergoTrees = addresses
       ? addresses.map((address) => ErgoAddress.fromBase58(address).ergoTree)
       : [];
-    return this.findBase(options, (filterQuery) => {
+    const records = await this.findBase(options, (filterQuery) => {
       if (address) {
         ergoTrees.push(ErgoAddress.fromBase58(address).ergoTree);
       }
@@ -66,6 +67,32 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
 
       return filterQuery;
     });
+
+    const u_box_ids: string[] = [];
+    records.forEach((record) => {
+      record.inputs.forEach((input) => {
+        if (input.box === null) u_box_ids.push(input.boxId);
+      });
+    });
+    const u_boxes = await this.dataSource
+      .getRepository(UnconfirmedBoxEntity)
+      .createQueryBuilder("box")
+      .where("box.boxId IN (:...u_box_ids)", { u_box_ids })
+      .getMany();
+
+    const u_boxes_map = new Map<string, UnconfirmedBoxEntity>();
+    u_boxes.forEach((box) => u_boxes_map.set(box.boxId, box));
+    records.map((record) => {
+      const inputs = record.inputs.map((input) => {
+        if (input.box === null) {
+          input.box = u_boxes_map.get(input.boxId) as BoxEntity;
+        }
+        return input;
+      });
+      record.inputs = inputs;
+      return records;
+    });
+    return records;
   }
 
   public async count(): Promise<number> {
