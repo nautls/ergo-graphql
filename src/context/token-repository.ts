@@ -29,11 +29,14 @@ export class TokenRepository extends BaseRepository<TokenEntity> {
       }
 
       if (name) {
-        const nameLike = name.replace(/\*/g, "%");
-        if (nameLike !== name) {
-          filterQuery = filterQuery.andWhere(`${this.alias}.name LIKE :nameLike`, { nameLike });
+        if (name.indexOf("*") !== -1) {
+          filterQuery = filterQuery.andWhere(`${this.alias}.name LIKE :name`, {
+            name: name.replace("*", "%").replace("*", "%")
+          });
         } else {
-          filterQuery = filterQuery.andWhere(`${this.alias}.name = :name`, { name });
+          filterQuery = filterQuery.andWhere(`${this.alias}.name = :name`, {
+            name
+          });
         }
       }
 
