@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from "graphql";
+import { GraphQLResolveInfo, GraphQLError } from "graphql";
 import { Args, ArgsType, Ctx, Field, Info, InputType, Query, Resolver, Int } from "type-graphql";
 import { Box } from "../objects";
 import { removeUndefined } from "../../utils";
@@ -43,17 +43,21 @@ class BoxesQueryArgs {
 
     const indexFields = [
       o.boxId,
-      o.boxIds,
       o.transactionId,
       o.headerId,
       o.address,
-      o.addresses,
       o.ergoTree,
-      o.ergoTrees,
       o.ergoTreeTemplateHash
     ];
     const definedCount = indexFields.filter((el) => isDefined(el)).length;
-    return !(definedCount > 0);
+    const arrayIndexFields = [o.boxIds, o.addresses, o.ergoTrees];
+    const arraysLength = arrayIndexFields.filter((el) => {
+      if (isDefined(el) && el) {
+        return el.length > 0;
+      }
+      return false;
+    }).length;
+    return !(definedCount > 0 || arraysLength > 0);
   })
   @IsEmpty({
     message:
@@ -125,6 +129,39 @@ export class BoxResolver {
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
+    const arrayArguments = [addresses, boxIds, ergoTrees];
+    let arrayArgumentsLength = 0;
+    for (const arg of arrayArguments) {
+      if (arg) {
+        arrayArgumentsLength += arg.length;
+      }
+    }
+
+    const literalArguments = removeUndefined({
+      address,
+      boxId,
+      transactionId,
+      headerId,
+      ergoTree,
+      ergoTreeTemplateHash,
+      tokenId,
+      spent,
+      minHeight,
+      maxHeight
+    });
+    const literalArgumentsLength = Object.keys(literalArguments).length;
+
+    let definedRegistersLength = 0;
+    if (registers) {
+      const definedRegisters = removeUndefined({ ...registers });
+      definedRegistersLength = Object.keys(definedRegisters).length;
+    }
+
+    const argsLength = arrayArgumentsLength + literalArgumentsLength + definedRegistersLength;
+    if (argsLength < 1) {
+      throw new GraphQLError("At least one argument is required for box query.");
+    }
+
     const boxes = await context.repository.boxes.find({
       resolverInfo: info,
       where: removeUndefined({
