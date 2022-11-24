@@ -68,24 +68,24 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
       return filterQuery;
     });
 
-    const u_box_ids: string[] = [];
+    const unconfirmedBoxIds: string[] = [];
     records.forEach((record) => {
       record.inputs.forEach((input) => {
-        if (input.box === null) u_box_ids.push(input.boxId);
+        if (input.box === null) unconfirmedBoxIds.push(input.boxId);
       });
     });
-    const u_boxes = await this.dataSource
+    const unconfimedBoxes = await this.dataSource
       .getRepository(UnconfirmedBoxEntity)
       .createQueryBuilder("box")
-      .where("box.boxId IN (:...u_box_ids)", { u_box_ids })
+      .where("box.boxId IN (:...unconfirmedBoxIds)", { unconfirmedBoxIds })
       .getMany();
 
-    const u_boxes_map = new Map<string, UnconfirmedBoxEntity>();
-    u_boxes.forEach((box) => u_boxes_map.set(box.boxId, box));
+    const unconfimedBoxesMap = new Map<string, UnconfirmedBoxEntity>();
+    unconfimedBoxes.forEach((box) => unconfimedBoxesMap.set(box.boxId, box));
     records.map((record) => {
       const inputs = record.inputs.map((input) => {
         if (input.box === null) {
-          input.box = u_boxes_map.get(input.boxId) as BoxEntity;
+          input.box = unconfimedBoxesMap.get(input.boxId) as BoxEntity;
         }
         return input;
       });
