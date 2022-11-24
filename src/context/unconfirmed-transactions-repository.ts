@@ -70,28 +70,34 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
 
     const unconfirmedBoxIds: string[] = [];
     records.forEach((record) => {
-      record.inputs.forEach((input) => {
-        if (input.box === null) unconfirmedBoxIds.push(input.boxId);
-      });
+      if (record.inputs) {
+        record.inputs.forEach((input) => {
+          if (input.box === null) unconfirmedBoxIds.push(input.boxId);
+        });
+      }
     });
-    const unconfimedBoxes = await this.dataSource
-      .getRepository(UnconfirmedBoxEntity)
-      .createQueryBuilder("box")
-      .where("box.boxId IN (:...unconfirmedBoxIds)", { unconfirmedBoxIds })
-      .getMany();
+    if (unconfirmedBoxIds.length > 0) {
+      const unconfimedBoxes = await this.dataSource
+        .getRepository(UnconfirmedBoxEntity)
+        .createQueryBuilder("box")
+        .where("box.boxId IN (:...unconfirmedBoxIds)", { unconfirmedBoxIds })
+        .getMany();
 
-    const unconfimedBoxesMap = new Map<string, UnconfirmedBoxEntity>();
-    unconfimedBoxes.forEach((box) => unconfimedBoxesMap.set(box.boxId, box));
-    records.map((record) => {
-      const inputs = record.inputs.map((input) => {
-        if (input.box === null) {
-          input.box = unconfimedBoxesMap.get(input.boxId) as BoxEntity;
-        }
-        return input;
+      const unconfimedBoxesMap = new Map<string, UnconfirmedBoxEntity>();
+      unconfimedBoxes.forEach((box) => unconfimedBoxesMap.set(box.boxId, box));
+      console.log(unconfimedBoxesMap);
+      records.map((record) => {
+        const inputs = record.inputs.map((input) => {
+          if (input.box === null) {
+            input.box = unconfimedBoxesMap.get(input.boxId) as BoxEntity;
+          }
+          return input;
+        });
+        record.inputs = inputs;
+        return records;
       });
-      record.inputs = inputs;
-      return records;
-    });
+    }
+
     return records;
   }
 
