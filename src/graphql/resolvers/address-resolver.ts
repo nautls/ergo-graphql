@@ -70,8 +70,7 @@ export class AddressResolver {
   ) {
     return await context.repository.transactions.count({
       where: {
-        address: root.address,
-        maxHeight: context.args.height
+        address: root.address
       }
     });
   }

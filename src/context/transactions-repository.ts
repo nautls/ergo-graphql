@@ -105,9 +105,9 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
     );
   }
 
-  public async count(options: { where: { address: string; maxHeight?: number } }): Promise<number> {
-    const inputsQuery = this.createInputQuery(options.where.maxHeight);
-    const outputsQuery = this.createOutputQuery(options.where.maxHeight);
+  public async count(options: { where: { address: string } }): Promise<number> {
+    const inputsQuery = this.createInputQuery();
+    const outputsQuery = this.createOutputQuery();
 
     const { count } = await this.repository
       .createQueryBuilder(this.alias)
@@ -120,8 +120,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       .where(`${this.alias}.mainChain = true`)
       .setParameters(
         removeUndefined({
-          ergoTree: ErgoAddress.fromBase58(options.where.address).ergoTree,
-          height: options.where.maxHeight
+          ergoTrees: [ErgoAddress.fromBase58(options.where.address).ergoTree]
         })
       )
       .getRawOne();
