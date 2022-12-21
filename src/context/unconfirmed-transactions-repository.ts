@@ -5,6 +5,7 @@ import {
   UnconfirmedInputEntity,
   UnconfirmedTransactionEntity
 } from "../entities";
+import { Box } from "../graphql";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
 
@@ -85,10 +86,10 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
 
       const unconfimedBoxesMap = new Map<string, UnconfirmedBoxEntity>();
       unconfimedBoxes.forEach((box) => unconfimedBoxesMap.set(box.boxId, box));
-      console.log(unconfimedBoxesMap);
+
       records.map((record) => {
         const inputs = record.inputs.map((input) => {
-          if (input.box === null) {
+          if (input.box === null && unconfimedBoxesMap.get(input.boxId)) {
             input.box = unconfimedBoxesMap.get(input.boxId) as BoxEntity;
           }
           return input;
