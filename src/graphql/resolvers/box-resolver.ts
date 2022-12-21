@@ -75,8 +75,18 @@ class BoxesQueryArgs {
   @Field(() => Boolean, { nullable: true })
   spent?: boolean;
 
+  @ValidateIf((o: BoxesQueryArgs) => {
+    return o.containsTokens !== undefined && o.containsTokens.length > 0;
+  })
+  @IsEmpty({
+    message: "'tokenId' filter can not be used in combination with 'containsTokens' filter."
+  })
   @Field(() => String, { nullable: true })
   tokenId?: string;
+
+  @Field(() => [String], { nullable: true })
+  @ArrayMaxSize(5)
+  containsTokens?: string[];
 
   /** @deprecated */
   @Field(() => String, { nullable: true })
@@ -120,6 +130,7 @@ export class BoxResolver {
       ergoTrees,
       ergoTreeTemplateHash,
       tokenId,
+      containsTokens,
       spent,
       registers,
       minHeight,
@@ -129,7 +140,7 @@ export class BoxResolver {
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
-    const arrayArguments = [addresses, boxIds, ergoTrees];
+    const arrayArguments = [addresses, boxIds, ergoTrees, containsTokens];
     let arrayArgumentsLength = 0;
     for (const arg of arrayArguments) {
       if (arg) {
@@ -176,6 +187,7 @@ export class BoxResolver {
       addresses,
       ergoTrees,
       tokenId,
+      containsTokens,
       registers,
       minHeight,
       maxHeight,

@@ -19,6 +19,7 @@ type BoxFindOptions = FindManyParams<BoxEntity> & {
   ergoTrees?: string[];
   spent?: boolean;
   tokenId?: string;
+  containsTokens?: string[];
   registers?: Registers;
   minHeight?: number;
   maxHeight?: number;
@@ -34,7 +35,8 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
   }
 
   public override find(options: BoxFindOptions): Promise<BoxEntity[]> {
-    const { spent, tokenId, registers, minHeight, maxHeight, addresses, boxIds } = options;
+    const { spent, tokenId, registers, minHeight, maxHeight, addresses, boxIds, containsTokens } =
+      options;
 
     const ergoTrees: string[] = options.ergoTrees ? options.ergoTrees : [];
 
@@ -77,6 +79,12 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
           query = query
             .leftJoin("box.assets", "asset", "asset.boxId = box.boxId")
             .andWhere("asset.tokenId = :tokenId", { tokenId });
+        }
+
+        if (containsTokens && containsTokens.length > 0) {
+          query = query
+            .leftJoin("box.assets", "asset", "asset.boxId = box.boxId")
+            .andWhere("asset.tokenId IN (:...containsTokens)", { containsTokens });
         }
 
         if (registers && !isEmpty(registers)) {
