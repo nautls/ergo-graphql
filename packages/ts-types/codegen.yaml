@@ -7,6 +7,6 @@ generates:
       - typescript-operations
       - typed-document-node
     config:
-      defaultScalarType: unknown
+      defaultScalarType: any
       scalars:
-        JSONObject: unknown
+        JSONObject: any
