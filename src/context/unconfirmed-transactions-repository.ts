@@ -5,7 +5,6 @@ import {
   UnconfirmedInputEntity,
   UnconfirmedTransactionEntity
 } from "../entities";
-import { Box } from "../graphql";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
 
