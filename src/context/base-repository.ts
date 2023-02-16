@@ -57,14 +57,14 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
     return this.firstBase(options);
   }
 
-  private _hasJoinWithManyRows(query: SelectQueryBuilder<unknown>) {
+  private _hasJoinWithManyRows(query: SelectQueryBuilder<any>) {
     return (
       !isEmpty(query.expressionMap.joinAttributes) &&
       query.expressionMap.joinAttributes.find((j) => !j.relation || !j.relation.isOneToOne)
     );
   }
 
-  private _isColumnSelected(query: SelectQueryBuilder<unknown>, columnName: string) {
+  private _isColumnSelected(query: SelectQueryBuilder<any>, columnName: string) {
     return (
       query.expressionMap.selects.findIndex(
         (s) => s.selection.endsWith(columnName) || s.aliasName === columnName
@@ -165,7 +165,7 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
   }
 
   private _setDefaultOrder(
-    query: SelectQueryBuilder<T | unknown>,
+    query: SelectQueryBuilder<any>,
     alias: string,
     options: { wrap: boolean } = { wrap: false }
   ) {

@@ -1,0 +1,11 @@
+{
+  "root": true,
+  "env": {
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "ignorePatterns": ["node_modules", "dist", "coverage", "jest.config.ts"],
+
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"]
+}
