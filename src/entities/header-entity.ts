@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryColumn, OneToOne, JoinColumn, BaseEntity } from 
 import { ExtensionEntity } from "./extension-entity";
 import { AdProofEntity } from "./ad-proof-entity";
 import { BlockInfoEntity } from "./block-info-entity";
-import { ConfigureLoader } from "@mando75/typeorm-graphql-loader";
+import { ConfigureLoader } from "@ergo-graphql/typeorm-graphql-loader";
 
 /*
   Schema

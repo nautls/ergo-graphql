@@ -59,9 +59,9 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
       (query) => {
         if (spent !== undefined && spent !== null) {
           query = query.leftJoin(
-            "box.spentBy",
+            `${this.alias}.spentBy`,
             "input",
-            "input.boxId = box.boxId AND input.mainChain = true"
+            `input.boxId = ${this.alias}.boxId AND input.mainChain = true`
           );
 
           query = spent
@@ -70,17 +70,17 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
         }
 
         if (ergoTrees.length > 0) {
-          query = query.andWhere("box.ergoTree IN (:...ergoTrees)", { ergoTrees });
+          query = query.andWhere(`${this.alias}.ergoTree IN (:...ergoTrees)`, { ergoTrees });
         }
 
         if (tokenId) {
           query = query
-            .leftJoin("box.assets", "asset", "asset.boxId = box.boxId")
+            .leftJoin(`${this.alias}.assets`, "asset", `asset.boxId = ${this.alias}.boxId`)
             .andWhere("asset.tokenId = :tokenId", { tokenId });
         }
 
         if (registers && !isEmpty(registers)) {
-          query = query.leftJoin("box.registers", "rx", "box.boxId = rx.boxId");
+          query = query.leftJoin(`${this.alias}.registers`, "rx", `${this.alias}.boxId = rx.boxId`);
           for (const key in registers) {
             const value = registers[key as keyof Registers];
             if (!value) {
@@ -138,7 +138,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
     include: { nanoErgs: boolean; assets: boolean };
   }) {
     const baseQuery = this.repository
-      .createQueryBuilder("box")
+      .createQueryBuilder(this.alias)
       .select("box.address", "address")
       .leftJoin(InputEntity, "input", "box.boxId = input.boxId AND input.mainChain = true")
       .where("box.mainChain = true")

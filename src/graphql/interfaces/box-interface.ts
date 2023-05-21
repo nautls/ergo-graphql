@@ -1,7 +1,7 @@
 import { Field, InterfaceType } from "type-graphql";
 import { Registers } from "../../entities";
 import { GraphQLJSONObject } from "graphql-type-json";
-import { ConfigureLoader } from "@mando75/typeorm-graphql-loader";
+import { ConfigureLoader } from "@ergo-graphql/typeorm-graphql-loader";
 import { Register } from "../../entities/base-types/box-entity-base";
 
 @InterfaceType()

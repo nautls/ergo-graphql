@@ -4,7 +4,7 @@ import { BaseEntity, DataSource, EntityTarget, Repository, SelectQueryBuilder } 
 import GraphQLDatabaseLoader, {
   EjectQueryCallback,
   GraphQLQueryBuilder
-} from "@mando75/typeorm-graphql-loader";
+} from "@ergo-graphql/typeorm-graphql-loader";
 import { FindManyParams, FindOneParams, IRepository } from "./repository-interface";
 import { isEmpty } from "lodash";
 

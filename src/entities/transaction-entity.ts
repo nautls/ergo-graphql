@@ -3,7 +3,7 @@ import { BoxEntity } from "./box-entity";
 import { DataInputEntity } from "./data-input-entity";
 import { InputEntity } from "./input-entity";
 import { TransactionEntityBase } from "./base-types/transaction-entity-base";
-import { ConfigureLoader } from "@mando75/typeorm-graphql-loader";
+import { ConfigureLoader } from "@ergo-graphql/typeorm-graphql-loader";
 
 /*
   Schema

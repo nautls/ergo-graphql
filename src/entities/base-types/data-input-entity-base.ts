@@ -1,4 +1,4 @@
-import { ConfigureLoader } from "@mando75/typeorm-graphql-loader";
+import { ConfigureLoader } from "@ergo-graphql/typeorm-graphql-loader";
 import { BaseEntity, Column, PrimaryColumn } from "typeorm";
 
 export abstract class DataInputEntityBase extends BaseEntity {

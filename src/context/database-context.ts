@@ -1,4 +1,4 @@
-import GraphQLDatabaseLoader from "@mando75/typeorm-graphql-loader";
+import GraphQLDatabaseLoader from "@ergo-graphql/typeorm-graphql-loader";
 import { DataSource } from "typeorm";
 import { DataInputEntity, InputEntity } from "../entities";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
@@ -30,7 +30,7 @@ export class DatabaseContext {
   constructor(dataSource: DataSource) {
     const context: RepositoryDataContext = {
       dataSource,
-      graphQLDataLoader: new GraphQLDatabaseLoader(dataSource)
+      graphQLDataLoader: new GraphQLDatabaseLoader(dataSource, { disableCache: true })
     };
 
     this.transactions = new TransactionRepository(context);
