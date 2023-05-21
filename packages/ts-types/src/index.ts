@@ -243,9 +243,12 @@ export type MempoolAddressesArgs = {
 
 export type MempoolBoxesArgs = {
   address?: InputMaybe<Scalars['String']>;
+  addresses?: InputMaybe<Array<Scalars['String']>>;
   boxId?: InputMaybe<Scalars['String']>;
+  boxIds?: InputMaybe<Array<Scalars['String']>>;
   ergoTree?: InputMaybe<Scalars['String']>;
   ergoTreeTemplateHash?: InputMaybe<Scalars['String']>;
+  ergoTrees?: InputMaybe<Array<Scalars['String']>>;
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
   tokenId?: InputMaybe<Scalars['String']>;
