@@ -74,6 +74,10 @@ class UnconfirmedBoxArguments {
 
   @Field(() => String, { nullable: true })
   tokenId?: string;
+
+  @Field(() => [String], { nullable: true })
+  @ArrayMaxSize(20)
+  boxIds?: string[];
 }
 
 @ArgsType()
@@ -134,6 +138,7 @@ export class MempoolResolver {
     @Args({ validate: true })
     {
       boxId,
+      boxIds,
       transactionId,
       address,
       addresses,
@@ -149,6 +154,7 @@ export class MempoolResolver {
     return context.repository.unconfirmedBoxes.find({
       resolverInfo: info,
       where: removeUndefined({ boxId, transactionId, address, ergoTree, ergoTreeTemplateHash }),
+      boxIds,
       tokenId,
       addresses,
       ergoTrees,

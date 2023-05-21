@@ -13,7 +13,7 @@ type UnconfirmedBoxFindOptions = FindManyParams<UnconfirmedBoxEntity> & {
   tokenId?: string;
   addresses?: string[];
   ergoTrees?: string[];
-  // boxIds: string[];
+  boxIds?: string[];
 };
 
 export class UnconfirmedBoxRepository extends BaseRepository<UnconfirmedBoxEntity> {
@@ -42,11 +42,26 @@ export class UnconfirmedBoxRepository extends BaseRepository<UnconfirmedBoxEntit
       }
     }
 
+    if (options.where?.boxId) {
+      if (!options.boxIds) {
+        options.boxIds = [];
+      }
+
+      options.boxIds.push(options.where.boxId);
+      delete options.where.boxId;
+    }
+
     return this.findBase(options, (query) => {
       if (tokenId) {
         query = query
           .leftJoin("box.assets", "asset", "asset.boxId = box.boxId")
           .andWhere("asset.tokenId = :tokenId", { tokenId });
+      }
+
+      if (options.boxIds && options.boxIds.length > 0) {
+        query = query.andWhere(`${this.alias}.box_id IN (:...boxIds)`, {
+          boxIds: options.boxIds
+        });
       }
 
       if (ergoTrees.length > 0) {
