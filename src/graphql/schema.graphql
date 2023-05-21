@@ -203,7 +203,7 @@ scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publicati
 
 type Mempool {
   addresses(addresses: [String!]!): [UnconfirmedAddress!]!
-  boxes(address: String, boxId: String, ergoTree: String, ergoTreeTemplateHash: String, skip: Int = 0, take: Int = 50, tokenId: String, transactionId: String): [UnconfirmedBox!]!
+  boxes(address: String, addresses: [String!], boxId: String, ergoTree: String, ergoTreeTemplateHash: String, ergoTrees: [String!], skip: Int = 0, take: Int = 50, tokenId: String, transactionId: String): [UnconfirmedBox!]!
   inputs(boxId: String, skip: Int = 0, take: Int = 50, transactionId: String): [UnconfirmedInput!]!
   size: Int!
   transactions(address: String, addresses: [String!], skip: Int = 0, take: Int = 50, transactionId: String, transactionIds: [String!]): [UnconfirmedTransaction!]!

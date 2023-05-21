@@ -56,10 +56,18 @@ class UnconfirmedBoxArguments {
   @Field(() => String, { nullable: true })
   address?: string;
 
+  @Field(() => [String], { nullable: true })
+  @ArrayMaxSize(20)
+  addresses?: string[];
+
   @ValidateIf((o: UnconfirmedBoxArguments) => isDefined(o.address))
   @IsEmpty({ message: REDUNDANT_QUERY_MESSAGE })
   @Field(() => String, { nullable: true })
   ergoTree?: string;
+
+  @Field(() => [String], { nullable: true })
+  @ArrayMaxSize(20)
+  ergoTrees?: string[];
 
   @Field(() => String, { nullable: true })
   ergoTreeTemplateHash?: string;
@@ -128,7 +136,9 @@ export class MempoolResolver {
       boxId,
       transactionId,
       address,
+      addresses,
       ergoTree,
+      ergoTrees,
       ergoTreeTemplateHash,
       tokenId
     }: UnconfirmedBoxArguments,
@@ -140,6 +150,8 @@ export class MempoolResolver {
       resolverInfo: info,
       where: removeUndefined({ boxId, transactionId, address, ergoTree, ergoTreeTemplateHash }),
       tokenId,
+      addresses,
+      ergoTrees,
       skip,
       take
     });
