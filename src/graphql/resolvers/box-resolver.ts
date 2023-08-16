@@ -17,12 +17,24 @@ import { isFieldSelected } from "./utils";
 import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
 import { ValidateIf, IsEmpty, isDefined, ArrayMaxSize } from "class-validator";
-import { HeightFilterType } from "../../context/box-repository";
+import { HeightFilterType, OrderDirection, OrderFields } from "../../context/box-repository";
 
 registerEnumType(HeightFilterType, {
   name: "HeightFilterType",
   description: "The type of height that boxes must be filtered on."
 });
+
+registerEnumType(OrderFields, { name: "OrderFields" });
+registerEnumType(OrderDirection, { name: "OrderDirection" });
+
+@InputType()
+class OrderByParams {
+  @Field(() => OrderFields, { nullable: true, defaultValue: OrderFields.globalIndex })
+  column?: OrderFields;
+
+  @Field(() => OrderDirection, { nullable: true, defaultValue: OrderDirection.desc })
+  direction?: OrderDirection;
+}
 
 @InputType()
 class Registers {
@@ -122,6 +134,9 @@ class BoxesQueryArgs {
 
   @Field(() => HeightFilterType, { nullable: true, defaultValue: HeightFilterType.settlement })
   heightType?: HeightFilterType;
+
+  @Field(() => OrderByParams, { nullable: true })
+  orderBy?: OrderByParams;
 }
 
 @Resolver(Box)
@@ -144,7 +159,8 @@ export class BoxResolver {
       registers,
       minHeight,
       maxHeight,
-      heightType
+      heightType,
+      orderBy
     }: BoxesQueryArgs,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
@@ -168,8 +184,7 @@ export class BoxResolver {
       tokenId,
       spent,
       minHeight,
-      maxHeight,
-      heightType
+      maxHeight
     });
     const literalArgumentsLength = Object.keys(literalArguments).length;
 
@@ -182,6 +197,18 @@ export class BoxResolver {
     const argsLength = arrayArgumentsLength + literalArgumentsLength + definedRegistersLength;
     if (argsLength < 1) {
       throw new GraphQLError("At least one argument is required for box query.");
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let order: any = orderBy ? {} : undefined;
+    if (order && orderBy?.column) {
+      if (orderBy.column === OrderFields.none) {
+        order = "none";
+      } else {
+        order[orderBy.column] = orderBy?.direction?.toUpperCase() ?? "DESC";
+      }
+    } else {
+      order = undefined;
     }
 
     const boxes = await context.repository.boxes.find({
@@ -204,7 +231,8 @@ export class BoxResolver {
       boxIds,
       heightType,
       skip,
-      take
+      take,
+      orderBy: order
     });
 
     const resultBoxIds = boxes.map((box) => box.boxId);
