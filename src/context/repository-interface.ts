@@ -1,6 +1,8 @@
 import { GraphQLResolveInfo } from "graphql";
 import { BaseEntity } from "typeorm";
 
+export type OrderBy<T> = Partial<Record<keyof T, "ASC" | "DESC">> | "none";
+
 export type FindOneParams<T> = {
   where?: Partial<T>;
   resolverInfo: GraphQLResolveInfo;
@@ -9,6 +11,7 @@ export type FindOneParams<T> = {
 export type FindManyParams<T> = FindOneParams<T> & {
   take?: number;
   skip?: number;
+  orderBy?: OrderBy<T>;
 };
 
 export interface IRepository<T extends BaseEntity> {

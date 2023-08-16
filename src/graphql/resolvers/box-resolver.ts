@@ -1,11 +1,28 @@
 import { GraphQLResolveInfo, GraphQLError } from "graphql";
-import { Args, ArgsType, Ctx, Field, Info, InputType, Query, Resolver, Int } from "type-graphql";
+import {
+  Args,
+  ArgsType,
+  Ctx,
+  Field,
+  Info,
+  InputType,
+  Query,
+  Resolver,
+  Int,
+  registerEnumType
+} from "type-graphql";
 import { Box } from "../objects";
 import { removeUndefined } from "../../utils";
 import { isFieldSelected } from "./utils";
 import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
 import { ValidateIf, IsEmpty, isDefined, ArrayMaxSize } from "class-validator";
+import { HeightFilterType } from "../../context/box-repository";
+
+registerEnumType(HeightFilterType, {
+  name: "HeightFilterType",
+  description: "The type of height that boxes must be filtered on."
+});
 
 @InputType()
 class Registers {
@@ -102,6 +119,9 @@ class BoxesQueryArgs {
 
   @Field(() => Int, { nullable: true })
   maxHeight?: number;
+
+  @Field(() => HeightFilterType, { nullable: true, defaultValue: HeightFilterType.settlement })
+  heightType?: HeightFilterType;
 }
 
 @Resolver(Box)
@@ -123,7 +143,8 @@ export class BoxResolver {
       spent,
       registers,
       minHeight,
-      maxHeight
+      maxHeight,
+      heightType
     }: BoxesQueryArgs,
     @Args({ validate: true }) { skip, take }: PaginationArguments,
     @Ctx() context: GraphQLContext,
@@ -147,7 +168,8 @@ export class BoxResolver {
       tokenId,
       spent,
       minHeight,
-      maxHeight
+      maxHeight,
+      heightType
     });
     const literalArgumentsLength = Object.keys(literalArguments).length;
 
@@ -180,6 +202,7 @@ export class BoxResolver {
       minHeight,
       maxHeight,
       boxIds,
+      heightType,
       skip,
       take
     });

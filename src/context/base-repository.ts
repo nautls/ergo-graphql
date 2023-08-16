@@ -5,7 +5,7 @@ import GraphQLDatabaseLoader, {
   EjectQueryCallback,
   GraphQLQueryBuilder
 } from "@ergo-graphql/typeorm-graphql-loader";
-import { FindManyParams, FindOneParams, IRepository } from "./repository-interface";
+import { FindManyParams, FindOneParams, IRepository, OrderBy } from "./repository-interface";
 import { isEmpty } from "lodash";
 
 export type RepositoryDataContext = {
@@ -22,8 +22,6 @@ export type RepositoryOptions<T> = {
   context: RepositoryDataContext;
   defaults?: RepositoryDefaults<T>;
 };
-
-type OrderBy<T> = Partial<Record<keyof T, "ASC" | "DESC">>;
 
 type QueryCallback<T extends BaseEntity> = (query: SelectQueryBuilder<T>) => SelectQueryBuilder<T>;
 
@@ -91,7 +89,10 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       baseQuery = baseQuery.select(`${this.alias}.${primaryCol}`, primaryCol);
     }
     baseQuery = this.addWhere(baseQuery, options.where);
-    baseQuery = this._selectOrderColumns(baseQuery, this.alias);
+    baseQuery = this._selectOrderColumns(baseQuery, this.alias, {
+      wrap: false,
+      orderBy: options.orderBy
+    });
 
     const limitQueryAlias = `l_${this.alias}`;
     let limitQuery = this.dataSource
@@ -103,9 +104,17 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
     if (this._hasJoinWithManyRows(baseQuery)) {
       limitQuery = limitQuery.select(`DISTINCT("${limitQueryAlias}"."${primaryCol}")`, primaryCol);
 
-      if (!isEmpty(this._defaults?.orderBy)) {
-        limitQuery = this._selectOrderColumns(limitQuery, limitQueryAlias, { wrap: true });
-        limitQuery = this._setDefaultOrder(limitQuery, limitQueryAlias, { wrap: true });
+      if (!isEmpty(this._defaults?.orderBy) || !isEmpty(options.orderBy)) {
+        limitQuery = this._selectOrderColumns(limitQuery, limitQueryAlias, {
+          wrap: true,
+          orderBy: options.orderBy
+        });
+
+        limitQuery = this._setOrder(limitQuery, limitQueryAlias, {
+          wrap: true,
+          orderBy: options.orderBy
+        });
+
         limitQuery = this.dataSource
           .createQueryBuilder()
           .select(`"ids"."${primaryCol}"`)
@@ -113,7 +122,10 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
       }
     } else {
       limitQuery = limitQuery.select(`"${limitQueryAlias}"."${primaryCol}"`, primaryCol);
-      limitQuery = this._setDefaultOrder(limitQuery, limitQueryAlias, { wrap: true });
+      limitQuery = this._setOrder(limitQuery, limitQueryAlias, {
+        wrap: true,
+        orderBy: options.orderBy
+      });
     }
 
     return this.createGraphQLQueryBuilder()
@@ -122,7 +134,7 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
         query
           .where(`${this.alias}.${primaryCol} IN (${limitQuery.getQuery()})`)
           .setParameters(baseQuery.getParameters());
-        query = this._setDefaultOrder(query, this.alias) as any;
+        query = this._setOrder(query, this.alias, { wrap: false, orderBy: options.orderBy }) as any;
 
         return selectCallback ? selectCallback(query) : query;
       })
@@ -164,36 +176,60 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
     return where;
   }
 
-  private _setDefaultOrder(
+  private _setOrder(
     query: SelectQueryBuilder<any>,
     alias: string,
-    options: { wrap: boolean } = { wrap: false }
+    options?: { wrap: boolean; orderBy?: OrderBy<T> }
   ) {
-    if (!this._defaults?.orderBy) {
+    if (isEmpty(options)) {
+      options = { wrap: false };
+    }
+
+    if (isEmpty(options.orderBy)) {
+      options.orderBy = this._defaults?.orderBy;
+    }
+
+    if (!options.orderBy || options.orderBy === "none") {
       return query;
     }
 
-    for (const key in this._defaults.orderBy) {
+    for (const key in options.orderBy) {
       query = query.addOrderBy(
         options.wrap ? `"${alias}"."${key}"` : `${alias}.${key}`,
-        this._defaults.orderBy[key]
+        options.orderBy[key]
       );
     }
+
     return query;
   }
 
   private _selectOrderColumns(
     query: SelectQueryBuilder<any>,
     alias: string,
-    options: { wrap: boolean } = { wrap: false }
+    options?: { wrap: boolean; orderBy?: OrderBy<T> }
   ) {
-    if (!this._defaults?.orderBy) {
+    if (isEmpty(options)) {
+      options = { wrap: false };
+    }
+
+    if (isEmpty(options.orderBy)) {
+      options.orderBy = this._defaults?.orderBy;
+    }
+
+    if (!options.orderBy || options.orderBy === "none") {
       return query;
     }
 
-    for (const key in this._defaults.orderBy) {
+    const primaryCol = this.repository.metadata.primaryColumns[0]?.propertyName;
+
+    for (const key in options.orderBy) {
+      if (key === primaryCol) {
+        continue;
+      }
+
       query = query.addSelect(options.wrap ? `"${alias}"."${key}"` : `${alias}.${key}`, key);
     }
+
     return query;
   }
 }

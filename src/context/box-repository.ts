@@ -4,6 +4,7 @@ import { AssetEntity, BoxEntity, HeaderEntity, InputEntity, TokenEntity } from "
 import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
+import { isDefined } from "class-validator";
 
 type Registers = {
   R4?: string;
@@ -14,6 +15,11 @@ type Registers = {
   R9?: string;
 };
 
+export enum HeightFilterType {
+  settlement = "settlement",
+  creation = "creation"
+}
+
 type BoxFindOptions = FindManyParams<BoxEntity> & {
   addresses?: string[];
   ergoTrees?: string[];
@@ -23,6 +29,7 @@ type BoxFindOptions = FindManyParams<BoxEntity> & {
   minHeight?: number;
   maxHeight?: number;
   boxIds?: string[];
+  heightType?: HeightFilterType;
 };
 
 export class BoxRepository extends BaseRepository<BoxEntity> {
@@ -34,7 +41,7 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
   }
 
   public override find(options: BoxFindOptions): Promise<BoxEntity[]> {
-    const { spent, tokenId, registers, minHeight, maxHeight, addresses } = options;
+    const { spent, tokenId, registers, minHeight, maxHeight, addresses, heightType } = options;
 
     const ergoTrees: string[] = options.ergoTrees ? options.ergoTrees : [];
 
@@ -108,12 +115,20 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
           }
         }
 
-        if (minHeight) {
-          query = query.andWhere(`${this.alias}.settlement_height >= :minHeight`, { minHeight });
+        if (isDefined(minHeight)) {
+          if (!heightType || heightType === "settlement") {
+            query = query.andWhere(`${this.alias}.settlement_height >= :minHeight`, { minHeight });
+          } else {
+            query = query.andWhere(`${this.alias}.creation_height >= :minHeight`, { minHeight });
+          }
         }
 
-        if (maxHeight) {
-          query = query.andWhere(`${this.alias}.settlement_height <= :maxHeight`, { maxHeight });
+        if (isDefined(maxHeight)) {
+          if (!heightType || heightType === "settlement") {
+            query = query.andWhere(`${this.alias}.settlement_height <= :maxHeight`, { maxHeight });
+          } else {
+            query = query.andWhere(`${this.alias}.creation_height <= :maxHeight`, { maxHeight });
+          }
         }
 
         if (options.where?.boxId) {

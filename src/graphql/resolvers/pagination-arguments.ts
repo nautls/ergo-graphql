@@ -1,6 +1,6 @@
 import { IsDefined, Max, Min } from "class-validator";
 import { ArgsType, Field, Int } from "type-graphql";
-import { MIN_SKIP, MAX_TAKE, MIN_TAKE } from "../../consts";
+import { MIN_SKIP, MAX_TAKE, MIN_TAKE, DEFAULT_TAKE } from "../../consts";
 
 @ArgsType()
 export abstract class PaginationArguments {
@@ -9,9 +9,9 @@ export abstract class PaginationArguments {
   @IsDefined()
   skip = MIN_SKIP;
 
-  @Field(() => Int, { defaultValue: MAX_TAKE })
+  @Field(() => Int, { defaultValue: DEFAULT_TAKE })
   @Min(MIN_TAKE)
   @Max(MAX_TAKE)
   @IsDefined()
-  take = MAX_TAKE;
+  take = DEFAULT_TAKE;
 }
