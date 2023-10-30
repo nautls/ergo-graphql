@@ -161,21 +161,22 @@ export class MempoolResolver {
       skip,
       take
     });
-    const resultBoxIds = boxes.map((box) => box.boxId);
-    const isBeingSpentSelected = isFieldSelected(info, "beingSpent");
-    const unconfirmedBoxIds = isBeingSpentSelected ? 
-      await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds(resultBoxIds) : [];
 
-    if(!isBeingSpentSelected) {
-      return boxes;
+    if (isFieldSelected(info, "beingSpent") && boxes.length > 0) {
+      const resultBoxIds = boxes.map((box) => box.boxId);
+      const unconfirmedBoxIds =
+        await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds(resultBoxIds);
+      console.log("being");
+
+      return boxes.map((box) => {
+        return {
+          ...box,
+          beingSpent: unconfirmedBoxIds.indexOf(box.boxId) > -1
+        };
+      });
     }
 
-    return boxes.map((box) => {
-      return {
-        ...box,
-        beingSpent: unconfirmedBoxIds.indexOf(box.boxId) > -1
-      };
-    });
+    return boxes;
   }
 
   @FieldResolver()

@@ -207,21 +207,19 @@ export class BoxResolver {
       take
     });
 
-    const resultBoxIds = boxes.map((box) => box.boxId);
+    if (isFieldSelected(info, "beingSpent") && boxes.length > 0) {
+      const resultBoxIds = boxes.map((box) => box.boxId);
+      const unconfirmedInputBoxIds =
+        await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds(resultBoxIds);
 
-    const unconfirmedInputBoxIds = isFieldSelected(info, "beingSpent")
-      ? await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds(resultBoxIds)
-      : [];
-
-    if (!isFieldSelected(info, "beingSpent")) {
-      return boxes;
+      return boxes.map((box) => {
+        return {
+          ...box,
+          beingSpent: unconfirmedInputBoxIds.indexOf(box.boxId) > -1
+        };
+      });
     }
 
-    return boxes.map((box) => {
-      return {
-        ...box,
-        beingSpent: unconfirmedInputBoxIds.indexOf(box.boxId) > -1
-      };
-    });
+    return boxes;
   }
 }
