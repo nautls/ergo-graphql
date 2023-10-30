@@ -333,6 +333,7 @@ type UnconfirmedBox implements IBox {
   additionalRegisters: JSONObject!
   address: String!
   assets: [UnconfirmedAsset!]!
+  beingSpent: Boolean!
   boxId: String!
   creationHeight: Int!
   ergoTree: String!
