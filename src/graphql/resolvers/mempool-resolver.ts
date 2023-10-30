@@ -151,7 +151,7 @@ export class MempoolResolver {
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
-    return context.repository.unconfirmedBoxes.find({
+    const boxes = await context.repository.unconfirmedBoxes.find({
       resolverInfo: info,
       where: removeUndefined({ boxId, transactionId, address, ergoTree, ergoTreeTemplateHash }),
       boxIds,
@@ -160,6 +160,21 @@ export class MempoolResolver {
       ergoTrees,
       skip,
       take
+    });
+    const resultBoxIds = boxes.map((box) => box.boxId);
+    const isBeingSpentSelected = isFieldSelected(info, "beingSpent");
+    const unconfirmedBoxIds = isBeingSpentSelected ? 
+      await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds(resultBoxIds) : [];
+
+    if(!isBeingSpentSelected) {
+      return boxes;
+    }
+
+    return boxes.map((box) => {
+      return {
+        ...box,
+        beingSpent: unconfirmedBoxIds.indexOf(box.boxId) > -1
+      };
     });
   }
 

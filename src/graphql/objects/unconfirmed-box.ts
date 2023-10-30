@@ -14,4 +14,7 @@ export class UnconfirmedBox extends IBox {
   assetsResolver() {
     return orderBy(this.assets, (asset) => asset.index);
   }
+
+  @Field(() => Boolean)
+  beingSpent!: boolean;
 }
