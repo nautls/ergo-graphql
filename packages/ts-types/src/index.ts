@@ -168,6 +168,12 @@ export type Header = {
   votes: Array<Scalars['Int']>;
 };
 
+/** The type of height that boxes must be filtered on. */
+export enum HeightFilterType {
+  Creation = 'creation',
+  Settlement = 'settlement'
+}
+
 export type IAsset = {
   amount: Scalars['String'];
   boxId: Scalars['String'];
@@ -338,6 +344,7 @@ export type QueryBoxesArgs = {
   ergoTreeTemplateHash?: InputMaybe<Scalars['String']>;
   ergoTrees?: InputMaybe<Array<Scalars['String']>>;
   headerId?: InputMaybe<Scalars['String']>;
+  heightType?: InputMaybe<HeightFilterType>;
   maxHeight?: InputMaybe<Scalars['Int']>;
   minHeight?: InputMaybe<Scalars['Int']>;
   registers?: InputMaybe<Registers>;
@@ -496,6 +503,7 @@ export type UnconfirmedBox = IBox & {
   additionalRegisters: Scalars['JSONObject'];
   address: Scalars['String'];
   assets: Array<UnconfirmedAsset>;
+  beingSpent: Scalars['Boolean'];
   boxId: Scalars['String'];
   creationHeight: Scalars['Int'];
   ergoTree: Scalars['String'];
