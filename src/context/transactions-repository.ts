@@ -12,6 +12,7 @@ type TransactionFindOptions = FindManyParams<TransactionEntity> & {
   address?: string;
   addresses?: string[];
   transactionIds?: string[];
+  headerId?: string;
 };
 
 export class TransactionRepository extends BaseRepository<TransactionEntity> {
@@ -23,7 +24,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
   }
 
   public override async find(options: TransactionFindOptions): Promise<TransactionEntity[]> {
-    const { minHeight, maxHeight, address, addresses, transactionIds } = options;
+    const { minHeight, maxHeight, address, addresses, transactionIds, headerId } = options;
     const ergoTrees = addresses
       ? addresses.map((address) => ErgoAddress.fromBase58(address).ergoTree)
       : [];
@@ -45,15 +46,21 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
           );
         }
 
-        if (minHeight) {
-          filterQuery = filterQuery.andWhere(`${this.alias}.inclusionHeight >= :minHeight`, {
-            minHeight
+        if (headerId) {
+          filterQuery = filterQuery.andWhere(`${this.alias}.headerId >= :headerId`, {
+            headerId
           });
-        }
-        if (maxHeight) {
-          filterQuery = filterQuery.andWhere(`${this.alias}.inclusionHeight <= :maxHeight`, {
-            maxHeight
-          });
+        } else {
+          if (minHeight) {
+            filterQuery = filterQuery.andWhere(`${this.alias}.inclusionHeight >= :minHeight`, {
+              minHeight
+            });
+          }
+          if (maxHeight) {
+            filterQuery = filterQuery.andWhere(`${this.alias}.inclusionHeight <= :maxHeight`, {
+              maxHeight
+            });
+          }
         }
 
         if (options.where?.transactionId && transactionIds) {

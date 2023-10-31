@@ -104,7 +104,10 @@ export class BaseRepository<T extends BaseEntity> implements IRepository<T> {
     if (this._hasJoinWithManyRows(baseQuery)) {
       limitQuery = limitQuery.select(`DISTINCT("${limitQueryAlias}"."${primaryCol}")`, primaryCol);
 
-      if (!isEmpty(this._defaults?.orderBy) || !isEmpty(options.orderBy)) {
+      if (
+        (!isEmpty(this._defaults?.orderBy) || !isEmpty(options.orderBy)) &&
+        options.orderBy !== "none"
+      ) {
         limitQuery = this._selectOrderColumns(limitQuery, limitQueryAlias, {
           wrap: true,
           orderBy: options.orderBy

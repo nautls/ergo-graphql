@@ -3,7 +3,7 @@ import { isEmpty, unionBy } from "lodash";
 import { AssetEntity, BoxEntity, HeaderEntity, InputEntity, TokenEntity } from "../entities";
 import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
-import { FindManyParams } from "./repository-interface";
+import { FindManyParams, OrderBy } from "./repository-interface";
 import { isDefined } from "class-validator";
 
 type Registers = {
@@ -20,6 +20,18 @@ export enum HeightFilterType {
   creation = "creation"
 }
 
+export enum OrderFields {
+  boxId = "boxId",
+  creationHeight = "creationHeight",
+  globalIndex = "globalIndex",
+  none = "none"
+}
+
+export enum OrderDirection {
+  asc = "asc",
+  desc = "desc"
+}
+
 type BoxFindOptions = FindManyParams<BoxEntity> & {
   addresses?: string[];
   ergoTrees?: string[];
@@ -30,6 +42,7 @@ type BoxFindOptions = FindManyParams<BoxEntity> & {
   maxHeight?: number;
   boxIds?: string[];
   heightType?: HeightFilterType;
+  orderBy?: OrderBy<BoxEntity>;
 };
 
 export class BoxRepository extends BaseRepository<BoxEntity> {
