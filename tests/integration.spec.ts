@@ -19,8 +19,8 @@ const specs: Spec[] = [
   {
     name: "[addresses] balance and transactions count",
     query: {
-      query: `query Query($addresses: [String!]!, $atHeight: Int) {
-        addresses(addresses: $addresses, atHeight: $atHeight) {
+      query: `query Query($addresses: [String!]!) {
+        addresses(addresses: $addresses) {
           transactionsCount
           balance { 
             nanoErgs 
@@ -33,8 +33,7 @@ const specs: Spec[] = [
           "9hY16vzHmmfyVBwKeFGHvb2bMFsG94A1u7To1QWtUokACyFVENQ",
           "9fh7mb1w4mFpD9aZDs8atNjnp27xN1HQnsgQk1cRiPaeCWMCfRJ",
           "9gT3jR5PU9QKrgDuZJ6tKNpoCUwsGPhV6uVg6SL2hmdZGWicq9m"
-        ],
-        atHeight: 759893
+        ]
       }
     },
     assert(output) {
@@ -81,7 +80,7 @@ const specs: Spec[] = [
     }
   },
   {
-    name: "[transactions] no filters",
+    name: "[transactions] no filter",
     query: {
       query: `query Query($take: Int) {
         transactions(take: $take) {
@@ -169,7 +168,7 @@ const specs: Spec[] = [
   }
 ];
 
-describe("integration tests", () => {
+describe("Integration Tests", () => {
   let server!: ApolloServer;
   let dataSource!: DataSource;
 
