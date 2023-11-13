@@ -165,6 +165,99 @@ const specs: Spec[] = [
         );
       }
     }
+  },
+  {
+    name: "[box] filter by boxIds",
+    query: {
+      query: `query Query ($boxIds: [String!]){
+        boxes(boxIds: $boxIds) {
+          boxId
+        }
+      }`,
+      variables: { boxIds: [
+        "8d13f40194ef5f444c017f3c88a424f90639b9976441e35e7b4fadeb9b5a1e11",
+        "da2df671ea3392b4ccdc6eb51704a82b4bd1a3aa3f029c69fc420ea3f377edaf"
+      ]}
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.boxes).toHaveLength(2);
+      expect(output.data?.boxes).toEqual(
+        expect.arrayContaining([
+          { boxId: "8d13f40194ef5f444c017f3c88a424f90639b9976441e35e7b4fadeb9b5a1e11" },
+          { boxId: "da2df671ea3392b4ccdc6eb51704a82b4bd1a3aa3f029c69fc420ea3f377edaf" }
+        ])
+      );
+    }
+  },
+  {
+    name: "[box] filter by ergoTreeTemplateHash",
+    query: {
+      query: `query Query ($templateHash: String){
+        boxes(ergoTreeTemplateHash: $templateHash, take: 10) {
+          ergoTreeTemplateHash
+        }
+      }`,
+      variables: { templateHash: "961e872f7ab750cb77ad75ea8a32d0ea3472bd0c230de09329b802801b3d1817" }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.boxes).toHaveLength(10);
+      expect(output.data?.boxes).toEqual(expect.arrayContaining([{ ergoTreeTemplateHash: "961e872f7ab750cb77ad75ea8a32d0ea3472bd0c230de09329b802801b3d1817" }]));
+    }
+  },
+  {
+    name: "[box] filter by address",
+    query: {
+      query: `query Query ($address: String){
+        boxes(address: $address, take: 10) {
+          address
+        }
+      }`,
+      variables: { address: "88dhgzEuTXaSuf5QC1TJDgdxqJMQEQAM6YaTTRqmUDrmPoVky1b16WAK5zMrq3p2mYqpUNKCyi5CLS9V" }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.boxes).toHaveLength(10);
+      expect(output.data?.boxes).toEqual(expect.arrayContaining([{ address: "88dhgzEuTXaSuf5QC1TJDgdxqJMQEQAM6YaTTRqmUDrmPoVky1b16WAK5zMrq3p2mYqpUNKCyi5CLS9V" }]));
+    }
+  },
+  {
+    name: "[box] filter by txId",
+    query: {
+      query: `query Query ($txId: String){
+        boxes(transactionId: $txId) {
+          transactionId
+        }
+      }`,
+      variables: { txId: "6fec163db4752215ba51bf1a0e017380c859575dff3b58d078ce97d9c330e999" }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.boxes).toHaveLength(3);
+      expect(output.data?.boxes).toEqual(expect.arrayContaining([{ transactionId: "6fec163db4752215ba51bf1a0e017380c859575dff3b58d078ce97d9c330e999" }]));
+    }
+  },
+  {
+    name: "[box] filter by registers (R4, needs extra filtering)",
+    query: {
+      query: `query Query ($R4: String){
+        boxes(registers: {R4: $R4}, spent: true, 
+        ergoTreeTemplateHash: "a4c5968b850cab972092b3593ed5b4c133cba6d4f26df2f274a606c7acffb4a8") {
+          additionalRegisters
+        }
+      }`,
+      variables: { R4: "1104deb5a9deae01de09b613c0d4f81b" }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.boxes).toEqual(expect.arrayContaining([{ additionalRegisters: { R4: "1104deb5a9deae01de09b613c0d4f81b" } }]));
+    }
   }
 ];
 
