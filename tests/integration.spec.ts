@@ -60,6 +60,25 @@ const specs: Spec[] = [
     }
   },
   {
+    name: "[transactions] no filter",
+    query: {
+      query: `query Query($take: Int) {
+        transactions(take: $take) {
+          inclusionHeight
+          transactionId
+        }
+      }`,
+      variables: {
+        take: 10
+      }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.transactions).toHaveLength(10);
+    }
+  },
+  {
     name: "[transactions] filter by address and max height",
     query: {
       query: `query Query($address: String, $maxHeight: Int) {
@@ -80,22 +99,36 @@ const specs: Spec[] = [
     }
   },
   {
-    name: "[transactions] no filter",
+    name: "[transactions] filter by headerId",
     query: {
-      query: `query Query($take: Int) {
-        transactions(take: $take) {
-          inclusionHeight
-          transactionId
+      query: `query Query($headerId: String) {
+        transactions(headerId: $headerId) {
+          headerId
         }
       }`,
-      variables: {
-        take: 10
-      }
+      variables: { headerId: "714414fb61d1cd85d08846f7f1debf27b49a616e4a39c1eac55f90200bf25347" }
     },
     assert(output) {
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
-      expect(output.data?.transactions).toHaveLength(10);
+      expect(output.data?.transactions).toEqual(expect.arrayContaining([{ headerId: "714414fb61d1cd85d08846f7f1debf27b49a616e4a39c1eac55f90200bf25347" }]));
+    }
+  },
+  {
+    name: "[transactions] filter by inclusionHeight",
+    query: {
+      query: `query Query($inclusionHeight: Int) {
+        transactions(inclusionHeight: $inclusionHeight) {
+          inclusionHeight
+        }
+      }`,
+      variables: { inclusionHeight: 1134187 }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.transactions).toHaveLength(3)
+      expect(output.data?.transactions).toEqual(expect.arrayContaining([{ inclusionHeight: 1134187 }]));
     }
   },
   {
@@ -258,7 +291,41 @@ const specs: Spec[] = [
       expect(output.data).toBeDefined();
       expect(output.data?.boxes).toEqual(expect.arrayContaining([{ additionalRegisters: { R4: "1104deb5a9deae01de09b613c0d4f81b" } }]));
     }
-  }
+  },
+  {
+    name: "[tokens] filter by boxId",
+    query: {
+      query: `query Query($boxId: String) {
+        tokens(boxId: $boxId) {
+          boxId
+        }
+      }`,
+      variables: { boxId: "089105a867391d773a57d500dab9aef255b0292ec66ce1d9c9813d108d7283e7" }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.tokens).toHaveLength(1);
+      expect(output.data?.tokens).toEqual([{ boxId: "089105a867391d773a57d500dab9aef255b0292ec66ce1d9c9813d108d7283e7" }]);
+    }
+  },
+  {
+    name: "[tokens] filter by tokenName",
+    query: {
+      query: `query Query($name: String) {
+        tokens(name: $name) {
+          name
+        }
+      }`,
+      variables: { name: "test" }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.tokens).toHaveLength(50);
+      expect(output.data?.tokens).toEqual(expect.arrayContaining([{ name: "test" }]));
+    }
+  },
 ];
 
 describe("Integration Tests", () => {
