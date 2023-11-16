@@ -326,6 +326,98 @@ const specs: Spec[] = [
       expect(output.data?.tokens).toEqual(expect.arrayContaining([{ name: "test" }]));
     }
   },
+  {
+    name: "[inputs] filter by txId",
+    query: {
+      query: `query Query($txId: String) {
+        inputs(transactionId: $txId) {
+          transactionId
+        }
+      }`,
+      variables: { txId: "dec24fc9c5114d051a08e6a3669f259930d1003fe90ab8ee2e8b04c6ab42ea1c" }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.inputs).toHaveLength(3);
+      expect(output.data?.inputs).toEqual(expect.arrayContaining([{ transactionId: "dec24fc9c5114d051a08e6a3669f259930d1003fe90ab8ee2e8b04c6ab42ea1c" }]));
+    }
+  },
+  {
+    name: "[dataInputs] filter by txId",
+    query: {
+      query: `query Query($txId: String) {
+        dataInputs(transactionId: $txId) {
+          transactionId
+        }
+      }`,
+      variables: { txId: "1649aabb150515729fdb49d94d1fbe43072711539cc2e00efd8197e325de79a9" }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.dataInputs).toHaveLength(2);
+      expect(output.data?.dataInputs).toEqual(expect.arrayContaining([{ transactionId: "1649aabb150515729fdb49d94d1fbe43072711539cc2e00efd8197e325de79a9" }]));
+    }
+  },
+  {
+    name: "[blockHeaders] filter by parentId",
+    query: {
+      query: `query Query($pId: String) {
+        blockHeaders(parentId: $pId) {
+          parentId
+        }
+      }`,
+      variables: { pId: "13dbe2b22e60cce05cba4ee2f2d996b2fd0518f1ba8cb4bb04c71efd4207be8a" }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.blockHeaders).toHaveLength(1);
+      expect(output.data?.blockHeaders).toEqual(expect.arrayContaining([{ parentId: "13dbe2b22e60cce05cba4ee2f2d996b2fd0518f1ba8cb4bb04c71efd4207be8a" }]));
+    }
+  },
+  {
+    name: "[blockHeaders] filter by height",
+    query: {
+      query: `query Query($height: Int) {
+        blockHeaders(height: $height) {
+          height
+        }
+      }`,
+      variables: { height: 300 }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.blockHeaders).toHaveLength(1);
+      expect(output.data?.blockHeaders).toEqual(expect.arrayContaining([{ height: 300 }]));
+    }
+  },
+  {
+    name: "[addresses] fetch two addresses",
+    query: {
+      query: `query Query($addresses: [String!]!) {
+        addresses(addresses: $addresses) {
+          address
+          used
+        }
+      }`,
+      variables: { addresses: [
+        "9gzA6eZo9HwpjsJBP8ioqo27E5JctkwkE3mBtsRWZVSpBhYExkZ",
+        "9es6p6rgtF4St2XA2wQ6hgkathnynLv4oxAdNwzZL5LZ6fhPV9s"
+      ]}
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.addresses).toHaveLength(2);
+      expect(output.data?.addresses).toEqual([
+        { address: "9gzA6eZo9HwpjsJBP8ioqo27E5JctkwkE3mBtsRWZVSpBhYExkZ", used: true },
+        { address: "9es6p6rgtF4St2XA2wQ6hgkathnynLv4oxAdNwzZL5LZ6fhPV9s", used: true }
+      ]);
+    }
+  },
 ];
 
 describe("Integration Tests", () => {
