@@ -418,6 +418,70 @@ const specs: Spec[] = [
       ]);
     }
   },
+  {
+    name: "[mempool] simple mempool fetch",
+    query: {
+      query: `query Query {
+        mempool {
+          size
+        }
+      }`
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.mempool.size).toBeDefined();
+    }
+  },
+  {
+    name: "[blocks] filter by height",
+    query: {
+      query: `query Query($height: Int) {
+        blocks(height: $height) {
+          height
+        }
+      }`,
+      variables: { height: 300 }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.blocks).toHaveLength(1);
+      expect(output.data?.blocks).toEqual([{ height: 300 }]);
+    }
+  },
+  {
+    name: "[blocks] filter by headerId",
+    query: {
+      query: `query Query($headerId: String) {
+        blocks(headerId: $headerId) {
+          headerId
+        }
+      }`,
+      variables: { headerId: "6ba802b17c9598a15c8da1736e975e34143e93d799f5d2a9bc408bd2b3f19a1f" }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.blocks).toHaveLength(1);
+      expect(output.data?.blocks).toEqual([{ headerId: "6ba802b17c9598a15c8da1736e975e34143e93d799f5d2a9bc408bd2b3f19a1f" }]);
+    }
+  },
+  {
+    name: "[state] simple state fetch",
+    query: {
+      query: `query Query {
+        state {
+          network
+        }
+      }`
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.state.network).toBe("mainnet");
+    }
+  },
 ];
 
 describe("Integration Tests", () => {
