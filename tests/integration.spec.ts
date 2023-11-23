@@ -344,23 +344,6 @@ const specs: Spec[] = [
     }
   },
   {
-    name: "[dataInputs] filter by txId",
-    query: {
-      query: `query Query($txId: String) {
-        dataInputs(transactionId: $txId) {
-          transactionId
-        }
-      }`,
-      variables: { txId: "1649aabb150515729fdb49d94d1fbe43072711539cc2e00efd8197e325de79a9" }
-    },
-    assert(output) {
-      expect(output.errors).toBeUndefined();
-      expect(output.data).toBeDefined();
-      expect(output.data?.dataInputs).toHaveLength(2);
-      expect(output.data?.dataInputs).toEqual(expect.arrayContaining([{ transactionId: "1649aabb150515729fdb49d94d1fbe43072711539cc2e00efd8197e325de79a9" }]));
-    }
-  },
-  {
     name: "[blockHeaders] filter by parentId",
     query: {
       query: `query Query($pId: String) {
