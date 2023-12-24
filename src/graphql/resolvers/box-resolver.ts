@@ -5,7 +5,6 @@ import {
   Ctx,
   Field,
   Info,
-  InputType,
   Query,
   Resolver,
   Int,
@@ -18,32 +17,12 @@ import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
 import { ValidateIf, IsEmpty, isDefined, ArrayMaxSize } from "class-validator";
 import { HeightFilterType } from "../../context/box-repository";
+import { Registers } from "../input-types/registres";
 
 registerEnumType(HeightFilterType, {
   name: "HeightFilterType",
   description: "The type of height that boxes must be filtered on."
 });
-
-@InputType()
-class Registers {
-  @Field(() => String, { nullable: true })
-  R4?: string;
-
-  @Field(() => String, { nullable: true })
-  R5?: string;
-
-  @Field(() => String, { nullable: true })
-  R6?: string;
-
-  @Field(() => String, { nullable: true })
-  R7?: string;
-
-  @Field(() => String, { nullable: true })
-  R8?: string;
-
-  @Field(() => String, { nullable: true })
-  R9?: string;
-}
 
 @ArgsType()
 class BoxesQueryArgs {

@@ -231,7 +231,7 @@ type Query {
   inputs(boxId: String, headerId: String, skip: Int = 0, take: Int = 50, transactionId: String): [Input!]!
   mempool: Mempool!
   state: State!
-  tokens(boxId: String, name: String, skip: Int = 0, take: Int = 50, tokenId: String, tokenIds: [String!]): [Token!]!
+  tokens(boxId: String, mintingBox: TokenMintingBox, name: String, skip: Int = 0, take: Int = 50, tokenId: String, tokenIds: [String!]): [Token!]!
   transactions(address: String, addresses: [String!], headerId: String, inclusionHeight: Int, maxHeight: Int, minHeight: Int, skip: Int = 0, take: Int = 50, transactionId: String, transactionIds: [String!]): [Transaction!]!
 }
 
@@ -276,6 +276,12 @@ type Token {
   name: String
   tokenId: String!
   type: String
+}
+
+input TokenMintingBox {
+  additionalRegisters: Registers
+  address: String
+  ergoTree: String
 }
 
 type Transaction implements ITransaction {
