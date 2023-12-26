@@ -57,11 +57,6 @@ export class TokenResolver {
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
-    /**
-     * Two Reg Bug
-     * Linting
-     * Tests/Docs
-     */
     return context.repository.tokens.find({
       resolverInfo: info,
       where: removeUndefined({ boxId, tokenId }),
