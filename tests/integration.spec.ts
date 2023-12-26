@@ -111,7 +111,11 @@ const specs: Spec[] = [
     assert(output) {
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
-      expect(output.data?.transactions).toEqual(expect.arrayContaining([{ headerId: "714414fb61d1cd85d08846f7f1debf27b49a616e4a39c1eac55f90200bf25347" }]));
+      expect(output.data?.transactions).toEqual(
+        expect.arrayContaining([
+          { headerId: "714414fb61d1cd85d08846f7f1debf27b49a616e4a39c1eac55f90200bf25347" }
+        ])
+      );
     }
   },
   {
@@ -127,8 +131,10 @@ const specs: Spec[] = [
     assert(output) {
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
-      expect(output.data?.transactions).toHaveLength(3)
-      expect(output.data?.transactions).toEqual(expect.arrayContaining([{ inclusionHeight: 1134187 }]));
+      expect(output.data?.transactions).toHaveLength(3);
+      expect(output.data?.transactions).toEqual(
+        expect.arrayContaining([{ inclusionHeight: 1134187 }])
+      );
     }
   },
   {
@@ -207,10 +213,12 @@ const specs: Spec[] = [
           boxId
         }
       }`,
-      variables: { boxIds: [
-        "8d13f40194ef5f444c017f3c88a424f90639b9976441e35e7b4fadeb9b5a1e11",
-        "da2df671ea3392b4ccdc6eb51704a82b4bd1a3aa3f029c69fc420ea3f377edaf"
-      ]}
+      variables: {
+        boxIds: [
+          "8d13f40194ef5f444c017f3c88a424f90639b9976441e35e7b4fadeb9b5a1e11",
+          "da2df671ea3392b4ccdc6eb51704a82b4bd1a3aa3f029c69fc420ea3f377edaf"
+        ]
+      }
     },
     assert(output) {
       expect(output.errors).toBeUndefined();
@@ -232,13 +240,21 @@ const specs: Spec[] = [
           ergoTreeTemplateHash
         }
       }`,
-      variables: { templateHash: "961e872f7ab750cb77ad75ea8a32d0ea3472bd0c230de09329b802801b3d1817" }
+      variables: {
+        templateHash: "961e872f7ab750cb77ad75ea8a32d0ea3472bd0c230de09329b802801b3d1817"
+      }
     },
     assert(output) {
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
       expect(output.data?.boxes).toHaveLength(10);
-      expect(output.data?.boxes).toEqual(expect.arrayContaining([{ ergoTreeTemplateHash: "961e872f7ab750cb77ad75ea8a32d0ea3472bd0c230de09329b802801b3d1817" }]));
+      expect(output.data?.boxes).toEqual(
+        expect.arrayContaining([
+          {
+            ergoTreeTemplateHash: "961e872f7ab750cb77ad75ea8a32d0ea3472bd0c230de09329b802801b3d1817"
+          }
+        ])
+      );
     }
   },
   {
@@ -249,13 +265,22 @@ const specs: Spec[] = [
           address
         }
       }`,
-      variables: { address: "88dhgzEuTXaSuf5QC1TJDgdxqJMQEQAM6YaTTRqmUDrmPoVky1b16WAK5zMrq3p2mYqpUNKCyi5CLS9V" }
+      variables: {
+        address: "88dhgzEuTXaSuf5QC1TJDgdxqJMQEQAM6YaTTRqmUDrmPoVky1b16WAK5zMrq3p2mYqpUNKCyi5CLS9V"
+      }
     },
     assert(output) {
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
       expect(output.data?.boxes).toHaveLength(10);
-      expect(output.data?.boxes).toEqual(expect.arrayContaining([{ address: "88dhgzEuTXaSuf5QC1TJDgdxqJMQEQAM6YaTTRqmUDrmPoVky1b16WAK5zMrq3p2mYqpUNKCyi5CLS9V" }]));
+      expect(output.data?.boxes).toEqual(
+        expect.arrayContaining([
+          {
+            address:
+              "88dhgzEuTXaSuf5QC1TJDgdxqJMQEQAM6YaTTRqmUDrmPoVky1b16WAK5zMrq3p2mYqpUNKCyi5CLS9V"
+          }
+        ])
+      );
     }
   },
   {
@@ -272,7 +297,11 @@ const specs: Spec[] = [
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
       expect(output.data?.boxes).toHaveLength(3);
-      expect(output.data?.boxes).toEqual(expect.arrayContaining([{ transactionId: "6fec163db4752215ba51bf1a0e017380c859575dff3b58d078ce97d9c330e999" }]));
+      expect(output.data?.boxes).toEqual(
+        expect.arrayContaining([
+          { transactionId: "6fec163db4752215ba51bf1a0e017380c859575dff3b58d078ce97d9c330e999" }
+        ])
+      );
     }
   },
   {
@@ -289,7 +318,11 @@ const specs: Spec[] = [
     assert(output) {
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
-      expect(output.data?.boxes).toEqual(expect.arrayContaining([{ additionalRegisters: { R4: "1104deb5a9deae01de09b613c0d4f81b" } }]));
+      expect(output.data?.boxes).toEqual(
+        expect.arrayContaining([
+          { additionalRegisters: { R4: "1104deb5a9deae01de09b613c0d4f81b" } }
+        ])
+      );
     }
   },
   {
@@ -306,7 +339,9 @@ const specs: Spec[] = [
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
       expect(output.data?.tokens).toHaveLength(1);
-      expect(output.data?.tokens).toEqual([{ boxId: "089105a867391d773a57d500dab9aef255b0292ec66ce1d9c9813d108d7283e7" }]);
+      expect(output.data?.tokens).toEqual([
+        { boxId: "089105a867391d773a57d500dab9aef255b0292ec66ce1d9c9813d108d7283e7" }
+      ]);
     }
   },
   {
@@ -327,6 +362,70 @@ const specs: Spec[] = [
     }
   },
   {
+    name: "[tokens] filter by mintingBox(address)",
+    query: {
+      query: `query Query($mintingBox: TokenMintingBox){
+        tokens(mintingBox: $mintingBox) {
+          box {
+            address
+            additionalRegisters
+          }
+        }
+      }`,
+      variables: {
+        mintingBox: {
+          address: "9gBSqNT9LH9WjvWbyqEvFirMbYp4nfGHnoWdceKGu45AKiya3Fq",
+          additionalRegisters: {
+            R4: "0e03545354"
+          }
+        }
+      }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.tokens).toHaveLength(2);
+      for (const boxWrapper of (output.data?.tokens ?? []) as { box: Box }[]) {
+        const { box } = boxWrapper;
+        expect(box.address).toEqual("9gBSqNT9LH9WjvWbyqEvFirMbYp4nfGHnoWdceKGu45AKiya3Fq");
+        expect(box.additionalRegisters.R4).toEqual("0e03545354");
+      }
+    }
+  },
+  {
+    name: "[tokens] filter by mintingBox(ergoTree)",
+    query: {
+      query: `query Query($mintingBox: TokenMintingBox){
+        tokens(mintingBox: $mintingBox) {
+          box {
+            ergoTree
+            additionalRegisters
+          }
+        }
+      }`,
+      variables: {
+        mintingBox: {
+          ergoTree: "0008cd02dada811a888cd0dc7a0a41739a3ad9b0f427741fe6ca19700cf1a51200c96bf7",
+          additionalRegisters: {
+            R6: "0400"
+          }
+        }
+      }
+    },
+    assert(output) {
+      expect(output.errors).toBeUndefined();
+      expect(output.data).toBeDefined();
+      expect(output.data?.tokens).toHaveLength(4);
+      for (const boxWrapper of (output.data?.tokens ?? []) as { box: Box }[]) {
+        const { box } = boxWrapper;
+        expect(box.ergoTree).toEqual(
+          "0008cd02dada811a888cd0dc7a0a41739a3ad9b0f427741fe6ca19700cf1a51200c96bf7"
+        );
+        expect(box.additionalRegisters.R6).toEqual("0400");
+      }
+    }
+  },
+  {
     name: "[inputs] filter by txId",
     query: {
       query: `query Query($txId: String) {
@@ -340,7 +439,11 @@ const specs: Spec[] = [
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
       expect(output.data?.inputs).toHaveLength(3);
-      expect(output.data?.inputs).toEqual(expect.arrayContaining([{ transactionId: "dec24fc9c5114d051a08e6a3669f259930d1003fe90ab8ee2e8b04c6ab42ea1c" }]));
+      expect(output.data?.inputs).toEqual(
+        expect.arrayContaining([
+          { transactionId: "dec24fc9c5114d051a08e6a3669f259930d1003fe90ab8ee2e8b04c6ab42ea1c" }
+        ])
+      );
     }
   },
   {
@@ -357,7 +460,11 @@ const specs: Spec[] = [
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
       expect(output.data?.blockHeaders).toHaveLength(1);
-      expect(output.data?.blockHeaders).toEqual(expect.arrayContaining([{ parentId: "13dbe2b22e60cce05cba4ee2f2d996b2fd0518f1ba8cb4bb04c71efd4207be8a" }]));
+      expect(output.data?.blockHeaders).toEqual(
+        expect.arrayContaining([
+          { parentId: "13dbe2b22e60cce05cba4ee2f2d996b2fd0518f1ba8cb4bb04c71efd4207be8a" }
+        ])
+      );
     }
   },
   {
@@ -386,10 +493,12 @@ const specs: Spec[] = [
           used
         }
       }`,
-      variables: { addresses: [
-        "9gzA6eZo9HwpjsJBP8ioqo27E5JctkwkE3mBtsRWZVSpBhYExkZ",
-        "9es6p6rgtF4St2XA2wQ6hgkathnynLv4oxAdNwzZL5LZ6fhPV9s"
-      ]}
+      variables: {
+        addresses: [
+          "9gzA6eZo9HwpjsJBP8ioqo27E5JctkwkE3mBtsRWZVSpBhYExkZ",
+          "9es6p6rgtF4St2XA2wQ6hgkathnynLv4oxAdNwzZL5LZ6fhPV9s"
+        ]
+      }
     },
     assert(output) {
       expect(output.errors).toBeUndefined();
@@ -447,7 +556,9 @@ const specs: Spec[] = [
       expect(output.errors).toBeUndefined();
       expect(output.data).toBeDefined();
       expect(output.data?.blocks).toHaveLength(1);
-      expect(output.data?.blocks).toEqual([{ headerId: "6ba802b17c9598a15c8da1736e975e34143e93d799f5d2a9bc408bd2b3f19a1f" }]);
+      expect(output.data?.blocks).toEqual([
+        { headerId: "6ba802b17c9598a15c8da1736e975e34143e93d799f5d2a9bc408bd2b3f19a1f" }
+      ]);
     }
   },
   {
@@ -464,7 +575,7 @@ const specs: Spec[] = [
       expect(output.data).toBeDefined();
       expect(output.data?.state.network).toBe("mainnet");
     }
-  },
+  }
 ];
 
 describe("Integration Tests", () => {
