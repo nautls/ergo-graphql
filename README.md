@@ -86,9 +86,36 @@ $ curl -H 'Content-Type: application/json' -X POST -d '{"query": "query {...}"}'
 ```
 
 We have a set of queries/mutation as well:
-### Box (Query)
+### Boxes (Query)
+With this query, you can get boxes of the ergo blockchain. The arguments of this query are:
+- `skip`(Int): How many items to skip; Default value is 0.
+- `take`(Int): How many items to take; Default value is 50.
+- `boxId`(String): To filter a unique box by id; It's deprecated, please use `boxIds` instead.
+- `boxIds`([String!]): To filter a set of unique boxes by id.
+- `registers`(Registers): To filter boxes that have special registers
+from R4 to R9. Note that `registers` filter should be used in combination with `spent` and at least one of `boxId`, `transactionId`, `headerId`, `address`, `ergoTree` or `ergoTreeTemplateHash` fields.
+- `transactionId`(String): To filter output boxes of a unique transaction.
+- `headerId`(String): To filter boxes by their header id.
+- `spent`(Boolean): To filter spent or unspent boxes.
+- `tokenId`(String): To filter boxes which contain a certain token.
+- `address`(String): To filter boxes of a specific address; It's deprecated, please use `addresses` instead.
+- `addresses`([String!]): To filter boxes that belong to an array of addresses.
+- `ergoTree`(String): To filter boxes that have specific ergo trees; It's deprecated, please use `ergoTrees` instead.
+- `ergoTrees`([String!]): To filter boxes that have ergo trees belonging to an array.
+- `ergoTreeTemplateHash`(String): To filter boxes that have a certain ergo tree template hash.
+- `minHeight`(Int): To get boxes after a certain height in the blockchain (inclusive).
+- `maxHeight`(Int): To get boxes before a certain height in the blockchain (inclusive).
+- `heightType`(HeightFilterType): It could be either `settlement` or `creation` which indicated the type of height you want to filter boxes by.
 
 ### Tokens (Query)
+
+Get tokens that have been minted on the ergo blockchain. The arguments of this query are:
+- `skip`(Int): How many items to skip; Default value is 0.
+- `take`(Int): How many items to take; Default value is 50.
+- `tokenId`(String): To filter a unique token by its id; It's deprecated, please use `tokenIds` instead.
+- `tokenIds`([String!]): To filter a set of unique tokens by id.
+- `boxId`(String): To filter tokens by their minting box id.
+- `name`(String): To filter tokens by their names. You can use wildcards like "name*". Keep in mind that the number of wildcard chars can't exceed 2. 
 
 ### Inputs (Query)
 
