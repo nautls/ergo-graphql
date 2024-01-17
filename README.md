@@ -119,6 +119,13 @@ Get tokens that have been minted on the ergo blockchain. The arguments of this q
 
 ### Inputs (Query)
 
+To get input boxes of transactions in the ergo blockchain. 
+- `skip`(Int): How many items to skip; Default value is 0.
+- `take`(Int): How many items to take; Default value is 50.
+- `transactionId`(String): To get input boxes of a special transaction.
+- `boxId`(String): To filter a unique box by id.
+- `headerId`(String): To get input boxes of a special header.
+
 ### Transactions (Query)
 
 ### DataInputs (Query)
