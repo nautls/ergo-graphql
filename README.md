@@ -128,9 +128,34 @@ To get input boxes of transactions in the ergo blockchain.
 
 ### Transactions (Query)
 
+To get the transactions of Ergo Blockchain.
+- `skip`(Int): How many items to skip; Default value is 0.
+- `take`(Int): How many items to take; Default value is 50.
+- `transactionId`(String): To filter a unique transaction by is id; It's deprecated, please use `transactionIds` instead.
+- `transactionIds`([String!]): To filter a set of unique transactions by id.
+- `headerId`(String): To filter transaction by the header id.
+- `inclusionHeight`(int): To filter transactions by the block height in which they included in the blockchain.
+- `address`(String): To filter transactions of an specific address; It's deprecated, please use `addresses` instead.
+- `addresses`([String!]): To filter transactions that belong to a set of addresses.
+- `minHeight`(Int): To filter transactions occurring after a certain height.
+- `maxHeight`(Int): To filter transactions occurring before a certain height.
+
+
 ### DataInputs (Query)
 
+- `skip`(Int): How many items to skip; Default value is 0.
+- `take`(Int): How many items to take; Default value is 50.
+- `transactionId`(String): To filter dataInputs of an specific transaction, filtering by its id.
+- `boxId`(String): To filter data inputs by box id.
+- `headerId`(String): To filter dataInputs of a block which has a specific headerId.
+
 ### BlockHeaders (Query)
+
+- `skip`(Int): How many items to skip; Default value is 0.
+- `take`(Int): How many items to take; Default value is 10.
+- `headerId`(String): To filter headers by their id.
+- `parentId`(String): To fetch a block header using its parent id.
+- `height`(Int): To retrieve a block header at a certain height.
 
 ### Addresses (Query)
 
