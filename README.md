@@ -119,7 +119,7 @@ Get tokens that have been minted on the ergo blockchain. The arguments of this q
 
 ### Inputs (Query)
 
-To get input boxes of transactions in the ergo blockchain. 
+To get input boxes of transactions in the ergo blockchain. The arguments of this query are:
 - `skip`(Int): How many items to skip; Default value is 0.
 - `take`(Int): How many items to take; Default value is 50.
 - `transactionId`(String): To get input boxes of a special transaction.
@@ -128,7 +128,7 @@ To get input boxes of transactions in the ergo blockchain.
 
 ### Transactions (Query)
 
-To get the transactions of Ergo Blockchain.
+To get the transactions of Ergo Blockchain. The arguments of this query are:
 - `skip`(Int): How many items to skip; Default value is 0.
 - `take`(Int): How many items to take; Default value is 50.
 - `transactionId`(String): To filter a unique transaction by is id; It's deprecated, please use `transactionIds` instead.
@@ -143,6 +143,8 @@ To get the transactions of Ergo Blockchain.
 
 ### DataInputs (Query)
 
+To get information about boxes that have been used as data input in the blockchain. The arguments of this query are:
+
 - `skip`(Int): How many items to skip; Default value is 0.
 - `take`(Int): How many items to take; Default value is 50.
 - `transactionId`(String): To filter dataInputs of an specific transaction, filtering by its id.
@@ -151,6 +153,8 @@ To get the transactions of Ergo Blockchain.
 
 ### BlockHeaders (Query)
 
+To get info about the block headers of the blockchain. The arguments of this query are:
+
 - `skip`(Int): How many items to skip; Default value is 0.
 - `take`(Int): How many items to take; Default value is 10.
 - `headerId`(String): To filter headers by their id.
@@ -158,14 +162,27 @@ To get the transactions of Ergo Blockchain.
 - `height`(Int): To retrieve a block header at a certain height.
 
 ### Addresses (Query)
+To get information about some addresses on the blockchain. The argument of this query are:
+- `addresses`([String!]): The list of addresses to filter.
 
 ### Mempool (Query)
+To get mempool boxes of the blockchain. This query does not have any arguments/filters.
 
 ### Block (Query)
+To get info about the block headers of the blockchain. The arguments of this query are:
+- `skip`(Int): How many items to skip; Default value is 0.
+- `take`(Int): How many items to take; Default value is 10.
+- `headerId`(String): To filter the block by header id.
+- `height`(Int): To filter a block with certain height.
+- `minHeight`(Int): To filter all blocks after a certain height.
+- `maxHeight`(Int): To filter all block before a certain height.
 
 ### State (Query)
+To get the state of the graphql instance. This status contains `difficulty`, `height`, and the `network`.
+This query does not have any arguments/filters.
 
 ### Info (Query)
+To check info of the running graphql instance. This contains `version` for now.
 
 ### CheckTransaction (Mutation)
 
