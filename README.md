@@ -185,6 +185,18 @@ This query does not have any arguments/filters.
 To check info of the running graphql instance. This contains `version` for now.
 
 ### CheckTransaction (Mutation)
+To check whether a transaction is valid. It will return transaction id if it's valid, and empty string otherwise.
+The input of ths mutation is signedTransaction of type `SignedTransaction` which is:
+```
+type SignedTransaction {
+  id: String!
+  inpts: [TransactionInput!]!
+  dataInputs: [TransactionDataInput!]!
+  outputs: [TransactionOutput!]!
+  size: Int
+}
+``` 
 
 ### SubmitTransaction (Mutation)
+To submit a transaction into the ergo blockchain. This will send the tx to the instance's node; if the operation suceeds it'll return the id of transaction. Input is the same `SignedTransaction` as defined above.
 
