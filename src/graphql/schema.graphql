@@ -228,7 +228,7 @@ type Query {
   boxes(address: String, addresses: [String!], boxId: String, boxIds: [String!], ergoTree: String, ergoTreeTemplateHash: String, ergoTrees: [String!], headerId: String, heightType: HeightFilterType = settlement, maxHeight: Int, minHeight: Int, registers: Registers, skip: Int = 0, spent: Boolean, take: Int = 50, tokenId: String, transactionId: String): [Box!]!
   dataInputs(boxId: String, headerId: String, skip: Int = 0, take: Int = 50, transactionId: String): [DataInput!]!
   info: Info!
-  inputs(boxId: String, headerId: String, skip: Int = 0, take: Int = 50, transactionId: String): [Input!]!
+  inputs(boxId: String, boxIds: [String!], headerId: String, skip: Int = 0, take: Int = 50, transactionId: String, transactionIds: [String!]): [Input!]!
   mempool: Mempool!
   state: State!
   tokens(boxId: String, name: String, skip: Int = 0, take: Int = 50, tokenId: String, tokenIds: [String!]): [Token!]!
