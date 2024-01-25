@@ -1,6 +1,6 @@
 import GraphQLDatabaseLoader from "@ergo-graphql/typeorm-graphql-loader";
 import { DataSource } from "typeorm";
-import { DataInputEntity, InputEntity } from "../entities";
+import { DataInputEntity } from "../entities";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { BoxRepository } from "./box-repository";
 import { HeaderRepository } from "./header-repository";
@@ -12,13 +12,14 @@ import { UnconfirmedInputRepository } from "./unconfirmed-input-repository";
 import { EpochsRepository } from "./epochs-repository";
 import { TokenRepository } from "./token-repository";
 import { BlocksRepository } from "./blocks-repository";
+import { InputsRepository } from "./input-repository";
 
 export class DatabaseContext {
   public readonly transactions!: TransactionRepository;
   public readonly blockInfo!: BlocksRepository;
   public readonly boxes!: BoxRepository;
   public readonly dataInputs!: IRepository<DataInputEntity>;
-  public readonly inputs!: IRepository<InputEntity>;
+  public readonly inputs!: InputsRepository;
   public readonly headers!: HeaderRepository;
   public readonly tokens!: TokenRepository;
   public readonly epochs!: EpochsRepository;
@@ -37,6 +38,7 @@ export class DatabaseContext {
     this.boxes = new BoxRepository(context);
     this.headers = new HeaderRepository(context);
     this.epochs = new EpochsRepository(context);
+    this.inputs = new InputsRepository(context);
 
     this.unconfirmedTransactions = new UnconfirmedTransactionRepository(context);
     this.unconfirmedBoxes = new UnconfirmedBoxRepository(context);
@@ -46,6 +48,5 @@ export class DatabaseContext {
 
     const defaults = { where: { mainChain: true } };
     this.dataInputs = new BaseRepository(DataInputEntity, "dti", { context, defaults });
-    this.inputs = new BaseRepository(InputEntity, "input", { context, defaults });
   }
 }
