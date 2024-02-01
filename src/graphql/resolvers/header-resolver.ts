@@ -7,8 +7,12 @@ import { PaginationArguments } from "./pagination-arguments";
 
 @ArgsType()
 class BlockHeadersQueryArgs extends PaginationArguments {
+  /** @deprecated */
   @Field(() => String, { nullable: true })
   headerId?: string;
+
+  @Field(() => [String], { nullable: true })
+  headerIds?: string[];
 
   @Field(() => String, { nullable: true })
   parentId?: string;
@@ -24,7 +28,7 @@ class BlockHeadersQueryArgs extends PaginationArguments {
 export class HeaderResolver {
   @Query(() => [Header])
   async blockHeaders(
-    @Args({ validate: true }) { headerId, parentId, height, skip, take }: BlockHeadersQueryArgs,
+    @Args({ validate: true }) { headerId, headerIds, parentId, height, skip, take }: BlockHeadersQueryArgs,
     @Ctx() context: GraphQLContext,
     @Info() info: GraphQLResolveInfo
   ) {
@@ -35,6 +39,7 @@ export class HeaderResolver {
         parentId,
         height
       }),
+      headerIds,
       skip,
       take
     });
