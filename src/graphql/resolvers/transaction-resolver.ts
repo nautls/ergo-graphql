@@ -16,8 +16,12 @@ class TransactionArguments {
   @ArrayMaxSize(20)
   transactionIds?: string[];
 
+  /** @deprecated */
   @Field(() => String, { nullable: true })
   headerId?: string;
+
+  @Field(() => [String], { nullable: true })
+  headerIds?: string[];
 
   @Field(() => Int, { nullable: true })
   inclusionHeight?: number;

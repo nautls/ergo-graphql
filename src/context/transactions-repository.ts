@@ -12,6 +12,7 @@ type TransactionFindOptions = FindManyParams<TransactionEntity> & {
   address?: string;
   addresses?: string[];
   transactionIds?: string[];
+  headerIds?: string[];
 };
 
 export class TransactionRepository extends BaseRepository<TransactionEntity> {
@@ -23,7 +24,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
   }
 
   public override async find(options: TransactionFindOptions): Promise<TransactionEntity[]> {
-    const { minHeight, maxHeight, address, addresses, transactionIds } = options;
+    const { minHeight, maxHeight, address, addresses, transactionIds, headerIds } = options;
     const ergoTrees = addresses
       ? addresses.map((address) => ErgoAddress.fromBase58(address).ergoTree)
       : [];
@@ -65,13 +66,23 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
           filterQuery = filterQuery.andWhere(`${this.alias}.transactionId IN (:...transactionIds)`);
         }
 
+        if (options.where?.headerId && headerIds) {
+          headerIds.push(options.where.headerId);
+          delete options.where.headerId;
+        }
+
+        if (headerIds && headerIds.length > 0) {
+          filterQuery = filterQuery.andWhere(`${this.alias}.headerId IN (:...headerIds)`);
+        } 
+
         filterQuery = filterQuery.setParameters(
           removeUndefined({
             height: maxHeight,
             maxHeight,
             minHeight,
             ergoTrees,
-            transactionIds
+            transactionIds,
+            headerIds
           })
         );
 
