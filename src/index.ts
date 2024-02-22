@@ -11,12 +11,13 @@ import responseCachePlugin from "apollo-server-plugin-response-cache";
 import { GraphQLSchema } from "graphql";
 import depthLimit from "graphql-depth-limit";
 import { blockWatcher } from "./block-watcher";
-// import { redisClient } from "./caching";
+import { redisClient } from "./caching";
 import { DEFAULT_MAX_QUERY_DEPTH, MAX_CACHE_AGE } from "./consts";
 import { DatabaseContext } from "./context/database-context";
 import { initializeDataSource } from "./data-source";
 import { generateSchema } from "./graphql/schema";
 import { nodeService } from "./services";
+import { checkHealth } from "./health-check";
 
 const { TS_NODE_DEV, MAX_QUERY_DEPTH } = process.env;
 
@@ -40,9 +41,9 @@ async function startServer(schema: GraphQLSchema, dataContext: DatabaseContext) 
         defaultMaxAge: MAX_CACHE_AGE,
         calculateHttpHeaders: true
       }),
-      // responseCachePlugin({
-      //   cache: new BaseRedisCache({ client: redisClient })
-      // }),
+      responseCachePlugin({
+        cache: new BaseRedisCache({ client: redisClient })
+      }),
       ApolloServerPluginLandingPageGraphQLPlayground()
     ],
     validationRules: [
@@ -56,19 +57,14 @@ async function startServer(schema: GraphQLSchema, dataContext: DatabaseContext) 
         }
       )
     ],
-    onHealthCheck: () => {
-      return new Promise((resolve, reject) => {
-        if(1) resolve("Something should go here");
-        else reject();
-      })
-    }
+    onHealthCheck: checkHealth.bind(null, dataContext)
   });
   const { url } = await server.listen({ port: 3000 });
   console.log(`🚀 Server ready at ${url}`);
 }
 
 async function startBlockWatcher(dataContext: DatabaseContext) {
-  blockWatcher.start(dataContext.headers);
+  blockWatcher.start(dataContext.headers).onNewBlock(() => redisClient.flushdb());
 
   console.log("🚀 Block watcher started");
 }

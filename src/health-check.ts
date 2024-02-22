@@ -1,10 +1,18 @@
-export const checkHealth = () => {
-  const checks = {};
+import { DatabaseContext } from "./context/database-context";
 
-  const healthy = Object.values(checks).every(() => true);
+export const checkHealth = async(dataContext: DatabaseContext): Promise<boolean> => {
+  /**
+   * Things to check:
+   * - Database connection
+   * - Redis connection
+   * - Node connection
+   * - Block watcher
+   */
+  const checks = {
+    db: dataContext.checkConnection
+  };
 
-  return {
-    msg: "Custom message",
-    healthy
-  }
+  // const healthy = Object.values(checks).every(() => true);
+  // There's no feature in apollo-server-express to return custom error messages, so we leave it empty
+  throw new Error("");
 };
