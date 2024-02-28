@@ -6,9 +6,12 @@ class BlockWatcher {
   private _lastBlockHeight!: number;
   private _timer!: NodeJS.Timeout;
 
+  private _healthy: boolean;
+
   constructor() {
     this._callbacks = [];
     this._lastBlockHeight = 0;
+    this._healthy = true;
   }
 
   public onNewBlock(callback: (height?: number) => void): BlockWatcher {
@@ -45,6 +48,7 @@ class BlockWatcher {
     repository
       .getMaxHeight()
       .then((height) => {
+        this._healthy = true;
         if (!height || this._lastBlockHeight >= height) {
           return;
         }
@@ -57,9 +61,14 @@ class BlockWatcher {
         this._notify(height);
       })
       .catch((e) => {
+        this._healthy = true;
         this._notify();
         console.error(e);
       });
+  }
+
+  public isHealthy(): boolean {
+    return this._healthy;
   }
 }
 
