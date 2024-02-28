@@ -17,6 +17,7 @@ import { DatabaseContext } from "./context/database-context";
 import { initializeDataSource } from "./data-source";
 import { generateSchema } from "./graphql/schema";
 import { nodeService } from "./services";
+import { checkHealth } from "./health-check";
 
 const { TS_NODE_DEV, MAX_QUERY_DEPTH } = process.env;
 
@@ -55,7 +56,8 @@ async function startServer(schema: GraphQLSchema, dataContext: DatabaseContext) 
           }
         }
       )
-    ]
+    ],
+    onHealthCheck: checkHealth.bind(null, dataContext)
   });
   const { url } = await server.listen({ port: 3000 });
   console.log(`🚀 Server ready at ${url}`);

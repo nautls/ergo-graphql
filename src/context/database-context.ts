@@ -14,6 +14,7 @@ import { TokenRepository } from "./token-repository";
 import { BlocksRepository } from "./blocks-repository";
 
 export class DatabaseContext {
+  private dataSource: DataSource;
   public readonly transactions!: TransactionRepository;
   public readonly blockInfo!: BlocksRepository;
   public readonly boxes!: BoxRepository;
@@ -28,6 +29,7 @@ export class DatabaseContext {
   public readonly unconfirmedInputs!: UnconfirmedInputRepository;
 
   constructor(dataSource: DataSource) {
+    this.dataSource = dataSource;
     const context: RepositoryDataContext = {
       dataSource,
       graphQLDataLoader: new GraphQLDatabaseLoader(dataSource, { disableCache: true })
@@ -48,4 +50,8 @@ export class DatabaseContext {
     this.dataInputs = new BaseRepository(DataInputEntity, "dti", { context, defaults });
     this.inputs = new BaseRepository(InputEntity, "input", { context, defaults });
   }
+
+  checkConnection = () => {
+    return this.dataSource.isInitialized;
+  };
 }

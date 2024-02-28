@@ -56,3 +56,9 @@ npm run test
 ```
 npm run lint
 ```
+
+### HealthCheck
+
+```
+/.well-known/apollo/server-health
+```
