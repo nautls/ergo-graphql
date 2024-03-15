@@ -47,6 +47,7 @@
     "axios": "^1.4.0",
     "class-validator": "^0.14.0",
     "dotenv": "^16.0.3",
+    "ergo-lib-wasm-nodejs": "^0.26.0",
     "graphql": "^15.8.0",
     "graphql-depth-limit": "^1.1.0",
     "graphql-type-json": "^0.3.2",
