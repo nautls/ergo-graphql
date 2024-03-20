@@ -1,3 +1,5 @@
+import JSONBigInt from "json-bigint";
+
 export function removeUndefined(value: Record<string, unknown>) {
   const result: Record<string, unknown> = {};
   for (const key in value) {
@@ -9,3 +11,8 @@ export function removeUndefined(value: Record<string, unknown>) {
 
   return result;
 }
+
+export const JsonBI = JSONBigInt({
+  useNativeBigInt: true,
+  alwaysParseAsBig: true
+});
