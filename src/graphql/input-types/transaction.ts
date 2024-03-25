@@ -20,3 +20,15 @@ export class SignedTransactionInput {
   @Field({ nullable: true })
   size?: number;
 }
+
+@InputType("ReduceTransaction")
+export class ReduceTransactionInput {
+  @Field(() => String)
+  unsignedTransaction!: string;
+
+  @Field(() => [String])
+  inputBoxes!: string[];
+
+  @Field(() => [String])
+  dataInputBoxes!: string[];
+}

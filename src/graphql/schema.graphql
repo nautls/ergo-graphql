@@ -218,6 +218,7 @@ type Mempool {
 
 type Mutation {
   checkTransaction(signedTransaction: SignedTransaction!): String!
+  reduceTransaction(transaction: ReduceTransaction!): String!
   submitTransaction(signedTransaction: SignedTransaction!): String!
 }
 
@@ -233,6 +234,12 @@ type Query {
   state: State!
   tokens(boxId: String, name: String, skip: Int = 0, take: Int = 50, tokenId: String, tokenIds: [String!]): [Token!]!
   transactions(address: String, addresses: [String!], headerId: String, inclusionHeight: Int, maxHeight: Int, minHeight: Int, skip: Int = 0, take: Int = 50, transactionId: String, transactionIds: [String!]): [Transaction!]!
+}
+
+input ReduceTransaction {
+  dataInputBoxes: [String!]!
+  inputBoxes: [String!]!
+  unsignedTransaction: String!
 }
 
 input Registers {
