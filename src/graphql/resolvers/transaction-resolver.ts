@@ -1,10 +1,24 @@
 import { GraphQLResolveInfo } from "graphql";
-import { Args, ArgsType, Ctx, Field, Info, Int, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Args,
+  ArgsType,
+  Ctx,
+  Field,
+  Info,
+  Int,
+  Mutation,
+  Query,
+  Resolver
+} from "type-graphql";
 import { Transaction } from "../objects/transaction";
 import { removeUndefined } from "../../utils";
 import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
 import { ArrayMaxSize } from "class-validator";
+import { ReduceTransactionInput } from "../input-types";
+import * as wasm from "ergo-lib-wasm-nodejs";
+import { nodeService } from "../../services";
 
 @ArgsType()
 class TransactionArguments {
@@ -71,5 +85,27 @@ export class TransactionResolver {
       skip,
       take
     });
+  }
+
+  @Mutation(() => String)
+  async reduceTransaction(@Arg("transaction") transaction: ReduceTransactionInput) {
+    try {
+      const tx = wasm.UnsignedTransaction.from_json(transaction.unsignedTransaction);
+      const ergoBoxes = wasm.ErgoBoxes.from_boxes_json(transaction.inputBoxes);
+      const dataInputBoxes = wasm.ErgoBoxes.from_boxes_json(transaction.dataInputBoxes);
+      const ctx = await nodeService.getStateContext();
+
+      const reducedTx = wasm.ReducedTransaction.from_unsigned_tx(
+        tx,
+        ergoBoxes,
+        dataInputBoxes,
+        ctx
+      );
+
+      return reducedTx.sigma_serialize_bytes().toString();
+    } catch (e: any) {
+      console.error(e);
+      throw new Error(`Failed to reduce transaction! ${e.message}`);
+    }
   }
 }
