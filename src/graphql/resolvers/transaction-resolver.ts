@@ -90,22 +90,20 @@ export class TransactionResolver {
   @Mutation(() => String)
   async reduceTransaction(@Arg("transaction") transaction: ReduceTransactionInput) {
     try {
+      const ctx = await nodeService.getStateContext();
       const tx = wasm.UnsignedTransaction.from_json(transaction.unsignedTransaction);
       const ergoBoxes = wasm.ErgoBoxes.from_boxes_json(transaction.inputBoxes);
-      const dataInputBoxes = wasm.ErgoBoxes.from_boxes_json(transaction.dataInputBoxes);
-      const ctx = await nodeService.getStateContext();
-
+      const dataInputBoxes = wasm.ErgoBoxes.from_boxes_json([]);
       const reducedTx = wasm.ReducedTransaction.from_unsigned_tx(
         tx,
         ergoBoxes,
         dataInputBoxes,
         ctx
       );
-
       return reducedTx.sigma_serialize_bytes().toString();
     } catch (e: any) {
       console.error(e);
-      throw new Error(`Failed to reduce transaction! ${e.message}`);
+      throw new Error(`Failed to reduce transaction! ${e}`);
     }
   }
 }
