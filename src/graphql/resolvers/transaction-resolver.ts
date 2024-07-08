@@ -16,7 +16,7 @@ import { removeUndefined } from "../../utils";
 import { GraphQLContext } from "../context-type";
 import { PaginationArguments } from "./pagination-arguments";
 import { ArrayMaxSize } from "class-validator";
-import { ReduceTransactionInput } from "../input-types";
+import { UnsignedTransactionInput } from "../input-types";
 import * as wasm from "ergo-lib-wasm-nodejs";
 import { nodeService } from "../../services";
 
@@ -88,7 +88,7 @@ export class TransactionResolver {
   }
 
   @Mutation(() => String)
-  async reduceTransaction(@Arg("transaction") transaction: ReduceTransactionInput) {
+  async reduceTransaction(@Arg("transaction") transaction: UnsignedTransactionInput) {
     try {
       const ctx = await nodeService.getStateContext();
       const tx = wasm.UnsignedTransaction.from_json(transaction.unsignedTransaction);

@@ -21,8 +21,8 @@ export class SignedTransactionInput {
   size?: number;
 }
 
-@InputType("ReduceTransaction")
-export class ReduceTransactionInput {
+@InputType("UnsignedTransaction")
+export class UnsignedTransactionInput {
   @Field(() => String)
   unsignedTransaction!: string;
 
