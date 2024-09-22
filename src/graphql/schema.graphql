@@ -218,6 +218,7 @@ type Mempool {
 
 type Mutation {
   checkTransaction(signedTransaction: SignedTransaction!): String!
+  reduceTransaction(transaction: UnsignedTransaction!): String!
   submitTransaction(signedTransaction: SignedTransaction!): String!
 }
 
@@ -368,4 +369,10 @@ type UnconfirmedTransaction implements ITransaction {
   size: Int!
   timestamp: String!
   transactionId: String!
+}
+
+input UnsignedTransaction {
+  dataInputBoxes: [String!]!
+  inputBoxes: [String!]!
+  unsignedTransaction: String!
 }
