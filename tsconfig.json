@@ -8,9 +8,10 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
   },
   "include": ["src/**/*", "tests/**/*"],
-  "exclude": ["tests"]
+  "exclude": ["tests", "node_modules"]
 }
