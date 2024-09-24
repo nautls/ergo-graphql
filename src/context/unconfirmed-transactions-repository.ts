@@ -80,6 +80,7 @@ export class UnconfirmedTransactionRepository extends BaseRepository<Unconfirmed
       const unconfimedBoxes = await this.dataSource
         .getRepository(UnconfirmedBoxEntity)
         .createQueryBuilder("box")
+        .innerJoinAndSelect("box.assets", "asset")
         .where("box.boxId IN (:...unconfirmedBoxIds)", { unconfirmedBoxIds })
         .getMany();
 
