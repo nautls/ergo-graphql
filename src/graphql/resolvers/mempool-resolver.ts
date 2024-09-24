@@ -166,7 +166,6 @@ export class MempoolResolver {
       const resultBoxIds = boxes.map((box) => box.boxId);
       const unconfirmedBoxIds =
         await context.repository.unconfirmedInputs.getUnconfirmedInputBoxIds(resultBoxIds);
-      console.log("being");
 
       return boxes.map((box) => {
         return {
