@@ -1,6 +1,6 @@
 {
   "name": "@ergo-graphql/server",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Ergo GraphQL server",
   "main": "src/index.ts",
   "scripts": {
