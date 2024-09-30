@@ -15,6 +15,10 @@ type Registers = {
   R9?: string;
 };
 
+const getDefinedRegisterCount = (registers: Registers) => {
+  return Object.values(registers).filter((x) => x).length;
+};
+
 export enum HeightFilterType {
   settlement = "settlement",
   creation = "creation"
@@ -87,31 +91,23 @@ export class BoxRepository extends BaseRepository<BoxEntity> {
         }
 
         if (registers && !isEmpty(registers)) {
-          query = query.leftJoin(`${this.alias}.registers`, "rx", `${this.alias}.boxId = rx.boxId`);
+          if (getDefinedRegisterCount(registers) > 2) {
+            throw new Error("Maximum of two registers can be used for filtering at the same time.");
+          }
           for (const key in registers) {
             const value = registers[key as keyof Registers];
             if (!value) {
               continue;
             }
 
-            query = query.andWhere(
-              `rx.registerId = :${key}_key AND rx.serializedValue = :${key}_value`,
-              removeUndefined({
-                tokenId,
-                R4_key: registers?.R4 ? "R4" : undefined,
-                R4_value: registers?.R4,
-                R5_key: registers?.R5 ? "R5" : undefined,
-                R5_value: registers?.R5,
-                R6_key: registers?.R6 ? "R6" : undefined,
-                R6_value: registers?.R6,
-                R7_key: registers?.R7 ? "R7" : undefined,
-                R7_value: registers?.R7,
-                R8_key: registers?.R8 ? "R8" : undefined,
-                R8_value: registers?.R8,
-                R9_key: registers?.R9 ? "R9" : undefined,
-                R9_value: registers?.R9
-              })
-            );
+            const subQuery = query
+              .subQuery()
+              .select("rx.boxId")
+              .from("box_registers", "rx")
+              .where("rx.id = :key AND rx.serialized_value = :value", { key, value })
+              .getQuery();
+
+            query = query.andWhere(`${this.alias}.boxId IN ${subQuery}`);
           }
         }
 
