@@ -3,169 +3,171 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
   /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
-  JSONObject: any;
+  JSONObject: { input: any; output: any; }
 };
 
 export type AdProof = {
   __typename?: 'AdProof';
-  digest: Scalars['String'];
+  digest: Scalars['String']['output'];
   header: Header;
-  headerId: Scalars['String'];
-  proofBytes: Scalars['String'];
+  headerId: Scalars['String']['output'];
+  proofBytes: Scalars['String']['output'];
 };
 
 export type Address = {
   __typename?: 'Address';
-  address: Scalars['String'];
+  address: Scalars['String']['output'];
   balance: AddressBalance;
-  boxesCount: Scalars['Int'];
-  transactionsCount: Scalars['Int'];
-  used: Scalars['Boolean'];
+  boxesCount: Scalars['Int']['output'];
+  transactionsCount: Scalars['Int']['output'];
+  used: Scalars['Boolean']['output'];
 };
 
 export type AddressAssetBalance = {
   __typename?: 'AddressAssetBalance';
-  amount: Scalars['String'];
-  decimals?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  tokenId: Scalars['String'];
+  amount: Scalars['String']['output'];
+  decimals?: Maybe<Scalars['Int']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  tokenId: Scalars['String']['output'];
 };
 
 export type AddressBalance = {
   __typename?: 'AddressBalance';
   assets: Array<AddressAssetBalance>;
-  nanoErgs: Scalars['String'];
+  nanoErgs: Scalars['String']['output'];
 };
 
 
 export type AddressBalanceAssetsArgs = {
-  tokenId?: InputMaybe<Scalars['String']>;
+  tokenId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Asset = IAsset & {
   __typename?: 'Asset';
-  amount: Scalars['String'];
+  amount: Scalars['String']['output'];
   box: Box;
-  boxId: Scalars['String'];
-  headerId: Scalars['String'];
-  index: Scalars['Int'];
+  boxId: Scalars['String']['output'];
+  headerId: Scalars['String']['output'];
+  index: Scalars['Int']['output'];
   token: Token;
-  tokenId: Scalars['String'];
+  tokenId: Scalars['String']['output'];
 };
 
 export type AssetInput = {
-  amount: Scalars['String'];
-  tokenId: Scalars['String'];
+  amount: Scalars['String']['input'];
+  tokenId: Scalars['String']['input'];
 };
 
 export type Block = {
   __typename?: 'Block';
-  blockChainTotalSize: Scalars['String'];
-  blockCoins: Scalars['String'];
-  blockFee: Scalars['String'];
-  blockMiningTime: Scalars['String'];
-  blockSize: Scalars['Int'];
-  difficulty: Scalars['String'];
+  blockChainTotalSize: Scalars['String']['output'];
+  blockCoins: Scalars['String']['output'];
+  blockFee: Scalars['String']['output'];
+  blockMiningTime: Scalars['String']['output'];
+  blockSize: Scalars['Int']['output'];
+  difficulty: Scalars['String']['output'];
   header: Header;
-  headerId: Scalars['String'];
-  height: Scalars['Int'];
-  mainChain: Scalars['Boolean'];
-  maxBoxGix: Scalars['String'];
-  maxTxGix: Scalars['String'];
-  minerAddress: Scalars['String'];
-  minerRevenue: Scalars['String'];
-  minerReward: Scalars['String'];
-  timestamp: Scalars['String'];
-  totalCoinsInTxs: Scalars['String'];
-  totalCoinsIssued: Scalars['String'];
-  totalFees: Scalars['String'];
-  totalMinersReward: Scalars['String'];
-  totalMiningTime: Scalars['String'];
-  totalTxsCount: Scalars['String'];
-  txsCount: Scalars['Int'];
-  txsSize: Scalars['Int'];
+  headerId: Scalars['String']['output'];
+  height: Scalars['Int']['output'];
+  mainChain: Scalars['Boolean']['output'];
+  maxBoxGix: Scalars['String']['output'];
+  maxTxGix: Scalars['String']['output'];
+  minerAddress: Scalars['String']['output'];
+  minerRevenue: Scalars['String']['output'];
+  minerReward: Scalars['String']['output'];
+  timestamp: Scalars['String']['output'];
+  totalCoinsInTxs: Scalars['String']['output'];
+  totalCoinsIssued: Scalars['String']['output'];
+  totalFees: Scalars['String']['output'];
+  totalMinersReward: Scalars['String']['output'];
+  totalMiningTime: Scalars['String']['output'];
+  totalTxsCount: Scalars['String']['output'];
+  txsCount: Scalars['Int']['output'];
+  txsSize: Scalars['Int']['output'];
 };
 
 export type Box = IBox & {
   __typename?: 'Box';
-  additionalRegisters: Scalars['JSONObject'];
-  address: Scalars['String'];
+  additionalRegisters: Scalars['JSONObject']['output'];
+  address: Scalars['String']['output'];
   assets: Array<Asset>;
-  beingSpent: Scalars['Boolean'];
-  boxId: Scalars['String'];
-  creationHeight: Scalars['Int'];
-  ergoTree: Scalars['String'];
-  ergoTreeTemplateHash: Scalars['String'];
-  globalIndex: Scalars['String'];
-  headerId: Scalars['String'];
-  index: Scalars['Int'];
-  mainChain: Scalars['Boolean'];
-  settlementHeight: Scalars['Int'];
+  beingSpent: Scalars['Boolean']['output'];
+  boxId: Scalars['String']['output'];
+  creationHeight: Scalars['Int']['output'];
+  ergoTree: Scalars['String']['output'];
+  ergoTreeTemplateHash: Scalars['String']['output'];
+  globalIndex: Scalars['String']['output'];
+  headerId: Scalars['String']['output'];
+  index: Scalars['Int']['output'];
+  mainChain: Scalars['Boolean']['output'];
+  settlementHeight: Scalars['Int']['output'];
   spentBy?: Maybe<Input>;
   transaction: Transaction;
-  transactionId: Scalars['String'];
-  value: Scalars['String'];
+  transactionId: Scalars['String']['output'];
+  value: Scalars['String']['output'];
 };
 
 export type DataInput = IDataInput & {
   __typename?: 'DataInput';
   box: Box;
-  boxId: Scalars['String'];
-  headerId: Scalars['String'];
-  index: Scalars['Int'];
-  mainChain: Scalars['Boolean'];
+  boxId: Scalars['String']['output'];
+  headerId: Scalars['String']['output'];
+  index: Scalars['Int']['output'];
+  mainChain: Scalars['Boolean']['output'];
   transaction: Transaction;
-  transactionId: Scalars['String'];
+  transactionId: Scalars['String']['output'];
 };
 
 export type Epochs = {
   __typename?: 'Epochs';
-  blockVersion: Scalars['Int'];
-  dataInputCost: Scalars['Int'];
-  height: Scalars['Int'];
-  inputCost: Scalars['Int'];
-  maxBlockCost: Scalars['Int'];
-  maxBlockSize: Scalars['Int'];
-  minValuePerByte: Scalars['Int'];
-  outputCost: Scalars['Int'];
-  storageFeeFactor: Scalars['Int'];
-  tokenAccessCost: Scalars['Int'];
+  blockVersion: Scalars['Int']['output'];
+  dataInputCost: Scalars['Int']['output'];
+  height: Scalars['Int']['output'];
+  inputCost: Scalars['Int']['output'];
+  maxBlockCost: Scalars['Int']['output'];
+  maxBlockSize: Scalars['Int']['output'];
+  minValuePerByte: Scalars['Int']['output'];
+  outputCost: Scalars['Int']['output'];
+  storageFeeFactor: Scalars['Int']['output'];
+  tokenAccessCost: Scalars['Int']['output'];
 };
 
 export type Extension = {
   __typename?: 'Extension';
-  digest: Scalars['String'];
-  fields: Scalars['JSONObject'];
-  headerId: Scalars['String'];
+  digest: Scalars['String']['output'];
+  fields: Scalars['JSONObject']['output'];
+  headerId: Scalars['String']['output'];
 };
 
 export type Header = {
   __typename?: 'Header';
   adProof: AdProof;
-  adProofsRoot: Scalars['String'];
+  adProofsRoot: Scalars['String']['output'];
   blockInfo: Block;
-  difficulty: Scalars['String'];
+  difficulty: Scalars['String']['output'];
   extension: Extension;
-  extensionHash: Scalars['String'];
-  headerId: Scalars['String'];
-  height: Scalars['Int'];
-  mainChain: Scalars['Boolean'];
-  nBits: Scalars['String'];
-  parentId: Scalars['String'];
-  powSolutions: Scalars['JSONObject'];
-  stateRoot: Scalars['String'];
-  timestamp: Scalars['String'];
-  transactionsRoot: Scalars['String'];
-  version: Scalars['Int'];
-  votes: Array<Scalars['Int']>;
+  extensionHash: Scalars['String']['output'];
+  headerId: Scalars['String']['output'];
+  height: Scalars['Int']['output'];
+  mainChain: Scalars['Boolean']['output'];
+  nBits: Scalars['String']['output'];
+  parentId: Scalars['String']['output'];
+  powSolutions: Scalars['JSONObject']['output'];
+  stateRoot: Scalars['String']['output'];
+  timestamp: Scalars['String']['output'];
+  transactionsRoot: Scalars['String']['output'];
+  version: Scalars['Int']['output'];
+  votes: Array<Scalars['Int']['output']>;
 };
 
 /** The type of height that boxes must be filtered on. */
@@ -175,60 +177,60 @@ export enum HeightFilterType {
 }
 
 export type IAsset = {
-  amount: Scalars['String'];
-  boxId: Scalars['String'];
-  index: Scalars['Int'];
-  tokenId: Scalars['String'];
+  amount: Scalars['String']['output'];
+  boxId: Scalars['String']['output'];
+  index: Scalars['Int']['output'];
+  tokenId: Scalars['String']['output'];
 };
 
 export type IBox = {
-  additionalRegisters: Scalars['JSONObject'];
-  address: Scalars['String'];
-  boxId: Scalars['String'];
-  creationHeight: Scalars['Int'];
-  ergoTree: Scalars['String'];
-  ergoTreeTemplateHash: Scalars['String'];
-  index: Scalars['Int'];
-  transactionId: Scalars['String'];
-  value: Scalars['String'];
+  additionalRegisters: Scalars['JSONObject']['output'];
+  address: Scalars['String']['output'];
+  boxId: Scalars['String']['output'];
+  creationHeight: Scalars['Int']['output'];
+  ergoTree: Scalars['String']['output'];
+  ergoTreeTemplateHash: Scalars['String']['output'];
+  index: Scalars['Int']['output'];
+  transactionId: Scalars['String']['output'];
+  value: Scalars['String']['output'];
 };
 
 export type IDataInput = {
-  boxId: Scalars['String'];
-  index: Scalars['Int'];
-  transactionId: Scalars['String'];
+  boxId: Scalars['String']['output'];
+  index: Scalars['Int']['output'];
+  transactionId: Scalars['String']['output'];
 };
 
 export type IInput = {
   box?: Maybe<Box>;
-  boxId: Scalars['String'];
-  extension: Scalars['JSONObject'];
-  index: Scalars['Int'];
-  proofBytes?: Maybe<Scalars['String']>;
-  transactionId: Scalars['String'];
+  boxId: Scalars['String']['output'];
+  extension: Scalars['JSONObject']['output'];
+  index: Scalars['Int']['output'];
+  proofBytes?: Maybe<Scalars['String']['output']>;
+  transactionId: Scalars['String']['output'];
 };
 
 export type ITransaction = {
-  size: Scalars['Int'];
-  transactionId: Scalars['String'];
+  size: Scalars['Int']['output'];
+  transactionId: Scalars['String']['output'];
 };
 
 export type Info = {
   __typename?: 'Info';
-  version: Scalars['String'];
+  version: Scalars['String']['output'];
 };
 
 export type Input = IInput & {
   __typename?: 'Input';
   box?: Maybe<Box>;
-  boxId: Scalars['String'];
-  extension: Scalars['JSONObject'];
-  headerId: Scalars['String'];
-  index: Scalars['Int'];
-  mainChain: Scalars['Boolean'];
-  proofBytes?: Maybe<Scalars['String']>;
+  boxId: Scalars['String']['output'];
+  extension: Scalars['JSONObject']['output'];
+  headerId: Scalars['String']['output'];
+  index: Scalars['Int']['output'];
+  mainChain: Scalars['Boolean']['output'];
+  proofBytes?: Maybe<Scalars['String']['output']>;
   transaction: Transaction;
-  transactionId: Scalars['String'];
+  transactionId: Scalars['String']['output'];
 };
 
 export type Mempool = {
@@ -236,53 +238,53 @@ export type Mempool = {
   addresses: Array<UnconfirmedAddress>;
   boxes: Array<UnconfirmedBox>;
   inputs: Array<UnconfirmedInput>;
-  size: Scalars['Int'];
+  size: Scalars['Int']['output'];
   transactions: Array<UnconfirmedTransaction>;
-  transactionsCount: Scalars['Int'];
+  transactionsCount: Scalars['Int']['output'];
 };
 
 
 export type MempoolAddressesArgs = {
-  addresses: Array<Scalars['String']>;
+  addresses: Array<Scalars['String']['input']>;
 };
 
 
 export type MempoolBoxesArgs = {
-  address?: InputMaybe<Scalars['String']>;
-  addresses?: InputMaybe<Array<Scalars['String']>>;
-  boxId?: InputMaybe<Scalars['String']>;
-  boxIds?: InputMaybe<Array<Scalars['String']>>;
-  ergoTree?: InputMaybe<Scalars['String']>;
-  ergoTreeTemplateHash?: InputMaybe<Scalars['String']>;
-  ergoTrees?: InputMaybe<Array<Scalars['String']>>;
-  skip?: InputMaybe<Scalars['Int']>;
-  take?: InputMaybe<Scalars['Int']>;
-  tokenId?: InputMaybe<Scalars['String']>;
-  transactionId?: InputMaybe<Scalars['String']>;
+  address?: InputMaybe<Scalars['String']['input']>;
+  addresses?: InputMaybe<Array<Scalars['String']['input']>>;
+  boxId?: InputMaybe<Scalars['String']['input']>;
+  boxIds?: InputMaybe<Array<Scalars['String']['input']>>;
+  ergoTree?: InputMaybe<Scalars['String']['input']>;
+  ergoTreeTemplateHash?: InputMaybe<Scalars['String']['input']>;
+  ergoTrees?: InputMaybe<Array<Scalars['String']['input']>>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+  tokenId?: InputMaybe<Scalars['String']['input']>;
+  transactionId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type MempoolInputsArgs = {
-  boxId?: InputMaybe<Scalars['String']>;
-  skip?: InputMaybe<Scalars['Int']>;
-  take?: InputMaybe<Scalars['Int']>;
-  transactionId?: InputMaybe<Scalars['String']>;
+  boxId?: InputMaybe<Scalars['String']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+  transactionId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type MempoolTransactionsArgs = {
-  address?: InputMaybe<Scalars['String']>;
-  addresses?: InputMaybe<Array<Scalars['String']>>;
-  skip?: InputMaybe<Scalars['Int']>;
-  take?: InputMaybe<Scalars['Int']>;
-  transactionId?: InputMaybe<Scalars['String']>;
-  transactionIds?: InputMaybe<Array<Scalars['String']>>;
+  address?: InputMaybe<Scalars['String']['input']>;
+  addresses?: InputMaybe<Array<Scalars['String']['input']>>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+  transactionId?: InputMaybe<Scalars['String']['input']>;
+  transactionIds?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  checkTransaction: Scalars['String'];
-  submitTransaction: Scalars['String'];
+  checkTransaction: Scalars['String']['output'];
+  submitTransaction: Scalars['String']['output'];
 };
 
 
@@ -312,225 +314,226 @@ export type Query = {
 
 
 export type QueryAddressesArgs = {
-  addresses: Array<Scalars['String']>;
+  addresses: Array<Scalars['String']['input']>;
 };
 
 
 export type QueryBlockHeadersArgs = {
-  headerId?: InputMaybe<Scalars['String']>;
-  height?: InputMaybe<Scalars['Int']>;
-  parentId?: InputMaybe<Scalars['String']>;
-  skip?: InputMaybe<Scalars['Int']>;
-  take?: InputMaybe<Scalars['Int']>;
+  headerId?: InputMaybe<Scalars['String']['input']>;
+  headerIds?: InputMaybe<Array<Scalars['String']['input']>>;
+  height?: InputMaybe<Scalars['Int']['input']>;
+  parentId?: InputMaybe<Scalars['String']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type QueryBlocksArgs = {
-  headerId?: InputMaybe<Scalars['String']>;
-  height?: InputMaybe<Scalars['Int']>;
-  maxHeight?: InputMaybe<Scalars['Int']>;
-  minHeight?: InputMaybe<Scalars['Int']>;
-  skip?: InputMaybe<Scalars['Int']>;
-  take?: InputMaybe<Scalars['Int']>;
+  headerId?: InputMaybe<Scalars['String']['input']>;
+  height?: InputMaybe<Scalars['Int']['input']>;
+  maxHeight?: InputMaybe<Scalars['Int']['input']>;
+  minHeight?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type QueryBoxesArgs = {
-  address?: InputMaybe<Scalars['String']>;
-  addresses?: InputMaybe<Array<Scalars['String']>>;
-  boxId?: InputMaybe<Scalars['String']>;
-  boxIds?: InputMaybe<Array<Scalars['String']>>;
-  ergoTree?: InputMaybe<Scalars['String']>;
-  ergoTreeTemplateHash?: InputMaybe<Scalars['String']>;
-  ergoTrees?: InputMaybe<Array<Scalars['String']>>;
-  headerId?: InputMaybe<Scalars['String']>;
+  address?: InputMaybe<Scalars['String']['input']>;
+  addresses?: InputMaybe<Array<Scalars['String']['input']>>;
+  boxId?: InputMaybe<Scalars['String']['input']>;
+  boxIds?: InputMaybe<Array<Scalars['String']['input']>>;
+  ergoTree?: InputMaybe<Scalars['String']['input']>;
+  ergoTreeTemplateHash?: InputMaybe<Scalars['String']['input']>;
+  ergoTrees?: InputMaybe<Array<Scalars['String']['input']>>;
+  headerId?: InputMaybe<Scalars['String']['input']>;
   heightType?: InputMaybe<HeightFilterType>;
-  maxHeight?: InputMaybe<Scalars['Int']>;
-  minHeight?: InputMaybe<Scalars['Int']>;
+  maxHeight?: InputMaybe<Scalars['Int']['input']>;
+  minHeight?: InputMaybe<Scalars['Int']['input']>;
   registers?: InputMaybe<Registers>;
-  skip?: InputMaybe<Scalars['Int']>;
-  spent?: InputMaybe<Scalars['Boolean']>;
-  take?: InputMaybe<Scalars['Int']>;
-  tokenId?: InputMaybe<Scalars['String']>;
-  transactionId?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  spent?: InputMaybe<Scalars['Boolean']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+  tokenId?: InputMaybe<Scalars['String']['input']>;
+  transactionId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type QueryDataInputsArgs = {
-  boxId?: InputMaybe<Scalars['String']>;
-  headerId?: InputMaybe<Scalars['String']>;
-  skip?: InputMaybe<Scalars['Int']>;
-  take?: InputMaybe<Scalars['Int']>;
-  transactionId?: InputMaybe<Scalars['String']>;
+  boxId?: InputMaybe<Scalars['String']['input']>;
+  headerId?: InputMaybe<Scalars['String']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+  transactionId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type QueryInputsArgs = {
-  boxId?: InputMaybe<Scalars['String']>;
-  headerId?: InputMaybe<Scalars['String']>;
-  skip?: InputMaybe<Scalars['Int']>;
-  take?: InputMaybe<Scalars['Int']>;
-  transactionId?: InputMaybe<Scalars['String']>;
+  boxId?: InputMaybe<Scalars['String']['input']>;
+  headerId?: InputMaybe<Scalars['String']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+  transactionId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type QueryTokensArgs = {
-  boxId?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  skip?: InputMaybe<Scalars['Int']>;
-  take?: InputMaybe<Scalars['Int']>;
-  tokenId?: InputMaybe<Scalars['String']>;
-  tokenIds?: InputMaybe<Array<Scalars['String']>>;
+  boxId?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+  tokenId?: InputMaybe<Scalars['String']['input']>;
+  tokenIds?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 
 export type QueryTransactionsArgs = {
-  address?: InputMaybe<Scalars['String']>;
-  addresses?: InputMaybe<Array<Scalars['String']>>;
-  headerId?: InputMaybe<Scalars['String']>;
-  inclusionHeight?: InputMaybe<Scalars['Int']>;
-  maxHeight?: InputMaybe<Scalars['Int']>;
-  minHeight?: InputMaybe<Scalars['Int']>;
-  skip?: InputMaybe<Scalars['Int']>;
-  take?: InputMaybe<Scalars['Int']>;
-  transactionId?: InputMaybe<Scalars['String']>;
-  transactionIds?: InputMaybe<Array<Scalars['String']>>;
+  address?: InputMaybe<Scalars['String']['input']>;
+  addresses?: InputMaybe<Array<Scalars['String']['input']>>;
+  headerId?: InputMaybe<Scalars['String']['input']>;
+  inclusionHeight?: InputMaybe<Scalars['Int']['input']>;
+  maxHeight?: InputMaybe<Scalars['Int']['input']>;
+  minHeight?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+  transactionId?: InputMaybe<Scalars['String']['input']>;
+  transactionIds?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type Registers = {
-  R4?: InputMaybe<Scalars['String']>;
-  R5?: InputMaybe<Scalars['String']>;
-  R6?: InputMaybe<Scalars['String']>;
-  R7?: InputMaybe<Scalars['String']>;
-  R8?: InputMaybe<Scalars['String']>;
-  R9?: InputMaybe<Scalars['String']>;
+  R4?: InputMaybe<Scalars['String']['input']>;
+  R5?: InputMaybe<Scalars['String']['input']>;
+  R6?: InputMaybe<Scalars['String']['input']>;
+  R7?: InputMaybe<Scalars['String']['input']>;
+  R8?: InputMaybe<Scalars['String']['input']>;
+  R9?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SignedTransaction = {
   dataInputs: Array<TransactionDataInput>;
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
   inputs: Array<TransactionInput>;
   outputs: Array<TransactionOutput>;
-  size?: InputMaybe<Scalars['Int']>;
+  size?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type SpendingProofInput = {
-  extension: Scalars['JSONObject'];
-  proofBytes: Scalars['String'];
+  extension: Scalars['JSONObject']['input'];
+  proofBytes: Scalars['String']['input'];
 };
 
 export type State = {
   __typename?: 'State';
-  blockId: Scalars['String'];
-  boxGlobalIndex: Scalars['String'];
-  difficulty: Scalars['String'];
-  height: Scalars['Int'];
-  network: Scalars['String'];
+  blockId: Scalars['String']['output'];
+  boxGlobalIndex: Scalars['String']['output'];
+  difficulty: Scalars['String']['output'];
+  height: Scalars['Int']['output'];
+  network: Scalars['String']['output'];
   params: Epochs;
-  transactionGlobalIndex: Scalars['String'];
+  transactionGlobalIndex: Scalars['String']['output'];
 };
 
 export type Token = {
   __typename?: 'Token';
   box: Box;
-  boxId: Scalars['String'];
-  decimals?: Maybe<Scalars['Int']>;
-  description?: Maybe<Scalars['String']>;
-  emissionAmount: Scalars['String'];
-  name?: Maybe<Scalars['String']>;
-  tokenId: Scalars['String'];
-  type?: Maybe<Scalars['String']>;
+  boxId: Scalars['String']['output'];
+  decimals?: Maybe<Scalars['Int']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  emissionAmount: Scalars['String']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  tokenId: Scalars['String']['output'];
+  type?: Maybe<Scalars['String']['output']>;
 };
 
 export type Transaction = ITransaction & {
   __typename?: 'Transaction';
-  coinbase: Scalars['Boolean'];
+  coinbase: Scalars['Boolean']['output'];
   dataInputs: Array<DataInput>;
-  globalIndex: Scalars['String'];
-  headerId: Scalars['String'];
-  inclusionHeight: Scalars['Int'];
-  index: Scalars['Int'];
+  globalIndex: Scalars['String']['output'];
+  headerId: Scalars['String']['output'];
+  inclusionHeight: Scalars['Int']['output'];
+  index: Scalars['Int']['output'];
   inputs: Array<Input>;
-  mainChain: Scalars['Boolean'];
+  mainChain: Scalars['Boolean']['output'];
   outputs: Array<Box>;
-  size: Scalars['Int'];
-  timestamp: Scalars['String'];
-  transactionId: Scalars['String'];
+  size: Scalars['Int']['output'];
+  timestamp: Scalars['String']['output'];
+  transactionId: Scalars['String']['output'];
 };
 
 
 export type TransactionOutputsArgs = {
-  relevantOnly?: InputMaybe<Scalars['Boolean']>;
+  relevantOnly?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type TransactionDataInput = {
-  boxId: Scalars['String'];
+  boxId: Scalars['String']['input'];
 };
 
 export type TransactionInput = {
-  boxId: Scalars['String'];
+  boxId: Scalars['String']['input'];
   spendingProof: SpendingProofInput;
 };
 
 export type TransactionOutput = {
-  additionalRegisters: Scalars['JSONObject'];
+  additionalRegisters: Scalars['JSONObject']['input'];
   assets?: InputMaybe<Array<AssetInput>>;
-  boxId?: InputMaybe<Scalars['String']>;
-  creationHeight: Scalars['Int'];
-  ergoTree: Scalars['String'];
-  index?: InputMaybe<Scalars['Int']>;
-  transactionId?: InputMaybe<Scalars['String']>;
-  value: Scalars['String'];
+  boxId?: InputMaybe<Scalars['String']['input']>;
+  creationHeight: Scalars['Int']['input'];
+  ergoTree: Scalars['String']['input'];
+  index?: InputMaybe<Scalars['Int']['input']>;
+  transactionId?: InputMaybe<Scalars['String']['input']>;
+  value: Scalars['String']['input'];
 };
 
 export type UnconfirmedAddress = {
   __typename?: 'UnconfirmedAddress';
-  address: Scalars['String'];
+  address: Scalars['String']['output'];
   balance: AddressBalance;
 };
 
 export type UnconfirmedAsset = IAsset & {
   __typename?: 'UnconfirmedAsset';
-  amount: Scalars['String'];
-  boxId: Scalars['String'];
-  index: Scalars['Int'];
+  amount: Scalars['String']['output'];
+  boxId: Scalars['String']['output'];
+  index: Scalars['Int']['output'];
   token: Token;
-  tokenId: Scalars['String'];
+  tokenId: Scalars['String']['output'];
 };
 
 export type UnconfirmedBox = IBox & {
   __typename?: 'UnconfirmedBox';
-  additionalRegisters: Scalars['JSONObject'];
-  address: Scalars['String'];
+  additionalRegisters: Scalars['JSONObject']['output'];
+  address: Scalars['String']['output'];
   assets: Array<UnconfirmedAsset>;
-  beingSpent: Scalars['Boolean'];
-  boxId: Scalars['String'];
-  creationHeight: Scalars['Int'];
-  ergoTree: Scalars['String'];
-  ergoTreeTemplateHash: Scalars['String'];
-  index: Scalars['Int'];
+  beingSpent: Scalars['Boolean']['output'];
+  boxId: Scalars['String']['output'];
+  creationHeight: Scalars['Int']['output'];
+  ergoTree: Scalars['String']['output'];
+  ergoTreeTemplateHash: Scalars['String']['output'];
+  index: Scalars['Int']['output'];
   transaction: UnconfirmedTransaction;
-  transactionId: Scalars['String'];
-  value: Scalars['String'];
+  transactionId: Scalars['String']['output'];
+  value: Scalars['String']['output'];
 };
 
 export type UnconfirmedDataInput = IDataInput & {
   __typename?: 'UnconfirmedDataInput';
-  boxId: Scalars['String'];
-  index: Scalars['Int'];
+  boxId: Scalars['String']['output'];
+  index: Scalars['Int']['output'];
   transaction: UnconfirmedTransaction;
-  transactionId: Scalars['String'];
+  transactionId: Scalars['String']['output'];
 };
 
 export type UnconfirmedInput = IInput & {
   __typename?: 'UnconfirmedInput';
   box?: Maybe<Box>;
-  boxId: Scalars['String'];
-  extension: Scalars['JSONObject'];
-  index: Scalars['Int'];
-  proofBytes?: Maybe<Scalars['String']>;
+  boxId: Scalars['String']['output'];
+  extension: Scalars['JSONObject']['output'];
+  index: Scalars['Int']['output'];
+  proofBytes?: Maybe<Scalars['String']['output']>;
   transaction: UnconfirmedTransaction;
-  transactionId: Scalars['String'];
+  transactionId: Scalars['String']['output'];
 };
 
 export type UnconfirmedTransaction = ITransaction & {
@@ -538,7 +541,7 @@ export type UnconfirmedTransaction = ITransaction & {
   dataInputs: Array<UnconfirmedDataInput>;
   inputs: Array<UnconfirmedInput>;
   outputs: Array<UnconfirmedBox>;
-  size: Scalars['Int'];
-  timestamp: Scalars['String'];
-  transactionId: Scalars['String'];
+  size: Scalars['Int']['output'];
+  timestamp: Scalars['String']['output'];
+  transactionId: Scalars['String']['output'];
 };
