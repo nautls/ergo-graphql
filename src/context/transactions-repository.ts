@@ -18,7 +18,7 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
   constructor(context: RepositoryDataContext) {
     super(TransactionEntity, "tx", {
       context,
-      defaults: { where: { mainChain: true }, orderBy: { globalIndex: "DESC" } }
+      defaults: { where: { mainChain: true }, orderBy: { timestamp: "DESC" } }
     });
   }
 
