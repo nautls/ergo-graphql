@@ -19,6 +19,8 @@ declare global {
       MAX_QUERY_DEPTH?: string;
 
       TS_NODE_DEV: string;
+
+      TX_ORDERING: "timestamp" | "inclusionHeight_timestamp";
     }
   }
 }

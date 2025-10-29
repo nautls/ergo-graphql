@@ -6,6 +6,8 @@ import { removeUndefined } from "../utils";
 import { BaseRepository, RepositoryDataContext } from "./base-repository";
 import { FindManyParams } from "./repository-interface";
 
+const { TX_ORDERING } = process.env;
+
 type TransactionFindOptions = FindManyParams<TransactionEntity> & {
   minHeight?: number;
   maxHeight?: number;
@@ -20,7 +22,10 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       context,
       defaults: {
         where: { mainChain: true },
-        orderBy: { inclusionHeight: "DESC", timestamp: "DESC" }
+        orderBy:
+          TX_ORDERING === "timestamp"
+            ? { timestamp: "DESC" }
+            : { inclusionHeight: "DESC", timestamp: "DESC" }
       }
     });
   }
