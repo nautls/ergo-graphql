@@ -30,6 +30,7 @@ REDIS_USER_NAME =         # optional: redis username
 REDIS_USER_PWD =          # optional: redis user password
 
 MAX_QUERY_DEPTH = 5       # optional: maximum query depth
+TX_ORDERING =             # Possible values: "inclusionHeight_timestamp", "timestamp", default: "timestamp",
 ```
 
 ### Compile and run for development
@@ -115,7 +116,7 @@ Get tokens that have been minted on the ergo blockchain. The arguments of this q
 - `tokenId`(String): To filter a unique token by its id; It's deprecated, please use `tokenIds` instead.
 - `tokenIds`([String!]): To filter a set of unique tokens by id.
 - `boxId`(String): To filter tokens by their minting box id.
-- `name`(String): To filter tokens by their names. You can use wildcards like "name*". Keep in mind that the number of wildcard chars can't exceed 2. 
+- `name`(String): To filter tokens by their names. You can use wildcards like "name*". Keep in mind that the number of wildcard chars can't exceed 2.
 
 ### Inputs (Query)
 
@@ -195,8 +196,7 @@ type SignedTransaction {
   outputs: [TransactionOutput!]!
   size: Int
 }
-``` 
+```
 
 ### SubmitTransaction (Mutation)
 To submit a transaction into the ergo blockchain. This will send the tx to the instance's node; if the operation suceeds it'll return the id of transaction. Input is the same `SignedTransaction` as defined above.
-
