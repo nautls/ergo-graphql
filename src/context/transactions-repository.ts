@@ -23,9 +23,9 @@ export class TransactionRepository extends BaseRepository<TransactionEntity> {
       defaults: {
         where: { mainChain: true },
         orderBy:
-          TX_ORDERING === "timestamp"
-            ? { timestamp: "DESC" }
-            : { inclusionHeight: "DESC", timestamp: "DESC" }
+          TX_ORDERING === "inclusionHeight_timestamp"
+            ? { inclusionHeight: "DESC", timestamp: "DESC" }
+            : { timestamp: "DESC" }
       }
     });
   }
